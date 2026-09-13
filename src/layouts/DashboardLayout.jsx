@@ -14,7 +14,7 @@ export default function DashboardLayout({ user, onLogout, onSwitchRole }) {
       <main className="main-content">
         <Outlet />
       </main>
-      <Footer />
+      <Footer user={user} />
     </div>
   );
 }

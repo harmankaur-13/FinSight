@@ -19,7 +19,7 @@ export default function DashboardNav({ user, onLogout, onSwitchRole }) {
     <div className="dashboard-nav-wrapper">
       <div className="dashboard-nav">
         <div className="dash-nav-left">
-          <Link to="/" className="logo">
+          <Link to={getDashboardRoute()} className="logo">
             <span>F</span> FinSight
           </Link>
           
@@ -54,7 +54,7 @@ export default function DashboardNav({ user, onLogout, onSwitchRole }) {
             <button 
               className={role === 'student' ? 'active' : ''} 
               onClick={() => {
-                onSwitchRole('student');
+                if (onSwitchRole) onSwitchRole('student');
                 navigate('/student-dashboard');
               }}
             >
@@ -63,7 +63,7 @@ export default function DashboardNav({ user, onLogout, onSwitchRole }) {
             <button 
               className={role === 'business' ? 'active' : ''} 
               onClick={() => {
-                onSwitchRole('business');
+                if (onSwitchRole) onSwitchRole('business');
                 navigate('/business-dashboard');
               }}
             >
@@ -72,7 +72,7 @@ export default function DashboardNav({ user, onLogout, onSwitchRole }) {
             <button 
               className={role === 'tech' ? 'active' : ''} 
               onClick={() => {
-                onSwitchRole('tech');
+                if (onSwitchRole) onSwitchRole('tech');
                 navigate('/tech-dashboard');
               }}
             >
@@ -90,7 +90,7 @@ export default function DashboardNav({ user, onLogout, onSwitchRole }) {
           <button 
             className="btn btn-outline btn-small"
             onClick={() => {
-              onLogout();
+              if (onLogout) onLogout();
               navigate('/login');
             }}
           >

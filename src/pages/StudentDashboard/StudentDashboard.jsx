@@ -1,10 +1,13 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { formatHumanName } from '../../hooks/useFinanceData';
 import PortfolioCard from '../../components/PortfolioCard';
 import PortfolioChart from '../../components/PortfolioChart';
 import AllocationCard from '../../components/AllocationCard';
 import AssistantCard from '../../components/AssistantCard';
 import EducationCard from '../../components/EducationCard';
+
+const STORAGE_KEY_COMPLETED_MODULES = 'finsight_completed_modules';
+const STORAGE_KEY_WATCHED_VIDEOS = 'finsight_watched_videos';
 
 export default function StudentDashboard({ data, user }) {
   const {
@@ -22,6 +25,51 @@ export default function StudentDashboard({ data, user }) {
   } = data;
 
   const displayName = formatHumanName(user?.name) || 'Aman';
+
+  const [completedModules, setCompletedModules] = useState(() => {
+    try {
+      const saved = localStorage.getItem(STORAGE_KEY_COMPLETED_MODULES);
+      return saved ? JSON.parse(saved) : ['edu-1'];
+    } catch (e) {
+      return ['edu-1'];
+    }
+  });
+
+  const [watchedVideos, setWatchedVideos] = useState(() => {
+    try {
+      const saved = localStorage.getItem(STORAGE_KEY_WATCHED_VIDEOS);
+      return saved ? JSON.parse(saved) : ['yt-1'];
+    } catch (e) {
+      return ['yt-1'];
+    }
+  });
+
+  const handleToggleModuleComplete = (modId) => {
+    setCompletedModules((prev) => {
+      const next = prev.includes(modId)
+        ? prev.filter((id) => id !== modId)
+        : [...prev, modId];
+      try {
+        localStorage.setItem(STORAGE_KEY_COMPLETED_MODULES, JSON.stringify(next));
+      } catch (e) {}
+      return next;
+    });
+  };
+
+  const handleToggleVideoWatched = (vidId) => {
+    setWatchedVideos((prev) => {
+      const next = prev.includes(vidId)
+        ? prev.filter((id) => id !== vidId)
+        : [...prev, vidId];
+      try {
+        localStorage.setItem(STORAGE_KEY_WATCHED_VIDEOS, JSON.stringify(next));
+      } catch (e) {}
+      return next;
+    });
+  };
+
+  const completedCount = completedModules.length;
+  const totalCount = educationalModules?.length || 4;
 
   return (
     <div className="dashboard-wrapper">
@@ -64,10 +112,10 @@ export default function StudentDashboard({ data, user }) {
 
         <PortfolioCard
           title="Active Learning Streak"
-          value="4 Modules"
-          change="Foundations"
-          isPositive={true}
-          subtitle="Personal finance progress"
+          value={`${completedCount} of ${totalCount} Done`}
+          change={completedCount === totalCount ? '100% Completed' : `${Math.round((completedCount / totalCount) * 100)}% Progress`}
+          isPositive={completedCount > 0}
+          subtitle="Financial mastery milestones"
         />
       </div>
 
@@ -136,6 +184,10 @@ export default function StudentDashboard({ data, user }) {
       <EducationCard
         modules={educationalModules}
         videos={videoTutorials}
+        completedModules={completedModules}
+        onToggleModuleComplete={handleToggleModuleComplete}
+        watchedVideos={watchedVideos}
+        onToggleVideoWatched={handleToggleVideoWatched}
       />
     </div>
   );

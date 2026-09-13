@@ -5,6 +5,7 @@ import { useFinanceData } from './hooks/useFinanceData';
 // Layouts
 import PublicLayout from './layouts/PublicLayout';
 import DashboardLayout from './layouts/DashboardLayout';
+import AdaptiveLayout from './layouts/AdaptiveLayout';
 
 // Components
 import ProtectedRoute from './components/ProtectedRoute';
@@ -50,12 +51,30 @@ export default function App() {
   return (
     <BrowserRouter>
       <Routes>
-        {/* Public Routes Wrapped in PublicLayout */}
-        <Route element={<PublicLayout />}>
+        {/* Landing Page (Redirects to dashboard if already logged in) */}
+        <Route element={<PublicLayout user={user} onLogout={logout} />}>
           <Route 
             path="/" 
-            element={<Landing onDemoLogin={demoLogin} />} 
+            element={
+              isAuthenticated && !user?.needsOnboarding ? (
+                <Navigate to={getRoleDashboardPath()} replace />
+              ) : (
+                <Landing onDemoLogin={demoLogin} />
+              )
+            } 
           />
+        </Route>
+
+        {/* Shared Content Pages (Adaptive: Uses DashboardLayout when logged in, PublicLayout when logged out) */}
+        <Route
+          element={
+            <AdaptiveLayout
+              user={user}
+              onLogout={logout}
+              onSwitchRole={switchRole}
+            />
+          }
+        >
           <Route path="/features" element={<Features />} />
           <Route path="/news" element={<News />} />
           <Route path="/ratings" element={<Ratings />} />
