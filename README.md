@@ -10,77 +10,95 @@
 
 ---
 
-FinSight is a financial intelligence platform designed to provide personalized portfolio insights, investment monitoring, market information, and financial decision support through role-based dashboards.
+## About
 
-The platform adapts the experience according to the user's profile, investment interests, and financial focus.
+FinSight is a personal financial intelligence platform designed to help users understand, monitor, and manage their investments through a personalized dashboard experience.
+
+It brings portfolio analytics, asset allocation, financial goals, market insights, simulations, and personalized financial information together in one platform.
+
+The application provides different dashboard experiences based on the user's selected profile and financial needs.
+
+---
 
 ## Features
 
-- **Personalized Onboarding:** Collects the user's profile type, investment types, and financial focus to create a tailored experience.
-- **Role-Based Dashboards:** Provides separate experiences for Students, Businesses, and Tech / Enterprise users.
-- **Portfolio Overview:** Displays portfolio value, gains, asset allocation, and important portfolio metrics.
-- **Asset Allocation & Drift:** Helps users understand portfolio distribution and allocation differences.
-- **Future Value Simulation:** Allows users to explore simulated portfolio growth over different time periods.
-- **Financial Goals:** Provides tracking for personal financial targets.
-- **Market Insights:** Displays financial news and investment-related insights.
-- **Stock Ratings:** Provides simulated ratings, sentiment, recommendations, and risk indicators.
-- **FinSight Assistant:** Provides interactive financial guidance using predefined financial queries and responses.
-- **Learning Resources:** Provides curated financial learning resources.
-- **Protected Routes:** Restricts dashboard pages to authenticated users.
-- **Responsive Design:** Supports desktop, tablet, and mobile screens.
+- **Personalized Onboarding**  
+  Collects user profile and investment preferences to create a personalized experience.
 
-## Role-Based Dashboards
+- **Portfolio Analytics**  
+  View portfolio value, gains, holdings, and key investment metrics.
 
-### Student Dashboard
+- **Asset Allocation**  
+  Understand portfolio distribution and monitor allocation changes.
 
-Focuses on portfolio management, financial goals, learning resources, and personalized financial insights.
+- **Future Value Simulation**  
+  Explore potential portfolio growth through different investment scenarios.
 
-### Business Dashboard
+- **Financial Goals**  
+  Set and track financial targets.
 
-Focuses on holdings, market exposure, future value simulation, risk indicators, and business-related financial information.
+- **Market Insights**  
+  Explore financial news and market-related information.
 
-### Tech / Enterprise Dashboard
+- **Stock Ratings**  
+  View simulated ratings, sentiment, recommendations, and risk indicators.
 
-Focuses on sector exposure, cost and loss analysis, risk areas, multi-year projections, and strategic financial insights.
+- **FinSight Assistant**  
+  Interact with a built-in assistant for predefined financial queries and guidance.
 
-## Application Flow
+- **Learning Resources**  
+  Access resources to improve financial and investment knowledge.
 
-Landing Page  
-→ Login / Signup  
-→ Onboarding  
-→ User Profile & Investment Preferences  
-→ Personalized Dashboard
+- **Personalized Dashboards**  
+  Dashboard experiences are tailored for Student, Business, and Tech / Enterprise profiles.
 
-Users are directed to one of three dashboards based on their selected profile:
+- **Responsive Interface**  
+  Designed to work across desktop, tablet, and mobile screen sizes.
 
-- Student
-- Business
-- Tech / Enterprise
+---
+
+## Dashboard Experience
+
+FinSight provides tailored dashboards based on the user's selected profile:
+
+| Profile | Focus |
+| --- | --- |
+| **Student** | Portfolio management, financial goals, learning, and investment insights |
+| **Business** | Holdings, market exposure, risk indicators, and financial projections |
+| **Tech / Enterprise** | Sector exposure, cost analysis, risk areas, and long-term projections |
+
+---
 
 ## Tech Stack
 
-- **Frontend:** React
-- **Build Tool:** Vite
-- **Language:** JavaScript
-- **Styling:** HTML5 & CSS3
-- **Routing:** React Router DOM
-- **State:** React Hooks
-- **Storage:** Local Storage
-- **Data:** Mock Financial Data
+- **React**
+- **JavaScript**
+- **Vite**
+- **React Router DOM**
+- **HTML5**
+- **CSS3**
+- **React Hooks**
+- **Local Storage**
 
-## React Concepts Used
+---
+
+## React Concepts
+
+This project uses core React concepts including:
 
 - Functional Components
 - JSX
 - Props
 - State
 - React Hooks
-- Component Composition
-- Reusable Components
 - Custom Hooks
-- Lifting State
+- Reusable Components
+- Component Composition
 - React Router
 - Protected Routes
+- Lifting State
+
+---
 
 ## Project Structure
 
