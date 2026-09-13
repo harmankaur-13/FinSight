@@ -84,6 +84,7 @@ Users are directed to one of three dashboards based on their selected profile:
 
 ## Project Structure
 
+```text
 FinSight/
 ├── public/
 ├── src/
