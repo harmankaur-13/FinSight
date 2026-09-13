@@ -1,8 +1,8 @@
-<div align="center">
-<img src="./public/images/finsight-logo.png" width="300" alt="FinSight Logo">
-<h1>FinSight</h1>
-</div>
-</div>
+<p align="center">
+  <img src="./public/images/finsight-logo.png" width="300" alt="FinSight Logo">
+</p>
+
+# FinSight
 
 ---
 
@@ -10,9 +10,7 @@
 
 FinSight is a personal financial intelligence platform designed to help users understand, monitor, and manage their investments through a personalized dashboard experience.
 
-It brings portfolio analytics, asset allocation, financial goals, market insights, simulations, and personalized financial information together in one platform.
-
-The application provides different dashboard experiences based on the user's selected profile and financial needs.
+It brings portfolio analytics, asset allocation, financial goals, market insights, simulations, and personalized financial information together in one platform. The application provides different dashboard experiences based on the user's selected profile and financial needs.
 
 ---
 
@@ -101,6 +99,8 @@ This project uses core React concepts including:
 ```text
 FinSight/
 ├── public/
+│   └── images/
+│       └── finsight-logo.png
 ├── src/
 │   ├── components/
 │   ├── data/
@@ -110,3 +110,4 @@ FinSight/
 ├── index.html
 ├── package.json
 └── vite.config.js
+```
