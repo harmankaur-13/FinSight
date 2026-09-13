@@ -1,11 +1,7 @@
 <div align="center">
-
-<img src="./finsight-logo.png" alt="FinSight Logo" width="400"/>
-
-# FinSight
-
-### Personal Financial Intelligence Platform
-
+<img src="./public/images/finsight-logo.png" width="300" alt="FinSight Logo">
+<h1>FinSight</h1>
+</div>
 </div>
 
 ---
