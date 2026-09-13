@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="public/images/finsight-logo.png" alt="FinSight Logo" width="400"/>
+<img src="./finsight-logo.png" alt="FinSight Logo" width="400"/>
 
 # FinSight
 
