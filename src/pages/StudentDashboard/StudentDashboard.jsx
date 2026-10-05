@@ -5,26 +5,42 @@ import PortfolioChart from '../../components/PortfolioChart';
 import AllocationCard from '../../components/AllocationCard';
 import AssistantCard from '../../components/AssistantCard';
 import EducationCard from '../../components/EducationCard';
+import ManagePortfolioModal from '../../components/ManagePortfolioModal';
 
 const STORAGE_KEY_COMPLETED_MODULES = 'finsight_completed_modules';
 const STORAGE_KEY_WATCHED_VIDEOS = 'finsight_watched_videos';
 
-export default function StudentDashboard({ data, user }) {
+export default function StudentDashboard({
+  data,
+  user,
+  financialData,
+  onAddInvestment,
+  onUpdateInvestment,
+  onDeleteInvestment,
+  onAddGoal,
+  onUpdateGoal,
+  onDeleteGoal,
+  onUpdateMonthlySavings
+}) {
   const {
     portfolioValue,
     performance,
     isPositive,
     monthlySavings,
     allocationDrift,
+    driftConfigured,
     insightMessage,
     allocations,
-    goals,
+    goals = [],
     educationalModules,
     videoTutorials,
     assistantSuggestions
   } = data;
 
-  const displayName = formatHumanName(user?.name) || 'Aman';
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalInitialTab, setModalInitialTab] = useState('investments');
+
+  const displayName = formatHumanName(user?.name) || 'Student';
 
   const [completedModules, setCompletedModules] = useState(() => {
     try {
@@ -68,8 +84,15 @@ export default function StudentDashboard({ data, user }) {
     });
   };
 
+  const openManageModal = (tab = 'investments') => {
+    setModalInitialTab(tab);
+    setIsModalOpen(true);
+  };
+
   const completedCount = completedModules.length;
   const totalCount = educationalModules?.length || 4;
+
+  const hasGoals = Array.isArray(goals) && goals.length > 0;
 
   return (
     <div className="dashboard-wrapper">
@@ -80,8 +103,22 @@ export default function StudentDashboard({ data, user }) {
             Welcome back, {displayName}
           </h1>
           <p className="page-subtitle">
-            Track your foundational investments, monitor target allocation drift, and build long-term financial knowledge.
+            Track your investments, monitor target allocation drift, and build long-term financial knowledge.
           </p>
+        </div>
+
+        <div className="dash-header-actions">
+          <button
+            type="button"
+            className="btn btn-primary"
+            onClick={() => openManageModal('investments')}
+          >
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{ marginRight: '6px' }}>
+              <path d="M12 20h9"></path>
+              <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path>
+            </svg>
+            Manage Portfolio
+          </button>
         </div>
       </div>
 
@@ -89,25 +126,25 @@ export default function StudentDashboard({ data, user }) {
         <PortfolioCard
           title="Total Portfolio Value"
           value={portfolioValue}
-          change={performance}
+          change={performance !== 'No data yet' ? performance : null}
           isPositive={isPositive}
-          subtitle="Updated across all connected holdings"
+          subtitle="Calculated across all connected holdings"
         />
 
         <PortfolioCard
           title="Monthly Investment Pace"
           value={monthlySavings}
-          change="+₹500 vs last month"
-          isPositive={true}
+          change={monthlySavings !== 'Not provided' ? 'Active Pace' : 'Not Set'}
+          isPositive={monthlySavings !== 'Not provided'}
           subtitle="Systematic monthly capital addition"
         />
 
         <PortfolioCard
           title="Allocation Drift"
           value={allocationDrift}
-          change="Within Range"
-          isPositive={true}
-          subtitle="Max target deviation limit: 5.0%"
+          change={driftConfigured ? 'Calculated' : 'Unconfigured'}
+          isPositive={driftConfigured}
+          subtitle={driftConfigured ? 'Max target deviation limit: 5.0%' : 'Set targets to track drift'}
         />
 
         <PortfolioCard
@@ -123,10 +160,12 @@ export default function StudentDashboard({ data, user }) {
         <div className="panel-card">
           <div className="panel-header">
             <div>
-              <h3 className="panel-title">Portfolio Performance History</h3>
-              <span className="panel-subtitle">Cumulative asset growth over time</span>
+              <h3 className="panel-title">Portfolio Performance</h3>
+              <span className="panel-subtitle">Asset growth trajectory</span>
             </div>
-            <span className="gain">{performance} Overall</span>
+            <span className={isPositive ? 'gain' : 'loss'}>
+              {performance !== 'No data yet' ? `${performance} Overall` : 'No data yet'}
+            </span>
           </div>
           <PortfolioChart height={240} />
         </div>
@@ -142,34 +181,56 @@ export default function StudentDashboard({ data, user }) {
       <div className="grid-2col">
         {/* Goal Tracker */}
         <div className="panel-card">
-          <div className="panel-header">
+          <div className="panel-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <div>
               <h3 className="panel-title">Financial Goal Milestones</h3>
               <span className="panel-subtitle">Target savings and investment checkpoints</span>
             </div>
+            <button
+              type="button"
+              className="btn btn-outline btn-small"
+              onClick={() => openManageModal('goals')}
+            >
+              + Add / Edit Goals
+            </button>
           </div>
 
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '18px' }}>
-            {goals.map((g, idx) => {
-              const pct = Math.min(100, Math.round((g.current / g.target) * 100));
-              return (
-                <div key={idx}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '13px', marginBottom: '6px' }}>
-                    <strong>{g.title}</strong>
-                    <span>
-                      {g.unit}{g.current.toLocaleString('en-IN')} / {g.unit}{g.target.toLocaleString('en-IN')} ({pct}%)
-                    </span>
+          {!hasGoals ? (
+            <div style={{ padding: '24px 0', textAlign: 'center', color: 'var(--muted)', fontSize: '13px' }}>
+              <p style={{ margin: 0, marginBottom: '12px' }}>No financial goals added yet.</p>
+              <button
+                type="button"
+                className="btn btn-primary btn-small"
+                onClick={() => openManageModal('goals')}
+              >
+                + Set Up Your First Goal
+              </button>
+            </div>
+          ) : (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '18px' }}>
+              {goals.map((g, idx) => {
+                const current = Number(g.current) || 0;
+                const target = Number(g.target) || 1;
+                const pct = Math.min(100, Math.round((current / target) * 100));
+                return (
+                  <div key={g.id || idx}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '13px', marginBottom: '6px' }}>
+                      <strong>{g.title}</strong>
+                      <span>
+                        {g.unit || '₹'}{current.toLocaleString('en-IN')} / {g.unit || '₹'}{target.toLocaleString('en-IN')} ({pct}%)
+                      </span>
+                    </div>
+                    <div className="progress-track">
+                      <div
+                        className="progress-fill"
+                        style={{ width: `${pct}%` }}
+                      />
+                    </div>
                   </div>
-                  <div className="progress-track">
-                    <div
-                      className="progress-fill"
-                      style={{ width: `${pct}%` }}
-                    />
-                  </div>
-                </div>
-              );
-            })}
-          </div>
+                );
+              })}
+            </div>
+          )}
         </div>
 
         {/* AI Assistant */}
@@ -188,6 +249,21 @@ export default function StudentDashboard({ data, user }) {
         onToggleModuleComplete={handleToggleModuleComplete}
         watchedVideos={watchedVideos}
         onToggleVideoWatched={handleToggleVideoWatched}
+      />
+
+      {/* Manage Portfolio Modal */}
+      <ManagePortfolioModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        financialData={financialData}
+        onAddInvestment={onAddInvestment}
+        onUpdateInvestment={onUpdateInvestment}
+        onDeleteInvestment={onDeleteInvestment}
+        onAddGoal={onAddGoal}
+        onUpdateGoal={onUpdateGoal}
+        onDeleteGoal={onDeleteGoal}
+        onUpdateMonthlySavings={onUpdateMonthlySavings}
+        initialTab={modalInitialTab}
       />
     </div>
   );

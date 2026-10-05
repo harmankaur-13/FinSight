@@ -2,17 +2,19 @@ import React from 'react';
 
 export default function PortfolioCard({
   title = 'Total portfolio',
-  value = '₹12,84,650',
-  change = '+12.48%',
+  value = '₹0',
+  change = null,
   isPositive = true,
   subtitle,
   children
 }) {
+  const showChange = change !== null && change !== undefined && change !== '' && change !== 'null';
+
   return (
     <div className="metric-card">
       <div className="metric-header">
         <span>{title}</span>
-        {change && (
+        {showChange && (
           <span className={isPositive ? 'gain' : 'loss'}>
             {change}
           </span>

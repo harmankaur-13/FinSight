@@ -6,6 +6,9 @@ export default function AllocationCard({
   insight = 'Your portfolio is currently within your target allocation range.',
   title = 'Asset Allocation'
 }) {
+  const hasAllocations = Array.isArray(allocations) && allocations.length > 0;
+  const isDriftConfigured = drift && drift !== 'Not configured' && drift !== 'Target allocation not configured';
+
   return (
     <div className="panel-card">
       <div className="panel-header">
@@ -15,25 +18,31 @@ export default function AllocationCard({
         </div>
       </div>
 
-      <div className="allocations-list">
-        {allocations.map((item, idx) => (
-          <div key={idx} className="allocation-item">
-            <div className="allocation-label-row">
-              <span>{item.name}</span>
-              <strong>{item.percentage}%</strong>
+      {hasAllocations ? (
+        <div className="allocations-list">
+          {allocations.map((item, idx) => (
+            <div key={idx} className="allocation-item">
+              <div className="allocation-label-row">
+                <span>{item.name}</span>
+                <strong>{item.percentage}%</strong>
+              </div>
+              <div className="progress-track">
+                <div
+                  className="progress-fill"
+                  style={{
+                    width: `${Math.min(100, Math.max(0, item.percentage))}%`,
+                    backgroundColor: item.color || 'var(--green)'
+                  }}
+                />
+              </div>
             </div>
-            <div className="progress-track">
-              <div
-                className="progress-fill"
-                style={{
-                  width: `${item.percentage}%`,
-                  backgroundColor: item.color || 'var(--green)'
-                }}
-              />
-            </div>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      ) : (
+        <div style={{ padding: '24px 0', textAlign: 'center', color: 'var(--muted)', fontSize: '13px' }}>
+          <p style={{ margin: 0 }}>Add investments to see your asset allocation breakdown.</p>
+        </div>
+      )}
 
       {drift && (
         <div className="drift-badge-box">
@@ -42,11 +51,11 @@ export default function AllocationCard({
               Allocation Drift
             </div>
             <div style={{ fontSize: '13px', color: 'var(--text)', fontWeight: 700 }}>
-              Target deviation: {drift}
+              {isDriftConfigured ? `Target deviation: ${drift}` : 'Target allocation not configured'}
             </div>
           </div>
-          <span className="gain" style={{ fontSize: '11px' }}>
-            Balanced
+          <span className={isDriftConfigured ? 'gain' : 'loss'} style={{ fontSize: '11px' }}>
+            {isDriftConfigured ? 'Active' : 'Unconfigured'}
           </span>
         </div>
       )}

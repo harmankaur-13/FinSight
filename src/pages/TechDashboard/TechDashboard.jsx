@@ -1,24 +1,50 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PortfolioCard from '../../components/PortfolioCard';
 import PortfolioChart from '../../components/PortfolioChart';
 import AllocationCard from '../../components/AllocationCard';
 import ProjectionCard from '../../components/ProjectionCard';
+import HoldingsTable from '../../components/HoldingsTable';
 import AssistantCard from '../../components/AssistantCard';
+import ManagePortfolioModal from '../../components/ManagePortfolioModal';
 
-export default function TechDashboard({ data, user }) {
+export default function TechDashboard({
+  data,
+  user,
+  financialData,
+  onAddInvestment,
+  onUpdateInvestment,
+  onDeleteInvestment,
+  onAddGoal,
+  onUpdateGoal,
+  onDeleteGoal,
+  onUpdateMonthlySavings
+}) {
   const {
     portfolioValue,
     performance,
     isPositive,
     costLossExposure,
+    techSectorExposure,
     allocationDrift,
+    driftConfigured,
     insightMessage,
     allocations,
+    holdings,
     riskAreas,
     crunchAcquisition,
     projections,
     assistantSuggestions
   } = data;
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalInitialTab, setModalInitialTab] = useState('investments');
+
+  const openManageModal = (tab = 'investments') => {
+    setModalInitialTab(tab);
+    setIsModalOpen(true);
+  };
+
+  const enterpriseTitle = user?.name ? `${user.name} Enterprise` : 'Enterprise Treasury';
 
   return (
     <div className="dashboard-wrapper">
@@ -26,11 +52,25 @@ export default function TechDashboard({ data, user }) {
         <div>
           <span className="eyebrow eyebrow-gold">ENTERPRISE TREASURY & TECH PERSPECTIVE</span>
           <h1 className="page-title">
-            {user?.name || 'Apex Technologies Enterprise'}
+            {enterpriseTitle}
           </h1>
           <p className="page-subtitle">
-            Sector concentration analytics, infrastructure cost/loss risk, 4-year simulated trajectories, and strategic crunch acquisitions.
+            Sector concentration analytics, infrastructure cost/loss risk, multi-year simulated trajectories, and strategic asset planning.
           </p>
+        </div>
+
+        <div className="dash-header-actions">
+          <button
+            type="button"
+            className="btn btn-primary"
+            onClick={() => openManageModal('investments')}
+          >
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{ marginRight: '6px' }}>
+              <path d="M12 20h9"></path>
+              <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path>
+            </svg>
+            Manage Enterprise Assets
+          </button>
         </div>
       </div>
 
@@ -38,16 +78,16 @@ export default function TechDashboard({ data, user }) {
         <PortfolioCard
           title="Enterprise Portfolio Value"
           value={portfolioValue}
-          change={performance}
+          change={performance !== 'No data yet' ? performance : null}
           isPositive={isPositive}
           subtitle="Consolidated multi-entity treasury"
         />
 
         <PortfolioCard
           title="Tech Sector Exposure"
-          value="52.0%"
-          change="High Focus"
-          isPositive={true}
+          value={techSectorExposure || '0%'}
+          change={techSectorExposure && techSectorExposure !== '0%' ? 'Active Allocation' : 'No Data'}
+          isPositive={techSectorExposure && techSectorExposure !== '0%'}
           subtitle="Cloud SaaS and compute infrastructure"
         />
 
@@ -61,8 +101,8 @@ export default function TechDashboard({ data, user }) {
 
         <PortfolioCard
           title="2030 Projected Trajectory"
-          value="₹9.40 Cr"
-          change="+20.2% Sim. CAGR"
+          value={projections && projections.length > 0 ? projections[projections.length - 1].projectedValue : '₹0'}
+          change={projections && projections.length > 0 && projections[projections.length - 1].simulatedGrowth !== 'No data' ? '+75.0% Sim. Total' : 'No Data'}
           isPositive={true}
           subtitle="Illustrative compound scenario"
         />
@@ -75,7 +115,9 @@ export default function TechDashboard({ data, user }) {
               <h3 className="panel-title">Enterprise Capital History & Performance</h3>
               <span className="panel-subtitle">Long-term corporate treasury trajectory</span>
             </div>
-            <span className="gain">{performance} Annual</span>
+            <span className={isPositive ? 'gain' : 'loss'}>
+              {performance !== 'No data yet' ? `${performance} Overall` : 'No data yet'}
+            </span>
           </div>
           <PortfolioChart height={240} />
         </div>
@@ -87,6 +129,9 @@ export default function TechDashboard({ data, user }) {
           title="Sector Concentration"
         />
       </div>
+
+      {/* Holdings Table */}
+      <HoldingsTable holdings={holdings} title="Enterprise Portfolio Holdings" />
 
       {/* 4-Year Valuation Projections & Cost/Loss Analysis */}
       <ProjectionCard
@@ -143,6 +188,21 @@ export default function TechDashboard({ data, user }) {
           role="tech"
         />
       </div>
+
+      {/* Manage Portfolio Modal */}
+      <ManagePortfolioModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        financialData={financialData}
+        onAddInvestment={onAddInvestment}
+        onUpdateInvestment={onUpdateInvestment}
+        onDeleteInvestment={onDeleteInvestment}
+        onAddGoal={onAddGoal}
+        onUpdateGoal={onUpdateGoal}
+        onDeleteGoal={onDeleteGoal}
+        onUpdateMonthlySavings={onUpdateMonthlySavings}
+        initialTab={modalInitialTab}
+      />
     </div>
   );
 }

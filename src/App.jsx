@@ -28,6 +28,14 @@ export default function App() {
   const {
     user,
     isAuthenticated,
+    financialData,
+    addInvestment,
+    updateInvestment,
+    deleteInvestment,
+    addGoal,
+    updateGoal,
+    deleteGoal,
+    updateMonthlySavings,
     login,
     signup,
     demoLogin,
@@ -130,15 +138,54 @@ export default function App() {
             />
             <Route
               path="/student-dashboard"
-              element={<StudentDashboard data={studentData} user={user} />}
+              element={
+                <StudentDashboard
+                  data={studentData}
+                  user={user}
+                  financialData={financialData}
+                  onAddInvestment={addInvestment}
+                  onUpdateInvestment={updateInvestment}
+                  onDeleteInvestment={deleteInvestment}
+                  onAddGoal={addGoal}
+                  onUpdateGoal={updateGoal}
+                  onDeleteGoal={deleteGoal}
+                  onUpdateMonthlySavings={updateMonthlySavings}
+                />
+              }
             />
             <Route
               path="/business-dashboard"
-              element={<BusinessDashboard data={businessData} user={user} />}
+              element={
+                <BusinessDashboard
+                  data={businessData}
+                  user={user}
+                  financialData={financialData}
+                  onAddInvestment={addInvestment}
+                  onUpdateInvestment={updateInvestment}
+                  onDeleteInvestment={deleteInvestment}
+                  onAddGoal={addGoal}
+                  onUpdateGoal={updateGoal}
+                  onDeleteGoal={deleteGoal}
+                  onUpdateMonthlySavings={updateMonthlySavings}
+                />
+              }
             />
             <Route
               path="/tech-dashboard"
-              element={<TechDashboard data={techData} user={user} />}
+              element={
+                <TechDashboard
+                  data={techData}
+                  user={user}
+                  financialData={financialData}
+                  onAddInvestment={addInvestment}
+                  onUpdateInvestment={updateInvestment}
+                  onDeleteInvestment={deleteInvestment}
+                  onAddGoal={addGoal}
+                  onUpdateGoal={updateGoal}
+                  onDeleteGoal={deleteGoal}
+                  onUpdateMonthlySavings={updateMonthlySavings}
+                />
+              }
             />
           </Route>
         </Route>
