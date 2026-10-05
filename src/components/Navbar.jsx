@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
+import ThemeToggle from './ThemeToggle';
 
 export default function Navbar({ user, onLogout }) {
   const navigate = useNavigate();
@@ -39,6 +40,7 @@ export default function Navbar({ user, onLogout }) {
       </nav>
 
       <div className="nav-actions">
+        <ThemeToggle />
         {isAuth ? (
           <>
             <button 

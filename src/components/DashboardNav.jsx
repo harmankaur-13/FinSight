@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { formatHumanName } from '../hooks/useFinanceData';
+import ThemeToggle from './ThemeToggle';
 
 export default function DashboardNav({ user, onLogout, onSwitchRole }) {
   const navigate = useNavigate();
@@ -86,6 +87,8 @@ export default function DashboardNav({ user, onLogout, onSwitchRole }) {
             </div>
             <span style={{ fontWeight: 600 }}>{displayName}</span>
           </div>
+
+          <ThemeToggle size="small" />
 
           <button 
             className="btn btn-outline btn-small"

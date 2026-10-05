@@ -1,11 +1,14 @@
 @import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Space+Grotesk:wght@500;600;700&display=swap');
 
-:root {
+:root,
+[data-theme="light"] {
+  color-scheme: light;
   --bg: #f5f2ea;
   --surface: #fffdf8;
   --surface-2: #ebe6da;
   --surface-hover: #f9f6ef;
   --text: #17231f;
+  --text-secondary: #42524a;
   --muted: #68736d;
   --muted-light: #8e9a93;
   --green: #276653;
@@ -22,6 +25,66 @@
   --shadow-sm: 0 4px 12px rgba(45, 48, 42, 0.05);
   --shadow-md: 0 10px 30px rgba(45, 48, 42, 0.06);
   --shadow-lg: 0 25px 65px rgba(45, 48, 42, 0.11);
+  --input-bg: #fffefb;
+  --input-border: #ddd7ca;
+  --nav-bg: #fffdf8;
+  --nav-border: #ddd7ca;
+  --toggle-bg: #ebe6da;
+  --toggle-border: #ddd7ca;
+  --toggle-hover: #e2dcd0;
+  --modal-overlay: rgba(23, 35, 31, 0.6);
+  --chart-grid-line: rgba(39, 102, 83, 0.08);
+  --radial-gold: rgba(184, 135, 70, 0.09);
+  --radial-green: rgba(39, 102, 83, 0.07);
+  --badge-buy-bg: #eef6f0;
+  --badge-buy-text: #1e6b47;
+  --badge-buy-border: #c2e2cf;
+  --badge-hold-bg: #f9eedc;
+  --badge-hold-text: #7d5722;
+  --badge-hold-border: #dcc099;
+}
+
+[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #111413;
+  --surface: #181d1a;
+  --surface-2: #202723;
+  --surface-hover: #242c28;
+  --text: #e2e8e5;
+  --text-secondary: #9eb0a7;
+  --muted: #798a81;
+  --muted-light: #4e5a54;
+  --green: #2e755f;
+  --green-dark: #4da287;
+  --green-light: #192721;
+  --green-subtle: rgba(46, 117, 95, 0.10);
+  --gold: #bd8f4f;
+  --gold-light: #282116;
+  --gold-subtle: rgba(189, 143, 79, 0.10);
+  --border: #252e2a;
+  --border-light: #1d2421;
+  --error: #b8584c;
+  --error-light: #2a1b1a;
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.2);
+  --shadow-md: 0 6px 18px rgba(0, 0, 0, 0.25);
+  --shadow-lg: 0 14px 34px rgba(0, 0, 0, 0.35);
+  --input-bg: #141816;
+  --input-border: #252e2a;
+  --nav-bg: #181d1a;
+  --nav-border: #252e2a;
+  --toggle-bg: #202723;
+  --toggle-border: #2c3631;
+  --toggle-hover: #262e2a;
+  --modal-overlay: rgba(0, 0, 0, 0.7);
+  --chart-grid-line: rgba(46, 117, 95, 0.08);
+  --radial-gold: rgba(189, 143, 79, 0.02);
+  --radial-green: rgba(46, 117, 95, 0.02);
+  --badge-buy-bg: #192721;
+  --badge-buy-text: #4da287;
+  --badge-buy-border: #23372e;
+  --badge-hold-bg: #282116;
+  --badge-hold-text: #c99b5b;
+  --badge-hold-border: #3b301f;
 }
 
 * {
@@ -37,13 +100,109 @@ html {
 body {
   font-family: "DM Sans", sans-serif;
   background:
-    radial-gradient(circle at 80% 12%, rgba(184, 135, 70, 0.09), transparent 25%),
-    radial-gradient(circle at 15% 80%, rgba(39, 102, 83, 0.07), transparent 30%),
+    radial-gradient(circle at 80% 12%, var(--radial-gold), transparent 25%),
+    radial-gradient(circle at 15% 80%, var(--radial-green), transparent 30%),
     var(--bg);
   color: var(--text);
   line-height: 1.6;
   min-height: 100vh;
   -webkit-font-smoothing: antialiased;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+/* Custom scrollbars matching theme */
+::-webkit-scrollbar {
+  width: 7px;
+  height: 7px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--muted-light);
+}
+
+/* Subtle transitions for theme switching */
+.panel-card,
+.metric-card,
+.dashboard-card,
+.auth-card,
+.onboarding-card,
+.rating-card,
+.news-card,
+.feature-card,
+.modal-card,
+.portfolio-modal-card,
+.dashboard-nav-wrapper,
+.navbar,
+footer {
+  transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+}
+
+/* =================================================
+   THEME TOGGLE BUTTON
+================================================= */
+.theme-toggle-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: var(--toggle-bg);
+  border: 1px solid var(--toggle-border);
+  color: var(--text);
+  border-radius: 8px;
+  padding: 7px 10px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  user-select: none;
+}
+
+.theme-toggle-btn:hover {
+  background: var(--toggle-hover);
+  border-color: var(--green);
+  color: var(--green);
+}
+
+.theme-toggle-btn:active {
+  transform: translateY(0);
+}
+
+.theme-toggle-small {
+  padding: 5px 8px;
+  border-radius: 6px;
+}
+
+.theme-toggle-icon-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+}
+
+.theme-icon {
+  display: block;
+}
+
+.sun-icon {
+  color: var(--gold);
+}
+
+.moon-icon {
+  color: var(--green);
+}
+
+.theme-toggle-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text);
 }
 
 button, input, select, textarea, a {
@@ -142,7 +301,7 @@ h1, h2, h3, h4, h5, h6 {
 nav {
   display: flex;
   gap: 34px;
-  color: #5d6963;
+  color: var(--muted);
   font-size: 14px;
 }
 
@@ -178,12 +337,13 @@ nav a.active::after {
 ================================================= */
 
 .dashboard-nav-wrapper {
-  background: var(--surface);
-  border-bottom: 1px solid var(--border);
+  background: var(--nav-bg);
+  border-bottom: 1px solid var(--nav-border);
   position: sticky;
   top: 0;
   z-index: 100;
-  backdrop-filter: blur(8px);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
 }
 
 .dashboard-nav {
@@ -349,7 +509,7 @@ nav a.active::after {
 
 .btn-ghost {
   background: transparent;
-  color: #53615b;
+  color: var(--text-secondary);
 }
 
 .btn-ghost:hover {
@@ -477,10 +637,14 @@ h1.hero-title span {
   width: 380px;
   height: 380px;
   background: var(--green);
-  opacity: 0.08;
+  opacity: 0.04;
   filter: blur(80px);
   border-radius: 50%;
   pointer-events: none;
+}
+
+[data-theme="dark"] .glow {
+  display: none;
 }
 
 .dashboard-card {
@@ -513,7 +677,7 @@ h1.hero-title span {
 }
 
 .gain {
-  color: var(--green);
+  color: var(--green-dark);
   font-size: 13px;
   font-weight: 700;
   background: var(--green-light);
@@ -543,7 +707,7 @@ h1.hero-title span {
   background: repeating-linear-gradient(
     to bottom,
     transparent 0 45px,
-    rgba(39, 102, 83, 0.08) 46px
+    var(--chart-grid-line) 46px
   );
 }
 
@@ -555,7 +719,7 @@ h1.hero-title span {
 }
 
 .area {
-  fill: rgba(39, 102, 83, 0.10);
+  fill: var(--green-subtle);
 }
 
 .line {
@@ -673,8 +837,8 @@ h1.hero-title span {
 }
 
 .feature-grid article:hover, .audience-card:hover {
-  border-color: rgba(39, 102, 83, 0.35);
-  transform: translateY(-3px);
+  border-color: var(--green);
+  transform: translateY(-2px);
 }
 
 .feature-number, .audience-card span.card-number {
@@ -738,7 +902,7 @@ h1.hero-title span {
     flex-direction: column;
     justify-content: space-between;
     border-right: 1px solid var(--border);
-    background: radial-gradient(circle at 15% 80%, rgba(39, 102, 83, .08), transparent 30%), radial-gradient(circle at 90% 15%, rgba(184, 135, 70, .09), transparent 25%), var(--bg);
+    background: radial-gradient(circle at 15% 80%, var(--radial-green), transparent 30%), radial-gradient(circle at 90% 15%, var(--radial-gold), transparent 25%), var(--bg);
 }
 
 .brand,
@@ -883,10 +1047,10 @@ h1.hero-title span {
     width: 100%;
     height: 48px;
     padding: 0 14px;
-    border: 1px solid var(--border);
+    border: 1px solid var(--input-border);
     border-radius: 8px;
     outline: none;
-    background: #fffefb;
+    background: var(--input-bg);
     color: var(--text);
     font-size: 14px;
     transition: .2s;
@@ -1154,7 +1318,7 @@ h1.hero-title span {
 
 .option-card {
   border: 1px solid var(--border);
-  background: #fffdfa;
+  background: var(--surface);
   border-radius: 12px;
   padding: 20px;
   cursor: pointer;
@@ -1473,7 +1637,8 @@ h1.hero-title span {
   border-radius: 8px;
   font-size: 13px;
   outline: none;
-  background: #fffefb;
+  background: var(--input-bg);
+  color: var(--text);
 }
 
 .chat-input-row input:focus {
@@ -1498,9 +1663,9 @@ h1.hero-title span {
 }
 
 .edu-card:hover {
-  transform: translateY(-3px);
-  border-color: rgba(39, 102, 83, 0.45);
-  box-shadow: 0 10px 25px -5px rgba(23, 35, 31, 0.12);
+  transform: translateY(-2px);
+  border-color: var(--green);
+  box-shadow: var(--shadow-md);
 }
 
 .edu-card:hover .edu-thumb-img {
@@ -1557,16 +1722,14 @@ h1.hero-title span {
   justify-content: center;
   color: #fff;
   backdrop-filter: blur(4px);
-  transition: all 0.25s ease;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  transition: all 0.2s ease;
 }
 
 .edu-card:hover .play-icon-circle {
-  transform: scale(1.15);
+  transform: scale(1.06);
   background: var(--green);
   border-color: var(--green);
   color: #fff;
-  box-shadow: 0 0 16px rgba(39, 102, 83, 0.6);
 }
 
 .edu-tag {
@@ -1726,7 +1889,7 @@ h1.hero-title span {
 
 .news-card:hover {
   transform: translateY(-2px);
-  border-color: rgba(39, 102, 83, 0.4);
+  border-color: var(--green);
 }
 
 .news-meta {
@@ -1808,19 +1971,19 @@ h1.hero-title span {
 .rating-strong-buy {
   background: var(--green-light);
   color: var(--green-dark);
-  border: 1px solid rgba(39, 102, 83, 0.3);
+  border: 1px solid var(--border);
 }
 
 .rating-buy {
-  background: #eef6f0;
-  color: #1e6b47;
-  border: 1px solid #c2e2cf;
+  background: var(--badge-buy-bg);
+  color: var(--badge-buy-text);
+  border: 1px solid var(--badge-buy-border);
 }
 
 .rating-hold {
-  background: var(--gold-light);
-  color: #7d5722;
-  border: 1px solid #dcc099;
+  background: var(--badge-hold-bg);
+  color: var(--badge-hold-text);
+  border: 1px solid var(--badge-hold-border);
 }
 
 .rating-stats-row {
@@ -2035,8 +2198,9 @@ footer .logo span {
 .modal-backdrop {
   position: fixed;
   inset: 0;
-  background: rgba(18, 30, 26, 0.75);
+  background: var(--modal-overlay);
   backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -2205,20 +2369,20 @@ footer .logo span {
 
 .quiz-option:hover:not(:disabled) {
   border-color: var(--green);
-  background: #fdfbf7;
+  background: var(--surface-hover);
 }
 
 .quiz-option.correct {
-  border-color: #276653;
-  background: rgba(39, 102, 83, 0.12);
-  color: #174235;
+  border-color: var(--green);
+  background: var(--green-light);
+  color: var(--green-dark);
   font-weight: 600;
 }
 
 .quiz-option.incorrect {
-  border-color: #d9534f;
-  background: rgba(217, 83, 79, 0.12);
-  color: #902420;
+  border-color: var(--error);
+  background: var(--error-light);
+  color: var(--error);
 }
 
 .video-player-container {
@@ -2320,7 +2484,7 @@ footer .logo span {
   border: 1px solid var(--border);
   border-radius: 8px;
   outline: none;
-  background: #fffefb;
+  background: var(--input-bg);
   color: var(--text);
   font-size: 14px;
   transition: 0.2s;
@@ -2349,8 +2513,9 @@ footer .logo span {
 .portfolio-modal-backdrop {
   position: fixed;
   inset: 0;
-  background: rgba(23, 35, 31, 0.65);
-  backdrop-filter: blur(5px);
+  background: var(--modal-overlay);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   display: flex;
   align-items: center;
   justify-content: center;

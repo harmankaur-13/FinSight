@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import Toast from '../../components/Toast';
+import ThemeToggle from '../../components/ThemeToggle';
 
 const ASSET_TYPES = [
   'Stocks',
@@ -192,6 +193,14 @@ export default function Onboarding({ user, onUpdateProfile }) {
 
   return (
     <div className="onboarding-container">
+      <div className="onboarding-top-bar" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
+        <Link to="/" className="brand">
+          <div className="brand-icon">F</div>
+          <span>FinSight</span>
+        </Link>
+        <ThemeToggle size="small" />
+      </div>
+
       <div className="onboarding-card">
         <div className="progress-bar-wrap">
           <div

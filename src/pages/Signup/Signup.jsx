@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import Toast from '../../components/Toast';
+import ThemeToggle from '../../components/ThemeToggle';
 
 export default function Signup({ onSignup, onDemoLogin }) {
   const navigate = useNavigate();
@@ -69,10 +70,13 @@ export default function Signup({ onSignup, onDemoLogin }) {
   return (
     <main className="auth-page">
       <section className="intro">
-        <Link to="/" className="brand">
-          <div className="brand-icon">F</div>
-          <span>FinSight</span>
-        </Link>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <Link to="/" className="brand">
+            <div className="brand-icon">F</div>
+            <span>FinSight</span>
+          </Link>
+          <ThemeToggle size="small" />
+        </div>
 
         <div className="intro-content">
           <p className="eyebrow">PERSONAL WEALTH INTELLIGENCE</p>
@@ -108,10 +112,13 @@ export default function Signup({ onSignup, onDemoLogin }) {
 
       <section className="auth-area">
         <div className="auth-card">
-          <Link to="/" className="mobile-brand">
-            <div className="brand-icon">F</div>
-            <span>FinSight</span>
-          </Link>
+          <div className="mobile-auth-top" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+            <Link to="/" className="mobile-brand" style={{ marginBottom: 0 }}>
+              <div className="brand-icon">F</div>
+              <span>FinSight</span>
+            </Link>
+            <ThemeToggle size="small" />
+          </div>
 
           <div className="header">
             <p className="label">GET STARTED</p>

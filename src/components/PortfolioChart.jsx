@@ -56,8 +56,8 @@ export default function PortfolioChart({ height = 230, interactive = true }) {
         <svg viewBox="0 0 520 220" preserveAspectRatio="none">
           <defs>
             <linearGradient id="chartGreenGrad" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="#276653" stopOpacity="0.22" />
-              <stop offset="100%" stopColor="#276653" stopOpacity="0.0" />
+              <stop offset="0%" stopColor="var(--green)" stopOpacity="0.25" />
+              <stop offset="100%" stopColor="var(--green)" stopOpacity="0.0" />
             </linearGradient>
           </defs>
           <path className="area" fill="url(#chartGreenGrad)" d={activePath.area} />

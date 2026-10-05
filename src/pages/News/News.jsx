@@ -51,8 +51,8 @@ export default function News() {
           style={{
             position: 'fixed',
             inset: 0,
-            background: 'rgba(23, 35, 31, 0.6)',
-            backdropFilter: 'blur(4px)',
+            background: 'var(--modal-overlay)',
+            backdropFilter: 'blur(6px)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
