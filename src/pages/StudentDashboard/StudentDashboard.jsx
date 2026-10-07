@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { formatHumanName } from '../../hooks/useFinanceData';
 import PortfolioCard from '../../components/PortfolioCard';
 import PortfolioChart from '../../components/PortfolioChart';
 import AllocationCard from '../../components/AllocationCard';
+import RebalanceEngine from '../../components/RebalanceEngine';
 import AssistantCard from '../../components/AssistantCard';
 import EducationCard from '../../components/EducationCard';
 import ManagePortfolioModal from '../../components/ManagePortfolioModal';
@@ -41,6 +42,21 @@ export default function StudentDashboard({
   const [modalInitialTab, setModalInitialTab] = useState('investments');
 
   const displayName = formatHumanName(user?.name) || 'Student';
+
+  // Compute active investments (from user's real data or demo profile)
+  const activeInvestments = useMemo(() => {
+    if (financialData?.investments && financialData.investments.length > 0) {
+      return financialData.investments;
+    }
+    if (user?.isDemo) {
+      return [
+        { id: 'demo-1', name: 'Nifty 50 Index Fund', type: 'Stocks', investedAmount: 14000, currentValue: 15240, targetAllocation: 60 },
+        { id: 'demo-2', name: 'Govt Treasury Bond ETF', type: 'Bonds', investedAmount: 6000, currentValue: 6350, targetAllocation: 25 },
+        { id: 'demo-3', name: 'Bitcoin & Ethereum', type: 'Crypto', investedAmount: 3444, currentValue: 3810, targetAllocation: 15 }
+      ];
+    }
+    return [];
+  }, [financialData?.investments, user?.isDemo]);
 
   const [completedModules, setCompletedModules] = useState(() => {
     try {
@@ -177,6 +193,13 @@ export default function StudentDashboard({
           title="Student Asset Allocation"
         />
       </div>
+
+      {/* Portfolio Rebalancing Engine */}
+      <RebalanceEngine
+        investments={activeInvestments}
+        monthlySavings={monthlySavings}
+        onOpenManageModal={openManageModal}
+      />
 
       <div className="grid-2col">
         {/* Goal Tracker */}
