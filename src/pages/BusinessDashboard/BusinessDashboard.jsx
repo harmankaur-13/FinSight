@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import PortfolioCard from '../../components/PortfolioCard';
 import PortfolioChart from '../../components/PortfolioChart';
 import AllocationCard from '../../components/AllocationCard';
@@ -40,6 +40,10 @@ export default function BusinessDashboard({
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalInitialTab, setModalInitialTab] = useState('investments');
+
+  useEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+  }, []);
 
   const activeInvestments = useMemo(() => {
     if (financialData?.investments && financialData.investments.length > 0) {
@@ -155,10 +159,10 @@ export default function BusinessDashboard({
           title="Corporate Asset Allocation Breakdown"
         />
 
-        <AssistantCard
-          suggestions={assistantSuggestions}
-          title="Corporate Financial Assistant"
-          role="business"
+        <FutureSimulation
+          initialPrincipal={portfolioRawValue || 1842000}
+          defaultMonthly={financialData?.monthlySavings ? Number(financialData.monthlySavings) : 25000}
+          defaultRate={12}
         />
       </div>
 
@@ -172,14 +176,8 @@ export default function BusinessDashboard({
       {/* Holdings Table */}
       <HoldingsTable holdings={holdings} title="Corporate Treasury Holdings" />
 
-      {/* Future Value Simulation + Market Outlook */}
+      {/* Market Outlook & Corporate Financial Assistant (At the end) */}
       <div className="grid-2col">
-        <FutureSimulation
-          initialPrincipal={portfolioRawValue || 1842000}
-          defaultMonthly={financialData?.monthlySavings ? Number(financialData.monthlySavings) : 25000}
-          defaultRate={12}
-        />
-
         <div className="panel-card">
           <div className="panel-header">
             <div>
@@ -203,6 +201,13 @@ export default function BusinessDashboard({
             </div>
           </div>
         </div>
+
+        {/* AI Assistant (Rendered once at the bottom) */}
+        <AssistantCard
+          suggestions={assistantSuggestions}
+          title="Corporate Financial Assistant"
+          role="business"
+        />
       </div>
 
       {/* Manage Portfolio Modal */}

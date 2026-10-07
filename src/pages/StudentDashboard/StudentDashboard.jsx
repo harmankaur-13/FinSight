@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { formatHumanName } from '../../hooks/useFinanceData';
 import PortfolioCard from '../../components/PortfolioCard';
 import PortfolioChart from '../../components/PortfolioChart';
@@ -42,6 +42,10 @@ export default function StudentDashboard({
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalInitialTab, setModalInitialTab] = useState('investments');
+
+  useEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+  }, []);
 
   const displayName = formatHumanName(user?.name) || 'Student';
 
@@ -205,22 +209,6 @@ export default function StudentDashboard({
           title="Student Asset Allocation Breakdown"
         />
 
-        {/* AI Assistant */}
-        <AssistantCard
-          suggestions={assistantSuggestions}
-          title="FinSight Student Assistant"
-          role="student"
-        />
-      </div>
-
-      {/* Portfolio Rebalancing Engine */}
-      <RebalanceEngine
-        investments={activeInvestments}
-        monthlySavings={monthlySavings}
-        onOpenManageModal={openManageModal}
-      />
-
-      <div className="grid-2col">
         {/* Goal Tracker */}
         <div className="panel-card">
           <div className="panel-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -274,14 +262,14 @@ export default function StudentDashboard({
             </div>
           )}
         </div>
-
-        {/* AI Assistant */}
-        <AssistantCard
-          suggestions={assistantSuggestions}
-          title="FinSight Student Assistant"
-          role="student"
-        />
       </div>
+
+      {/* Portfolio Rebalancing Engine */}
+      <RebalanceEngine
+        investments={activeInvestments}
+        monthlySavings={monthlySavings}
+        onOpenManageModal={openManageModal}
+      />
 
       {/* Educational & YouTube Section */}
       <EducationCard
@@ -291,6 +279,13 @@ export default function StudentDashboard({
         onToggleModuleComplete={handleToggleModuleComplete}
         watchedVideos={watchedVideos}
         onToggleVideoWatched={handleToggleVideoWatched}
+      />
+
+      {/* AI Assistant (Rendered once at the bottom) */}
+      <AssistantCard
+        suggestions={assistantSuggestions}
+        title="FinSight Student Assistant"
+        role="student"
       />
 
       {/* Manage Portfolio Modal */}

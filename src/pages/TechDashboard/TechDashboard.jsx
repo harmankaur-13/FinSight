@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import PortfolioCard from '../../components/PortfolioCard';
 import PortfolioChart from '../../components/PortfolioChart';
 import AllocationCard from '../../components/AllocationCard';
@@ -41,6 +41,10 @@ export default function TechDashboard({
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalInitialTab, setModalInitialTab] = useState('investments');
+
+  useEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+  }, []);
 
   const activeInvestments = useMemo(() => {
     if (financialData?.investments && financialData.investments.length > 0) {

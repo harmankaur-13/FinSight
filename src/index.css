@@ -56,11 +56,11 @@
   --muted: #71717a;
   --muted-light: #3f3f46;
 
-  /* Refined, organic sage pine (warm, non-neon, understated) */
-  --green: #2e7d66;
-  --green-dark: #59ba9d;
-  --green-light: rgba(46, 125, 102, 0.16);
-  --green-subtle: rgba(46, 125, 102, 0.08);
+  /* Refined, deeper organic forest pine */
+  --green: #236754;
+  --green-dark: #3ea083;
+  --green-light: rgba(35, 103, 84, 0.18);
+  --green-subtle: rgba(35, 103, 84, 0.09);
 
   /* Warm banker brass & gold */
   --gold: #d97706;
@@ -94,9 +94,9 @@
   --radial-green: transparent;
 
   /* Trade & Action Badges */
-  --badge-buy-bg: rgba(46, 125, 102, 0.16);
-  --badge-buy-text: #59ba9d;
-  --badge-buy-border: rgba(89, 186, 157, 0.25);
+  --badge-buy-bg: rgba(35, 103, 84, 0.18);
+  --badge-buy-text: #3ea083;
+  --badge-buy-border: rgba(62, 160, 131, 0.28);
   --badge-hold-bg: rgba(217, 119, 6, 0.10);
   --badge-hold-text: #fbbf24;
   --badge-hold-border: rgba(217, 119, 6, 0.20);
@@ -277,13 +277,21 @@ h1, h2, h3, h4, h5, h6 {
 ================================================= */
 
 .navbar {
-  width: min(1180px, 92%);
+  width: min(1280px, 94%);
   margin: 0 auto;
-  height: 82px;
+  height: 72px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 30px;
+  gap: 20px;
+}
+
+.nav-left {
+  flex: 1 1 0%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  min-width: fit-content;
 }
 
 .logo {
@@ -295,6 +303,7 @@ h1, h2, h3, h4, h5, h6 {
   gap: 10px;
   color: var(--text);
   user-select: none;
+  text-decoration: none;
 }
 
 .logo span, .brand-icon {
@@ -307,27 +316,31 @@ h1, h2, h3, h4, h5, h6 {
   color: #fffdf8;
   font-weight: 700;
   font-size: 16px;
-  box-shadow: 0 7px 20px var(--green-subtle);
+  box-shadow: 0 4px 14px var(--green-subtle);
 }
 
-nav {
+nav, .nav-center {
   display: flex;
-  gap: 34px;
+  gap: 28px;
   color: var(--muted);
   font-size: 14px;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
 }
 
-nav a {
+nav a, .nav-center a {
   transition: color 0.2s ease;
   position: relative;
   font-weight: 500;
+  padding: 6px 0;
 }
 
-nav a:hover, nav a.active {
+nav a:hover, nav a.active, .nav-center a:hover, .nav-center a.active {
   color: var(--green);
 }
 
-nav a.active::after {
+nav a.active::after, .nav-center a.active::after {
   content: "";
   position: absolute;
   bottom: -6px;
@@ -339,9 +352,12 @@ nav a.active::after {
 }
 
 .nav-actions {
+  flex: 1 1 0%;
   display: flex;
   align-items: center;
-  gap: 10px;
+  justify-content: flex-end;
+  gap: 12px;
+  min-width: fit-content;
 }
 
 /* =================================================
@@ -369,9 +385,12 @@ nav a.active::after {
 }
 
 .dash-nav-left {
+  flex: 1 1 0%;
   display: flex;
   align-items: center;
-  gap: 32px;
+  gap: 14px;
+  justify-content: flex-start;
+  min-width: fit-content;
 }
 
 .role-badge {
@@ -384,13 +403,17 @@ nav a.active::after {
   padding: 4px 10px;
   border-radius: 6px;
   border: 1px solid var(--badge-buy-border);
+  white-space: nowrap;
 }
 
 .dash-nav-links {
   display: flex;
-  gap: 24px;
+  align-items: center;
+  justify-content: center;
+  gap: 26px;
   font-size: 14px;
   color: var(--muted);
+  flex: 0 0 auto;
 }
 
 .dash-nav-links a {
@@ -415,9 +438,12 @@ nav a.active::after {
 }
 
 .dash-nav-right {
+  flex: 1 1 0%;
   display: flex;
   align-items: center;
-  gap: 16px;
+  justify-content: flex-end;
+  gap: 12px;
+  min-width: fit-content;
 }
 
 .user-profile-pill {
@@ -1023,6 +1049,13 @@ h1.hero-title span {
     display: none;
 }
 
+.mobile-auth-top {
+    display: none;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+}
+
 .auth-card .header {
     margin-bottom: 30px;
 }
@@ -1233,6 +1266,10 @@ h1.hero-title span {
         display: none;
     }
 
+    .mobile-auth-top {
+        display: flex;
+    }
+
     .auth-area {
         min-height: 100vh;
         padding: 30px 20px;
@@ -1240,7 +1277,6 @@ h1.hero-title span {
 
     .mobile-brand {
         display: flex;
-        margin-bottom: 35px;
         font-size: 20px;
     }
 
@@ -2134,15 +2170,16 @@ footer .logo span {
   .grid-2col, .grid-3col, .about-grid {
     grid-template-columns: 1fr;
   }
-  .auth-page {
-    grid-template-columns: 1fr;
-  }
+  .auth-page .intro,
   .auth-intro {
     display: none;
   }
+  .mobile-auth-top {
+    display: flex;
+  }
   .mobile-brand {
     display: flex;
-    margin-bottom: 30px;
+    font-size: 20px;
   }
   .auth-area {
     padding: 30px 20px;

@@ -10,11 +10,13 @@ export default function Navbar({ user, onLogout }) {
 
   return (
     <header className="navbar">
-      <Link to={isAuth ? dashPath : "/"} className="logo">
-        <span>F</span> FinSight
-      </Link>
+      <div className="nav-left">
+        <Link to={isAuth ? dashPath : "/"} className="logo">
+          <span>F</span> FinSight
+        </Link>
+      </div>
 
-      <nav>
+      <nav className="nav-center">
         {!isAuth && (
           <NavLink to="/" end className={({ isActive }) => (isActive ? 'active' : '')}>
             Home

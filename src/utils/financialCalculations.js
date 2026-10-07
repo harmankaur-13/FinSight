@@ -1,7 +1,7 @@
 // Reusable Financial Calculation & Utility Functions for FinSight
 
 export const ASSET_COLORS = {
-  'Stocks': '#2e7d66',          // Organic Sage Pine
+  'Stocks': '#236754',          // Deep Forest Pine
   'Mutual Funds': '#0284c7',    // Classic Blue
   'Crypto': '#d97706',          // Warm Amber Brass
   'Bonds': '#6366f1',           // Indigo Slate

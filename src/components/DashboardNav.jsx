@@ -25,61 +25,65 @@ export default function DashboardNav({ user, onLogout, onSwitchRole }) {
           </Link>
           
           <span className="role-badge">{roleTitle}</span>
-
-          <div className="dash-nav-links">
-            <NavLink 
-              to={getDashboardRoute()} 
-              className={({ isActive }) => (isActive ? 'active' : '')}
-            >
-              Dashboard
-            </NavLink>
-            <NavLink to="/features" className={({ isActive }) => (isActive ? 'active' : '')}>
-              Features
-            </NavLink>
-            <NavLink to="/news" className={({ isActive }) => (isActive ? 'active' : '')}>
-              News
-            </NavLink>
-            <NavLink to="/ratings" className={({ isActive }) => (isActive ? 'active' : '')}>
-              Ratings
-            </NavLink>
-            <NavLink to="/about" className={({ isActive }) => (isActive ? 'active' : '')}>
-              About
-            </NavLink>
-          </div>
         </div>
 
+        <nav className="dash-nav-links">
+          <NavLink 
+            to={getDashboardRoute()} 
+            className={({ isActive }) => (isActive ? 'active' : '')}
+          >
+            Dashboard
+          </NavLink>
+          <NavLink to="/features" className={({ isActive }) => (isActive ? 'active' : '')}>
+            Features
+          </NavLink>
+          <NavLink to="/news" className={({ isActive }) => (isActive ? 'active' : '')}>
+            News
+          </NavLink>
+          <NavLink to="/ratings" className={({ isActive }) => (isActive ? 'active' : '')}>
+            Ratings
+          </NavLink>
+          <NavLink to="/about" className={({ isActive }) => (isActive ? 'active' : '')}>
+            About
+          </NavLink>
+        </nav>
+
         <div className="dash-nav-right">
-          {/* Demo preview switcher to test different roles easily */}
-          <div className="demo-switcher" title="Preview different dashboard roles">
-            <span>Demo View:</span>
-            <button 
-              className={role === 'student' ? 'active' : ''} 
-              onClick={() => {
-                if (onSwitchRole) onSwitchRole('student');
-                navigate('/student-dashboard');
-              }}
-            >
-              Student
-            </button>
-            <button 
-              className={role === 'business' ? 'active' : ''} 
-              onClick={() => {
-                if (onSwitchRole) onSwitchRole('business');
-                navigate('/business-dashboard');
-              }}
-            >
-              Business
-            </button>
-            <button 
-              className={role === 'tech' ? 'active' : ''} 
-              onClick={() => {
-                if (onSwitchRole) onSwitchRole('tech');
-                navigate('/tech-dashboard');
-              }}
-            >
-              Big Tech
-            </button>
-          </div>
+          {user?.isDemo && (
+            <div className="demo-switcher" title="Preview different dashboard roles in Demo mode">
+              <span>Demo View:</span>
+              <button 
+                type="button"
+                className={role === 'student' ? 'active' : ''} 
+                onClick={() => {
+                  if (onSwitchRole) onSwitchRole('student');
+                  navigate('/student-dashboard');
+                }}
+              >
+                Student
+              </button>
+              <button 
+                type="button"
+                className={role === 'business' ? 'active' : ''} 
+                onClick={() => {
+                  if (onSwitchRole) onSwitchRole('business');
+                  navigate('/business-dashboard');
+                }}
+              >
+                Business
+              </button>
+              <button 
+                type="button"
+                className={role === 'tech' ? 'active' : ''} 
+                onClick={() => {
+                  if (onSwitchRole) onSwitchRole('tech');
+                  navigate('/tech-dashboard');
+                }}
+              >
+                Big Tech
+              </button>
+            </div>
+          )}
 
           <div className="user-profile-pill">
             <div className="user-avatar">

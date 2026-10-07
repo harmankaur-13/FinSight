@@ -9,6 +9,7 @@ import AdaptiveLayout from './layouts/AdaptiveLayout';
 
 // Components
 import ProtectedRoute from './components/ProtectedRoute';
+import ScrollToTop from './components/ScrollToTop';
 
 // Pages
 import Landing from './pages/Landing/Landing';
@@ -58,6 +59,7 @@ export default function App() {
 
   return (
     <BrowserRouter>
+      <ScrollToTop />
       <Routes>
         {/* Landing Page (Redirects to dashboard if already logged in) */}
         <Route element={<PublicLayout user={user} onLogout={logout} />}>
@@ -139,52 +141,58 @@ export default function App() {
             <Route
               path="/student-dashboard"
               element={
-                <StudentDashboard
-                  data={studentData}
-                  user={user}
-                  financialData={financialData}
-                  onAddInvestment={addInvestment}
-                  onUpdateInvestment={updateInvestment}
-                  onDeleteInvestment={deleteInvestment}
-                  onAddGoal={addGoal}
-                  onUpdateGoal={updateGoal}
-                  onDeleteGoal={deleteGoal}
-                  onUpdateMonthlySavings={updateMonthlySavings}
-                />
+                <ProtectedRoute user={user} allowedRole="student">
+                  <StudentDashboard
+                    data={studentData}
+                    user={user}
+                    financialData={financialData}
+                    onAddInvestment={addInvestment}
+                    onUpdateInvestment={updateInvestment}
+                    onDeleteInvestment={deleteInvestment}
+                    onAddGoal={addGoal}
+                    onUpdateGoal={updateGoal}
+                    onDeleteGoal={deleteGoal}
+                    onUpdateMonthlySavings={updateMonthlySavings}
+                  />
+                </ProtectedRoute>
               }
             />
             <Route
               path="/business-dashboard"
               element={
-                <BusinessDashboard
-                  data={businessData}
-                  user={user}
-                  financialData={financialData}
-                  onAddInvestment={addInvestment}
-                  onUpdateInvestment={updateInvestment}
-                  onDeleteInvestment={deleteInvestment}
-                  onAddGoal={addGoal}
-                  onUpdateGoal={updateGoal}
-                  onDeleteGoal={deleteGoal}
-                  onUpdateMonthlySavings={updateMonthlySavings}
-                />
+                <ProtectedRoute user={user} allowedRole="business">
+                  <BusinessDashboard
+                    data={businessData}
+                    user={user}
+                    financialData={financialData}
+                    onAddInvestment={addInvestment}
+                    onUpdateInvestment={updateInvestment}
+                    onDeleteInvestment={deleteInvestment}
+                    onAddGoal={addGoal}
+                    onUpdateGoal={updateGoal}
+                    onDeleteGoal={deleteGoal}
+                    onUpdateMonthlySavings={updateMonthlySavings}
+                  />
+                </ProtectedRoute>
               }
             />
             <Route
               path="/tech-dashboard"
               element={
-                <TechDashboard
-                  data={techData}
-                  user={user}
-                  financialData={financialData}
-                  onAddInvestment={addInvestment}
-                  onUpdateInvestment={updateInvestment}
-                  onDeleteInvestment={deleteInvestment}
-                  onAddGoal={addGoal}
-                  onUpdateGoal={updateGoal}
-                  onDeleteGoal={deleteGoal}
-                  onUpdateMonthlySavings={updateMonthlySavings}
-                />
+                <ProtectedRoute user={user} allowedRole="tech">
+                  <TechDashboard
+                    data={techData}
+                    user={user}
+                    financialData={financialData}
+                    onAddInvestment={addInvestment}
+                    onUpdateInvestment={updateInvestment}
+                    onDeleteInvestment={deleteInvestment}
+                    onAddGoal={addGoal}
+                    onUpdateGoal={updateGoal}
+                    onDeleteGoal={deleteGoal}
+                    onUpdateMonthlySavings={updateMonthlySavings}
+                  />
+                </ProtectedRoute>
               }
             />
           </Route>

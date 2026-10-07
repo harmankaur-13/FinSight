@@ -107,8 +107,8 @@ export default function Login({ onLogin, onDemoLogin }) {
 
       <section className="auth-area">
         <div className="auth-card">
-          <div className="mobile-auth-top" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
-            <Link to="/" className="mobile-brand" style={{ marginBottom: 0 }}>
+          <div className="mobile-auth-top">
+            <Link to="/" className="mobile-brand">
               <div className="brand-icon">F</div>
               <span>FinSight</span>
             </Link>
