@@ -1,11 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import PortfolioCard from '../../components/PortfolioCard';
 import PortfolioChart from '../../components/PortfolioChart';
 import AllocationCard from '../../components/AllocationCard';
+import AllocationDonut from '../../components/AllocationDonut';
+import RebalanceEngine from '../../components/RebalanceEngine';
 import HoldingsTable from '../../components/HoldingsTable';
 import FutureSimulation from '../../components/FutureSimulation';
 import AssistantCard from '../../components/AssistantCard';
 import ManagePortfolioModal from '../../components/ManagePortfolioModal';
+import { formatCurrency } from '../../utils/financialCalculations';
 
 export default function BusinessDashboard({
   data,
@@ -37,6 +40,20 @@ export default function BusinessDashboard({
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalInitialTab, setModalInitialTab] = useState('investments');
+
+  const activeInvestments = useMemo(() => {
+    if (financialData?.investments && financialData.investments.length > 0) {
+      return financialData.investments;
+    }
+    return [
+      { id: 'biz-1', name: 'Infosys Ltd', type: 'Stocks', investedAmount: 380000, currentValue: 420000, targetAllocation: 25 },
+      { id: 'biz-2', name: 'HDFC Bank', type: 'Stocks', investedAmount: 360000, currentValue: 385000, targetAllocation: 20 },
+      { id: 'biz-3', name: 'Reliance Industries', type: 'Stocks', investedAmount: 330000, currentValue: 340000, targetAllocation: 15 },
+      { id: 'biz-4', name: 'Tata Consultancy Services', type: 'Stocks', investedAmount: 300000, currentValue: 290000, targetAllocation: 10 },
+      { id: 'biz-5', name: 'ICICI Corp Bond Fund', type: 'Bonds', investedAmount: 225000, currentValue: 230000, targetAllocation: 15 },
+      { id: 'biz-6', name: 'Embassy Office Parks REIT', type: 'Real Estate', investedAmount: 165000, currentValue: 177000, targetAllocation: 15 }
+    ];
+  }, [financialData?.investments]);
 
   const openManageModal = (tab = 'investments') => {
     setModalInitialTab(tab);
@@ -118,16 +135,39 @@ export default function BusinessDashboard({
               {performance !== 'No data yet' ? `${performance} Overall` : 'No data yet'}
             </span>
           </div>
-          <PortfolioChart height={240} />
+          <PortfolioChart height={240} portfolioValue={portfolioRawValue || 1842000} />
         </div>
 
+        <AllocationDonut
+          allocations={allocations}
+          investments={activeInvestments}
+          height={240}
+          title="Corporate Treasury Allocation Donut"
+          subtitle="Current vs target asset distribution with drift alerts"
+        />
+      </div>
+
+      <div className="grid-2col">
         <AllocationCard
           allocations={allocations}
           drift={allocationDrift}
           insight={insightMessage}
-          title="Corporate Asset Allocation"
+          title="Corporate Asset Allocation Breakdown"
+        />
+
+        <AssistantCard
+          suggestions={assistantSuggestions}
+          title="Corporate Financial Assistant"
+          role="business"
         />
       </div>
+
+      {/* Target Rebalancing Engine */}
+      <RebalanceEngine
+        investments={activeInvestments}
+        monthlySavings={financialData?.monthlySavings ? formatCurrency(financialData.monthlySavings) : '₹25,000'}
+        onOpenManageModal={openManageModal}
+      />
 
       {/* Holdings Table */}
       <HoldingsTable holdings={holdings} title="Corporate Treasury Holdings" />
@@ -135,43 +175,33 @@ export default function BusinessDashboard({
       {/* Future Value Simulation + Market Outlook */}
       <div className="grid-2col">
         <FutureSimulation
-          initialPrincipal={portfolioRawValue || 0}
+          initialPrincipal={portfolioRawValue || 1842000}
           defaultMonthly={financialData?.monthlySavings ? Number(financialData.monthlySavings) : 25000}
           defaultRate={12}
         />
 
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-          {/* Market Outlook Panel */}
-          <div className="panel-card">
-            <div className="panel-header">
-              <div>
-                <h3 className="panel-title">Market Outlook & Risk Overview</h3>
-                <span className="panel-subtitle">Institutional macroeconomic assessment</span>
-              </div>
-            </div>
-
-            <p style={{ fontSize: '13px', color: 'var(--text)', lineHeight: 1.6, marginBottom: '18px' }}>
-              {marketOutlook}
-            </p>
-
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', background: 'var(--bg)', padding: '14px', borderRadius: '10px', border: '1px solid var(--border)' }}>
-              <div>
-                <span style={{ fontSize: '11px', color: 'var(--muted)', display: 'block' }}>Annualized Volatility</span>
-                <strong>{riskMetrics?.annualizedVolatility || 'N/A'}</strong>
-              </div>
-              <div>
-                <span style={{ fontSize: '11px', color: 'var(--muted)', display: 'block' }}>Stress Test Loss (Max)</span>
-                <strong style={{ color: 'var(--error)' }}>{riskMetrics?.stressTestLoss || 'N/A'}</strong>
-              </div>
+        <div className="panel-card">
+          <div className="panel-header">
+            <div>
+              <h3 className="panel-title">Market Outlook & Risk Overview</h3>
+              <span className="panel-subtitle">Institutional macroeconomic assessment</span>
             </div>
           </div>
 
-          {/* AI Assistant */}
-          <AssistantCard
-            suggestions={assistantSuggestions}
-            title="Corporate Financial Assistant"
-            role="business"
-          />
+          <p style={{ fontSize: '13px', color: 'var(--text)', lineHeight: 1.6, marginBottom: '18px' }}>
+            {marketOutlook}
+          </p>
+
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', background: 'var(--bg)', padding: '14px', borderRadius: '10px', border: '1px solid var(--border)' }}>
+            <div>
+              <span style={{ fontSize: '11px', color: 'var(--muted)', display: 'block' }}>Annualized Volatility</span>
+              <strong>{riskMetrics?.annualizedVolatility || 'N/A'}</strong>
+            </div>
+            <div>
+              <span style={{ fontSize: '11px', color: 'var(--muted)', display: 'block' }}>Stress Test Loss (Max)</span>
+              <strong style={{ color: 'var(--error)' }}>{riskMetrics?.stressTestLoss || 'N/A'}</strong>
+            </div>
+          </div>
         </div>
       </div>
 

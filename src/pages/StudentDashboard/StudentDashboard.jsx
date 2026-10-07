@@ -3,6 +3,7 @@ import { formatHumanName } from '../../hooks/useFinanceData';
 import PortfolioCard from '../../components/PortfolioCard';
 import PortfolioChart from '../../components/PortfolioChart';
 import AllocationCard from '../../components/AllocationCard';
+import AllocationDonut from '../../components/AllocationDonut';
 import RebalanceEngine from '../../components/RebalanceEngine';
 import AssistantCard from '../../components/AssistantCard';
 import EducationCard from '../../components/EducationCard';
@@ -25,6 +26,7 @@ export default function StudentDashboard({
 }) {
   const {
     portfolioValue,
+    portfolioRawValue,
     performance,
     isPositive,
     monthlySavings,
@@ -183,14 +185,31 @@ export default function StudentDashboard({
               {performance !== 'No data yet' ? `${performance} Overall` : 'No data yet'}
             </span>
           </div>
-          <PortfolioChart height={240} />
+          <PortfolioChart height={240} portfolioValue={portfolioRawValue} />
         </div>
 
+        <AllocationDonut
+          allocations={allocations}
+          investments={activeInvestments}
+          height={240}
+          title="Student Asset Allocation Donut"
+          subtitle="Current vs target distribution with drift alerts"
+        />
+      </div>
+
+      <div className="grid-2col">
         <AllocationCard
           allocations={allocations}
           drift={allocationDrift}
           insight={insightMessage}
-          title="Student Asset Allocation"
+          title="Student Asset Allocation Breakdown"
+        />
+
+        {/* AI Assistant */}
+        <AssistantCard
+          suggestions={assistantSuggestions}
+          title="FinSight Student Assistant"
+          role="student"
         />
       </div>
 

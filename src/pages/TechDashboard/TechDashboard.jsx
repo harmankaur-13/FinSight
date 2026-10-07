@@ -1,7 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import PortfolioCard from '../../components/PortfolioCard';
 import PortfolioChart from '../../components/PortfolioChart';
 import AllocationCard from '../../components/AllocationCard';
+import AllocationDonut from '../../components/AllocationDonut';
+import RebalanceEngine from '../../components/RebalanceEngine';
 import ProjectionCard from '../../components/ProjectionCard';
 import HoldingsTable from '../../components/HoldingsTable';
 import AssistantCard from '../../components/AssistantCard';
@@ -21,6 +23,7 @@ export default function TechDashboard({
 }) {
   const {
     portfolioValue,
+    portfolioRawValue,
     performance,
     isPositive,
     costLossExposure,
@@ -38,6 +41,20 @@ export default function TechDashboard({
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalInitialTab, setModalInitialTab] = useState('investments');
+
+  const activeInvestments = useMemo(() => {
+    if (financialData?.investments && financialData.investments.length > 0) {
+      return financialData.investments;
+    }
+    return [
+      { id: 'tech-1', name: 'NVIDIA Corp', type: 'Stocks', investedAmount: 9700000, currentValue: 12500000, targetAllocation: 25 },
+      { id: 'tech-2', name: 'Microsoft Cloud Unit', type: 'Stocks', investedAmount: 9600000, currentValue: 11000000, targetAllocation: 25 },
+      { id: 'tech-3', name: 'Amazon AWS Infrastructure', type: 'ETFs', investedAmount: 7600000, currentValue: 8500000, targetAllocation: 20 },
+      { id: 'tech-4', name: 'Alphabet DeepMind Tech', type: 'Stocks', investedAmount: 5700000, currentValue: 6200000, targetAllocation: 10 },
+      { id: 'tech-5', name: 'Sovereign Tech Bond ETF', type: 'Bonds', investedAmount: 5300000, currentValue: 5500000, targetAllocation: 10 },
+      { id: 'tech-6', name: 'Enterprise Digital Reserves', type: 'Crypto', investedAmount: 3600000, currentValue: 4500000, targetAllocation: 10 }
+    ];
+  }, [financialData?.investments]);
 
   const openManageModal = (tab = 'investments') => {
     setModalInitialTab(tab);
@@ -119,26 +136,41 @@ export default function TechDashboard({
               {performance !== 'No data yet' ? `${performance} Overall` : 'No data yet'}
             </span>
           </div>
-          <PortfolioChart height={240} />
+          <PortfolioChart height={240} portfolioValue={portfolioRawValue || 48200000} />
         </div>
 
+        <AllocationDonut
+          allocations={allocations}
+          investments={activeInvestments}
+          height={240}
+          title="Enterprise Asset Allocation Donut"
+          subtitle="Current vs target asset distribution with drift alerts"
+        />
+      </div>
+
+      {/* Target Rebalancing Engine */}
+      <RebalanceEngine
+        investments={activeInvestments}
+        onOpenManageModal={openManageModal}
+      />
+
+      <div className="grid-2col">
         <AllocationCard
           allocations={allocations}
           drift={allocationDrift}
           insight={insightMessage}
-          title="Sector Concentration"
+          title="Sector Concentration & Breakdown"
+        />
+
+        <ProjectionCard
+          projections={projections}
+          costLoss={costLossExposure}
+          crunchData={crunchAcquisition}
         />
       </div>
 
       {/* Holdings Table */}
       <HoldingsTable holdings={holdings} title="Enterprise Portfolio Holdings" />
-
-      {/* 4-Year Valuation Projections & Cost/Loss Analysis */}
-      <ProjectionCard
-        projections={projections}
-        costLoss={costLossExposure}
-        crunchData={crunchAcquisition}
-      />
 
       {/* Risk Vectors & Strategic AI Assistant */}
       <div className="grid-2col">

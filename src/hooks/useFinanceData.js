@@ -371,10 +371,22 @@ export function useFinanceData() {
   // Switch role for demo/testing
   const switchRole = useCallback((newRole) => {
     setUser((prev) => {
-      if (!prev) return prev;
+      if (!prev) {
+        return {
+          name: newRole === 'tech' ? TECH_DATA.name : newRole === 'business' ? BUSINESS_DATA.name : STUDENT_DATA.name,
+          email: `${newRole}@finsight.demo`,
+          userType: newRole,
+          investments: [],
+          goals: [],
+          isLoggedIn: true,
+          isDemo: true,
+          needsOnboarding: false
+        };
+      }
       return {
         ...prev,
-        userType: newRole
+        userType: newRole,
+        isDemo: true
       };
     });
   }, []);
@@ -389,7 +401,7 @@ export function useFinanceData() {
   const isDemo = Boolean(user?.isDemo);
 
   const calculatedStudentData = useMemo(() => {
-    if (isDemo) return STUDENT_DATA;
+    if (isDemo || (!financialData?.investments || financialData.investments.length === 0)) return STUDENT_DATA;
 
     const investments = financialData?.investments || [];
     const goals = financialData?.goals || [];
@@ -434,7 +446,7 @@ export function useFinanceData() {
   }, [isDemo, financialData, user?.name, user?.email]);
 
   const calculatedBusinessData = useMemo(() => {
-    if (isDemo) return BUSINESS_DATA;
+    if (isDemo || (!financialData?.investments || financialData.investments.length === 0)) return BUSINESS_DATA;
 
     const investments = financialData?.investments || [];
     const portfolioRawValue = calculatePortfolioValue(investments);
@@ -479,7 +491,7 @@ export function useFinanceData() {
   }, [isDemo, financialData, user?.name, user?.email]);
 
   const calculatedTechData = useMemo(() => {
-    if (isDemo) return TECH_DATA;
+    if (isDemo || (!financialData?.investments || financialData.investments.length === 0)) return TECH_DATA;
 
     const investments = financialData?.investments || [];
     const portfolioRawValue = calculatePortfolioValue(investments);

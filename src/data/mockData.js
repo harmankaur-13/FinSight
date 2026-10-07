@@ -294,18 +294,18 @@ export const BUSINESS_DATA = {
   allocationDrift: '3.8%',
   insightMessage: 'Corporate treasury allocation is optimized with strong cash reserves for quarterly obligations.',
   allocations: [
-    { name: 'Equities', percentage: 50, target: 50, color: '#276653' },
-    { name: 'Corporate Debt', percentage: 25, target: 20, color: '#b88746' },
-    { name: 'Real Estate & REITs', percentage: 15, target: 20, color: '#68736d' },
-    { name: 'Liquid Cash', percentage: 10, target: 10, color: '#dce9e2' }
+    { name: 'Stocks', percentage: 50, target: 50, color: '#276653' },
+    { name: 'Bonds', percentage: 25, target: 20, color: '#68736d' },
+    { name: 'Real Estate', percentage: 15, target: 20, color: '#d4a359' },
+    { name: 'Mutual Funds', percentage: 10, target: 10, color: '#3a7d68' }
   ],
   holdings: [
-    { company: 'Infosys Ltd', symbol: 'INFY', value: '₹4,20,000', change: '+3.4%', isPositive: true, allocation: '22.8%', sector: 'Technology' },
-    { company: 'HDFC Bank', symbol: 'HDFCBANK', value: '₹3,85,000', change: '+1.2%', isPositive: true, allocation: '20.9%', sector: 'Banking' },
-    { company: 'Reliance Industries', symbol: 'RELIANCE', value: '₹3,40,000', change: '+0.8%', isPositive: true, allocation: '18.5%', sector: 'Energy / Conglomerate' },
-    { company: 'Tata Consultancy Services', symbol: 'TCS', value: '₹2,90,000', change: '-0.4%', isPositive: false, allocation: '15.7%', sector: 'IT Services' },
-    { company: 'ICICI Corp Bond Fund', symbol: 'ICICIBOND', value: '₹2,30,000', change: '+0.2%', isPositive: true, allocation: '12.5%', sector: 'Fixed Income' },
-    { company: 'Embassy Office Parks REIT', symbol: 'EMBASSY', value: '₹1,77,000', change: '+1.8%', isPositive: true, allocation: '9.6%', sector: 'Real Estate' }
+    { company: 'Infosys Ltd', symbol: 'INFY', value: '₹4,20,000', change: '+3.4%', isPositive: true, allocation: '22.8%', sector: 'Technology', type: 'Stocks' },
+    { company: 'HDFC Bank', symbol: 'HDFCBANK', value: '₹3,85,000', change: '+1.2%', isPositive: true, allocation: '20.9%', sector: 'Banking', type: 'Stocks' },
+    { company: 'Reliance Industries', symbol: 'RELIANCE', value: '₹3,40,000', change: '+0.8%', isPositive: true, allocation: '18.5%', sector: 'Energy / Conglomerate', type: 'Stocks' },
+    { company: 'Tata Consultancy Services', symbol: 'TCS', value: '₹2,90,000', change: '-0.4%', isPositive: false, allocation: '15.7%', sector: 'IT Services', type: 'Stocks' },
+    { company: 'ICICI Corp Bond Fund', symbol: 'ICICIBOND', value: '₹2,30,000', change: '+0.2%', isPositive: true, allocation: '12.5%', sector: 'Fixed Income', type: 'Bonds' },
+    { company: 'Embassy Office Parks REIT', symbol: 'EMBASSY', value: '₹1,77,000', change: '+1.8%', isPositive: true, allocation: '9.6%', sector: 'Real Estate', type: 'Real Estate' }
   ],
   marketOutlook: 'Moderately bullish bias with steady institutional liquidity and manageable interest rate risks across commercial segments.',
   riskMetrics: {
@@ -334,10 +334,18 @@ export const TECH_DATA = {
   costLossExposure: '₹18.4L',
   insightMessage: 'Enterprise holdings exhibit strong technological moat with balanced exposure across cloud and infrastructure.',
   allocations: [
-    { name: 'Technology & AI', percentage: 52, target: 50, color: '#276653' },
-    { name: 'Infrastructure & Cloud', percentage: 21, target: 20, color: '#b88746' },
-    { name: 'Energy & Cleantech', percentage: 14, target: 15, color: '#68736d' },
-    { name: 'Strategic Venture Assets', percentage: 13, target: 15, color: '#8e9a93' }
+    { name: 'Stocks', percentage: 50, target: 50, color: '#276653' },
+    { name: 'ETFs', percentage: 20, target: 20, color: '#8e9a93' },
+    { name: 'Bonds', percentage: 15, target: 15, color: '#68736d' },
+    { name: 'Crypto', percentage: 15, target: 15, color: '#b88746' }
+  ],
+  holdings: [
+    { company: 'NVIDIA Corp', symbol: 'NVDA', value: '₹1.25 Cr', change: '+28.4%', isPositive: true, allocation: '25.9%', sector: 'Semiconductors & AI', type: 'Stocks' },
+    { company: 'Microsoft Cloud Unit', symbol: 'MSFT', value: '₹1.10 Cr', change: '+14.2%', isPositive: true, allocation: '22.8%', sector: 'Cloud SaaS', type: 'Stocks' },
+    { company: 'Amazon AWS Infrastructure', symbol: 'AMZN', value: '₹85.0L', change: '+11.8%', isPositive: true, allocation: '17.6%', sector: 'Cloud Compute', type: 'ETFs' },
+    { company: 'Alphabet DeepMind Tech', symbol: 'GOOGL', value: '₹62.0L', change: '+8.5%', isPositive: true, allocation: '12.9%', sector: 'AI Platforms', type: 'Stocks' },
+    { company: 'Sovereign Tech Bond ETF', symbol: 'TECHBOND', value: '₹55.0L', change: '+3.2%', isPositive: true, allocation: '11.4%', sector: 'Fixed Income', type: 'Bonds' },
+    { company: 'Enterprise Digital Reserves', symbol: 'BTC-ETH', value: '₹45.0L', change: '+22.6%', isPositive: true, allocation: '9.3%', sector: 'Digital Assets', type: 'Crypto' }
   ],
   riskAreas: [
     { area: 'Technology Sector Volatility', severity: 'Medium', note: 'Exposure heavily weighted towards compute and SaaS platforms.' },
