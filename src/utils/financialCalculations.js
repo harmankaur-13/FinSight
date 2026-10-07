@@ -1,13 +1,13 @@
 // Reusable Financial Calculation & Utility Functions for FinSight
 
 export const ASSET_COLORS = {
-  'Stocks': '#276653',          // Deep forest green
-  'Mutual Funds': '#3a7d68',    // Muted emerald
-  'Crypto': '#b88746',          // Warm gold
-  'Bonds': '#68736d',           // Slate sage
-  'ETFs': '#8e9a93',            // Cool muted green
-  'Real Estate': '#d4a359',     // Sand gold
-  'Other': '#525c56'            // Deep olive slate
+  'Stocks': '#2e7d66',          // Organic Sage Pine
+  'Mutual Funds': '#0284c7',    // Classic Blue
+  'Crypto': '#d97706',          // Warm Amber Brass
+  'Bonds': '#6366f1',           // Indigo Slate
+  'ETFs': '#2563eb',            // Royal Blue
+  'Real Estate': '#b45309',     // Warm Terracotta
+  'Other': '#64748b'            // Slate Gray
 };
 
 /**

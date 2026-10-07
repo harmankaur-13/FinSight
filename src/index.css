@@ -11,10 +11,10 @@
   --text-secondary: #42524a;
   --muted: #68736d;
   --muted-light: #8e9a93;
-  --green: #276653;
-  --green-dark: #1d4f40;
-  --green-light: #dce9e2;
-  --green-subtle: rgba(39, 102, 83, 0.08);
+  --green: #245e4f;
+  --green-dark: #1b483c;
+  --green-light: #e2ece7;
+  --green-subtle: rgba(36, 94, 79, 0.08);
   --gold: #b88746;
   --gold-light: #ead9bd;
   --gold-subtle: rgba(184, 135, 70, 0.12);
@@ -33,12 +33,12 @@
   --toggle-border: #ddd7ca;
   --toggle-hover: #e2dcd0;
   --modal-overlay: rgba(23, 35, 31, 0.6);
-  --chart-grid-line: rgba(39, 102, 83, 0.08);
+  --chart-grid-line: rgba(36, 94, 79, 0.08);
   --radial-gold: rgba(184, 135, 70, 0.09);
-  --radial-green: rgba(39, 102, 83, 0.07);
-  --badge-buy-bg: #eef6f0;
-  --badge-buy-text: #1e6b47;
-  --badge-buy-border: #c2e2cf;
+  --radial-green: rgba(36, 94, 79, 0.07);
+  --badge-buy-bg: #e7f2ed;
+  --badge-buy-text: #1e5647;
+  --badge-buy-border: #bcd6cb;
   --badge-hold-bg: #f9eedc;
   --badge-hold-text: #7d5722;
   --badge-hold-border: #dcc099;
@@ -46,45 +46,60 @@
 
 [data-theme="dark"] {
   color-scheme: dark;
-  --bg: #111413;
-  --surface: #181d1a;
-  --surface-2: #202723;
-  --surface-hover: #242c28;
-  --text: #e2e8e5;
-  --text-secondary: #9eb0a7;
-  --muted: #798a81;
-  --muted-light: #4e5a54;
-  --green: #2e755f;
-  --green-dark: #4da287;
-  --green-light: #192721;
-  --green-subtle: rgba(46, 117, 95, 0.10);
-  --gold: #bd8f4f;
-  --gold-light: #282116;
-  --gold-subtle: rgba(189, 143, 79, 0.10);
-  --border: #252e2a;
-  --border-light: #1d2421;
-  --error: #b8584c;
-  --error-light: #2a1b1a;
-  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.2);
-  --shadow-md: 0 6px 18px rgba(0, 0, 0, 0.25);
-  --shadow-lg: 0 14px 34px rgba(0, 0, 0, 0.35);
-  --input-bg: #141816;
-  --input-border: #252e2a;
-  --nav-bg: #181d1a;
-  --nav-border: #252e2a;
-  --toggle-bg: #202723;
-  --toggle-border: #2c3631;
-  --toggle-hover: #262e2a;
-  --modal-overlay: rgba(0, 0, 0, 0.7);
-  --chart-grid-line: rgba(46, 117, 95, 0.08);
-  --radial-gold: rgba(189, 143, 79, 0.02);
-  --radial-green: rgba(46, 117, 95, 0.02);
-  --badge-buy-bg: #192721;
-  --badge-buy-text: #4da287;
-  --badge-buy-border: #23372e;
-  --badge-hold-bg: #282116;
-  --badge-hold-text: #c99b5b;
-  --badge-hold-border: #3b301f;
+  /* Natural matte charcoal & carbon palette - authentic financial interface */
+  --bg: #121214;
+  --surface: #19191d;
+  --surface-2: #222228;
+  --surface-hover: #292930;
+  --text: #f4f4f5;
+  --text-secondary: #a1a1aa;
+  --muted: #71717a;
+  --muted-light: #3f3f46;
+
+  /* Refined, organic sage pine (warm, non-neon, understated) */
+  --green: #2e7d66;
+  --green-dark: #59ba9d;
+  --green-light: rgba(46, 125, 102, 0.16);
+  --green-subtle: rgba(46, 125, 102, 0.08);
+
+  /* Warm banker brass & gold */
+  --gold: #d97706;
+  --gold-light: rgba(217, 119, 6, 0.10);
+  --gold-subtle: rgba(217, 119, 6, 0.05);
+
+  /* Subtle hairline borders */
+  --border: #27272a;
+  --border-light: #1f1f23;
+
+  /* Clean alerts */
+  --error: #ef4444;
+  --error-light: rgba(239, 68, 68, 0.10);
+
+  /* Natural elevation shadows */
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.35);
+  --shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.45);
+
+  /* Controls & Inputs */
+  --input-bg: #151518;
+  --input-border: #27272a;
+  --nav-bg: #141416;
+  --nav-border: #27272a;
+  --toggle-bg: #222228;
+  --toggle-border: #2e2e36;
+  --toggle-hover: #292930;
+  --modal-overlay: rgba(0, 0, 0, 0.75);
+  --chart-grid-line: rgba(255, 255, 255, 0.05);
+  --radial-gold: transparent;
+  --radial-green: transparent;
+
+  /* Trade & Action Badges */
+  --badge-buy-bg: rgba(46, 125, 102, 0.16);
+  --badge-buy-text: #59ba9d;
+  --badge-buy-border: rgba(89, 186, 157, 0.25);
+  --badge-hold-bg: rgba(217, 119, 6, 0.10);
+  --badge-hold-text: #fbbf24;
+  --badge-hold-border: rgba(217, 119, 6, 0.20);
 }
 
 * {
@@ -99,10 +114,7 @@ html {
 
 body {
   font-family: "DM Sans", sans-serif;
-  background:
-    radial-gradient(circle at 80% 12%, var(--radial-gold), transparent 25%),
-    radial-gradient(circle at 15% 80%, var(--radial-green), transparent 30%),
-    var(--bg);
+  background: var(--bg);
   color: var(--text);
   line-height: 1.6;
   min-height: 100vh;
@@ -295,7 +307,7 @@ h1, h2, h3, h4, h5, h6 {
   color: #fffdf8;
   font-weight: 700;
   font-size: 16px;
-  box-shadow: 0 7px 20px rgba(39, 102, 83, 0.18);
+  box-shadow: 0 7px 20px var(--green-subtle);
 }
 
 nav {
@@ -371,7 +383,7 @@ nav a.active::after {
   text-transform: uppercase;
   padding: 4px 10px;
   border-radius: 6px;
-  border: 1px solid rgba(39, 102, 83, 0.2);
+  border: 1px solid var(--badge-buy-border);
 }
 
 .dash-nav-links {
@@ -499,7 +511,7 @@ nav a.active::after {
 .btn-primary {
   background: var(--green);
   color: white;
-  box-shadow: 0 8px 20px rgba(39, 102, 83, 0.15);
+  box-shadow: 0 8px 20px var(--green-subtle);
 }
 
 .btn-primary:hover {
@@ -513,7 +525,7 @@ nav a.active::after {
 }
 
 .btn-ghost:hover {
-  background: rgba(39, 102, 83, 0.05);
+  background: var(--green-subtle);
   color: var(--green);
 }
 
@@ -902,7 +914,7 @@ h1.hero-title span {
     flex-direction: column;
     justify-content: space-between;
     border-right: 1px solid var(--border);
-    background: radial-gradient(circle at 15% 80%, var(--radial-green), transparent 30%), radial-gradient(circle at 90% 15%, var(--radial-gold), transparent 25%), var(--bg);
+    background: var(--bg);
 }
 
 .brand,
@@ -923,7 +935,7 @@ h1.hero-title span {
     border-radius: 9px;
     color: #fff;
     background: var(--green);
-    box-shadow: 0 7px 20px rgba(39, 102, 83, .18);
+    box-shadow: 0 7px 20px var(--green-subtle);
 }
 
 .intro-content {
@@ -1062,7 +1074,7 @@ h1.hero-title span {
 
 .field input:focus {
     border-color: var(--green);
-    box-shadow: 0 0 0 3px rgba(39, 102, 83, .08);
+    box-shadow: 0 0 0 3px var(--green-subtle);
 }
 
 .label-row {
@@ -1136,7 +1148,7 @@ h1.hero-title span {
     background: var(--green);
     font-size: 13px;
     font-weight: 700;
-    box-shadow: 0 8px 20px rgba(39, 102, 83, .15);
+    box-shadow: 0 8px 20px var(--green-subtle);
     transition: .2s;
 }
 
@@ -1337,7 +1349,7 @@ h1.hero-title span {
 .option-card.selected {
   border-color: var(--green);
   background: var(--green-light);
-  box-shadow: 0 4px 15px rgba(39, 102, 83, 0.1);
+  box-shadow: 0 4px 15px var(--green-subtle);
 }
 
 .option-title {
@@ -1507,7 +1519,7 @@ h1.hero-title span {
   padding: 14px 16px;
   border-radius: 10px;
   background: var(--green-light);
-  border: 1px solid rgba(39, 102, 83, 0.2);
+  border: 1px solid var(--badge-buy-border);
   display: flex;
   align-items: flex-start;
   gap: 12px;
@@ -2493,7 +2505,7 @@ footer .logo span {
 
 .fin-select:focus {
   border-color: var(--green);
-  box-shadow: 0 0 0 3px rgba(39, 102, 83, 0.08);
+  box-shadow: 0 0 0 3px var(--green-subtle);
 }
 
 .badge-tag {
@@ -2881,7 +2893,7 @@ footer .logo span {
 .target-total-badge.valid {
   background: var(--green-light);
   color: var(--green-dark);
-  border-color: rgba(39, 102, 83, 0.25);
+  border-color: var(--badge-buy-border);
 }
 
 .target-total-badge.invalid {

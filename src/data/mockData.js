@@ -13,9 +13,9 @@ export const STUDENT_DATA = {
   allocationDrift: '2.4%',
   insightMessage: 'Your portfolio is currently within your target allocation range.',
   allocations: [
-    { name: 'Equities', percentage: 60, target: 60, color: '#276653' },
-    { name: 'Bonds', percentage: 25, target: 25, color: '#b88746' },
-    { name: 'Crypto', percentage: 15, target: 15, color: '#68736d' }
+    { name: 'Equities', percentage: 60, target: 60, color: '#2e7d66' },
+    { name: 'Bonds', percentage: 25, target: 25, color: '#6366f1' },
+    { name: 'Crypto', percentage: 15, target: 15, color: '#d97706' }
   ],
   goals: [
     { title: 'Emergency Fund', current: 20000, target: 30000, unit: '₹' },
@@ -294,10 +294,10 @@ export const BUSINESS_DATA = {
   allocationDrift: '3.8%',
   insightMessage: 'Corporate treasury allocation is optimized with strong cash reserves for quarterly obligations.',
   allocations: [
-    { name: 'Stocks', percentage: 50, target: 50, color: '#276653' },
-    { name: 'Bonds', percentage: 25, target: 20, color: '#68736d' },
-    { name: 'Real Estate', percentage: 15, target: 20, color: '#d4a359' },
-    { name: 'Mutual Funds', percentage: 10, target: 10, color: '#3a7d68' }
+    { name: 'Stocks', percentage: 50, target: 50, color: '#2e7d66' },
+    { name: 'Bonds', percentage: 25, target: 20, color: '#6366f1' },
+    { name: 'Real Estate', percentage: 15, target: 20, color: '#b45309' },
+    { name: 'Mutual Funds', percentage: 10, target: 10, color: '#0284c7' }
   ],
   holdings: [
     { company: 'Infosys Ltd', symbol: 'INFY', value: '₹4,20,000', change: '+3.4%', isPositive: true, allocation: '22.8%', sector: 'Technology', type: 'Stocks' },
@@ -334,10 +334,10 @@ export const TECH_DATA = {
   costLossExposure: '₹18.4L',
   insightMessage: 'Enterprise holdings exhibit strong technological moat with balanced exposure across cloud and infrastructure.',
   allocations: [
-    { name: 'Stocks', percentage: 50, target: 50, color: '#276653' },
-    { name: 'ETFs', percentage: 20, target: 20, color: '#8e9a93' },
-    { name: 'Bonds', percentage: 15, target: 15, color: '#68736d' },
-    { name: 'Crypto', percentage: 15, target: 15, color: '#b88746' }
+    { name: 'Stocks', percentage: 50, target: 50, color: '#2e7d66' },
+    { name: 'ETFs', percentage: 20, target: 20, color: '#2563eb' },
+    { name: 'Bonds', percentage: 15, target: 15, color: '#6366f1' },
+    { name: 'Crypto', percentage: 15, target: 15, color: '#d97706' }
   ],
   holdings: [
     { company: 'NVIDIA Corp', symbol: 'NVDA', value: '₹1.25 Cr', change: '+28.4%', isPositive: true, allocation: '25.9%', sector: 'Semiconductors & AI', type: 'Stocks' },
