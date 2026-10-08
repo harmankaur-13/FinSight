@@ -1,5 +1,19 @@
 <p align="center">
-  <img src="./public/images/finsight-logo.png" width="300" alt="FinSight Logo">
+  <picture>
+    <source
+      media="(prefers-color-scheme: dark)"
+      srcset="./public/images/finsight-logo-dark-transparent.png"
+    />
+    <source
+      media="(prefers-color-scheme: light)"
+      srcset="./public/images/finsight-logo.png"
+    />
+    <img
+      src="./public/images/finsight-logo.png"
+      alt="FinSight Logo"
+      width="400"
+    />
+  </picture>
 </p>
 
 # FinSight
