@@ -2,7 +2,7 @@
   <picture>
     <source
       media="(prefers-color-scheme: dark)"
-      srcset="./public/images/finsight-logo-dark-transparent.png"
+      srcset="./public/images/finsight-logo-dark.png"
     />
     <source
       media="(prefers-color-scheme: light)"
