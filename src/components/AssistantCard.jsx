@@ -7,8 +7,7 @@ export default function AssistantCard({
     'Is my 2.4% allocation drift safe?',
     'How much should I keep in my emergency fund?'
   ],
-  title = 'FinSight Assistant',
-  role = 'student'
+  title = 'FinSight Assistant'
 }) {
   const [messages, setMessages] = useState([
     {

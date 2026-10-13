@@ -1,4 +1,3 @@
-import React from 'react';
 import { useTheme } from '../context/ThemeContext';
 
 export default function ThemeToggle({ className = '', showLabel = false, size = 'default' }) {

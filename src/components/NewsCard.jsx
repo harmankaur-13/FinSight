@@ -1,5 +1,3 @@
-import React from 'react';
-
 export default function NewsCard({ article, onReadMore }) {
   return (
     <article className="news-card">

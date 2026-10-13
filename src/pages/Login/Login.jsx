@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import Toast from '../../components/Toast';
 import ThemeToggle from '../../components/ThemeToggle';
+import { getRoleDashboardPath } from '../../hooks/useFinanceData';
 
 export default function Login({ onLogin, onDemoLogin }) {
   const navigate = useNavigate();
@@ -42,9 +43,7 @@ export default function Login({ onLogin, onDemoLogin }) {
         navigate('/onboarding');
       } else {
         const role = res.user.userType || 'student';
-        if (role === 'business') navigate('/business-dashboard');
-        else if (role === 'tech') navigate('/tech-dashboard');
-        else navigate('/student-dashboard');
+        navigate(getRoleDashboardPath(role));
       }
     }, 500);
   };

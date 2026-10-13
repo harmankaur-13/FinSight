@@ -1,5 +1,3 @@
-import React from 'react';
-
 export default function RatingCard({ rating }) {
   const getBadgeClass = (type) => {
     if (type === 'strong-buy') return 'rating-strong-buy';

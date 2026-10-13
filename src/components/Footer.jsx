@@ -1,10 +1,10 @@
-import React from 'react';
 import { Link } from 'react-router-dom';
+import { getRoleDashboardPath } from '../hooks/useFinanceData';
 
 export default function Footer({ user }) {
   const isAuth = Boolean(user?.isLoggedIn && !user?.needsOnboarding);
   const role = user?.userType || 'student';
-  const dashPath = role === 'business' ? '/business-dashboard' : role === 'tech' ? '/tech-dashboard' : '/student-dashboard';
+  const dashPath = getRoleDashboardPath(role);
 
   return (
     <footer>

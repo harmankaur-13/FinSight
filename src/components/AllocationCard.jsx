@@ -1,5 +1,3 @@
-import React from 'react';
-
 export default function AllocationCard({
   allocations = [],
   drift = '2.4%',

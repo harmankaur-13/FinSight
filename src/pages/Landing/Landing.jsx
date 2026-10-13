@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Toast from '../../components/Toast';
+import { getRoleDashboardPath } from '../../hooks/useFinanceData';
 
 export default function Landing({ onDemoLogin }) {
   const navigate = useNavigate();
@@ -20,9 +21,7 @@ export default function Landing({ onDemoLogin }) {
       onDemoLogin(role);
       triggerToast('Loading demo dashboard...');
       setTimeout(() => {
-        if (role === 'business') navigate('/business-dashboard');
-        else if (role === 'tech') navigate('/tech-dashboard');
-        else navigate('/student-dashboard');
+        navigate(getRoleDashboardPath(role));
       }, 500);
     } else {
       navigate('/login');

@@ -1,5 +1,5 @@
-import React from 'react';
 import { Navigate, Outlet } from 'react-router-dom';
+import { getRoleDashboardPath } from '../hooks/useFinanceData';
 
 export default function ProtectedRoute({
   user,
@@ -29,13 +29,7 @@ export default function ProtectedRoute({
       : role === allowedRole;
 
     if (!isAllowed) {
-      const targetPath =
-        role === 'business'
-          ? '/business-dashboard'
-          : role === 'tech'
-          ? '/tech-dashboard'
-          : '/student-dashboard';
-      return <Navigate to={targetPath} replace />;
+      return <Navigate to={getRoleDashboardPath(role)} replace />;
     }
   }
 

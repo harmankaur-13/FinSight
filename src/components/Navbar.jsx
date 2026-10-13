@@ -1,12 +1,12 @@
-import React from 'react';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
 import ThemeToggle from './ThemeToggle';
+import { getRoleDashboardPath } from '../hooks/useFinanceData';
 
 export default function Navbar({ user, onLogout }) {
   const navigate = useNavigate();
   const isAuth = Boolean(user?.isLoggedIn && !user?.needsOnboarding);
   const role = user?.userType || 'student';
-  const dashPath = role === 'business' ? '/business-dashboard' : role === 'tech' ? '/tech-dashboard' : '/student-dashboard';
+  const dashPath = getRoleDashboardPath(role);
 
   return (
     <header className="navbar">

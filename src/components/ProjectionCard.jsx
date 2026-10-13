@@ -1,5 +1,3 @@
-import React from 'react';
-
 export default function ProjectionCard({ projections = [], costLoss = '₹18.4L', crunchData }) {
   return (
     <div className="panel-card">
@@ -27,7 +25,7 @@ export default function ProjectionCard({ projections = [], costLoss = '₹18.4L'
               {p.projectedValue}
             </div>
             <span 
-              className={p.status === 'Current' ? 'gain' : 'gain'} 
+              className="gain" 
               style={{ fontSize: '10px', padding: '2px 6px' }}
             >
               {p.simulatedGrowth}

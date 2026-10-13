@@ -1,5 +1,3 @@
-import React from 'react';
-
 export default function HoldingsTable({ holdings = [], title = 'Portfolio Holdings' }) {
   const hasHoldings = Array.isArray(holdings) && holdings.length > 0;
 

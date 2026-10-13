@@ -1,4 +1,3 @@
-import React from 'react';
 import PublicLayout from './PublicLayout';
 import DashboardLayout from './DashboardLayout';
 

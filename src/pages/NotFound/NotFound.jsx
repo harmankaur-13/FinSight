@@ -1,10 +1,10 @@
-import React from 'react';
 import { Link } from 'react-router-dom';
+import { getRoleDashboardPath } from '../../hooks/useFinanceData';
 
 export default function NotFound({ user }) {
   const isAuth = Boolean(user?.isLoggedIn);
   const role = user?.userType || 'student';
-  const dashPath = role === 'business' ? '/business-dashboard' : role === 'tech' ? '/tech-dashboard' : '/student-dashboard';
+  const dashPath = getRoleDashboardPath(role);
 
   return (
     <div className="container" style={{ padding: '80px 0', textAlign: 'center', minHeight: '60vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>

@@ -66,6 +66,13 @@ export function formatHumanName(input) {
   return raw.charAt(0).toUpperCase() + raw.slice(1).toLowerCase();
 }
 
+// Helper to map role to corresponding dashboard route
+export function getRoleDashboardPath(role) {
+  if (role === 'business') return '/business-dashboard';
+  if (role === 'tech') return '/tech-dashboard';
+  return '/student-dashboard';
+}
+
 export function useFinanceData() {
   // Load user from localStorage or initialize with null
   const [user, setUser] = useState(() => {

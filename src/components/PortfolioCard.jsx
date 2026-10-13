@@ -1,5 +1,3 @@
-import React from 'react';
-
 export default function PortfolioCard({
   title = 'Total portfolio',
   value = '₹0',

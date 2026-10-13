@@ -2,16 +2,8 @@ import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import Toast from '../../components/Toast';
 import ThemeToggle from '../../components/ThemeToggle';
-
-const ASSET_TYPES = [
-  'Stocks',
-  'Mutual Funds',
-  'ETFs',
-  'Bonds',
-  'Crypto',
-  'Real Estate',
-  'Other'
-];
+import { ASSET_TYPES } from '../../utils/financialCalculations';
+import { getRoleDashboardPath } from '../../hooks/useFinanceData';
 
 export default function Onboarding({ user, onUpdateProfile }) {
   const navigate = useNavigate();
@@ -179,13 +171,7 @@ export default function Onboarding({ user, onUpdateProfile }) {
     triggerToast('Configuring your personalized dashboard...');
 
     setTimeout(() => {
-      if (userType === 'business') {
-        navigate('/business-dashboard');
-      } else if (userType === 'tech') {
-        navigate('/tech-dashboard');
-      } else {
-        navigate('/student-dashboard');
-      }
+      navigate(getRoleDashboardPath(userType));
     }, 700);
   };
 

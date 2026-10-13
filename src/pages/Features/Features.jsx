@@ -1,4 +1,3 @@
-import React from 'react';
 import { FEATURES_DATA } from '../../data/mockData';
 
 export default function Features() {

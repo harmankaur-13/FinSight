@@ -1,4 +1,3 @@
-import React from 'react';
 import { ABOUT_DATA } from '../../data/mockData';
 
 export default function About() {

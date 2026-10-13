@@ -1,14 +1,5 @@
 import React, { useState } from 'react';
-
-const ASSET_TYPES = [
-  'Stocks',
-  'Mutual Funds',
-  'ETFs',
-  'Bonds',
-  'Crypto',
-  'Real Estate',
-  'Other'
-];
+import { ASSET_TYPES } from '../utils/financialCalculations';
 
 export default function ManagePortfolioModal({
   isOpen,

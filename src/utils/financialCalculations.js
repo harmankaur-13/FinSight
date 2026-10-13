@@ -10,6 +10,16 @@ export const ASSET_COLORS = {
   'Other': '#64748b'            // Slate Gray
 };
 
+export const ASSET_TYPES = [
+  'Stocks',
+  'Mutual Funds',
+  'ETFs',
+  'Bonds',
+  'Crypto',
+  'Real Estate',
+  'Other'
+];
+
 /**
  * Format currency in Indian notation
  */

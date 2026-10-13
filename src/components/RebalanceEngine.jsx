@@ -4,18 +4,9 @@ import {
   calculateAssetAllocations,
   calculateAllocationDrift,
   formatCurrency,
-  ASSET_COLORS
+  ASSET_COLORS,
+  ASSET_TYPES
 } from '../utils/financialCalculations';
-
-const STANDARD_ASSET_TYPES = [
-  'Stocks',
-  'Mutual Funds',
-  'ETFs',
-  'Bonds',
-  'Crypto',
-  'Real Estate',
-  'Other'
-];
 
 export default function RebalanceEngine({
   investments = [],
@@ -207,7 +198,7 @@ export default function RebalanceEngine({
 
   const availableTypesToAdd = useMemo(() => {
     const existing = Object.keys(targets);
-    return STANDARD_ASSET_TYPES.filter((t) => !existing.includes(t));
+    return ASSET_TYPES.filter((t) => !existing.includes(t));
   }, [targets]);
 
   return (

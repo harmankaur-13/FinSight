@@ -1,6 +1,5 @@
-import React from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import { useFinanceData } from './hooks/useFinanceData';
+import { useFinanceData, getRoleDashboardPath } from './hooks/useFinanceData';
 
 // Layouts
 import PublicLayout from './layouts/PublicLayout';
@@ -48,15 +47,6 @@ export default function App() {
     techData
   } = useFinanceData();
 
-  // Helper to determine active dashboard route based on user profile
-  const getRoleDashboardPath = () => {
-    if (!user) return '/login';
-    if (user.needsOnboarding) return '/onboarding';
-    if (user.userType === 'business') return '/business-dashboard';
-    if (user.userType === 'tech') return '/tech-dashboard';
-    return '/student-dashboard';
-  };
-
   return (
     <BrowserRouter>
       <ScrollToTop />
@@ -67,7 +57,7 @@ export default function App() {
             path="/" 
             element={
               isAuthenticated && !user?.needsOnboarding ? (
-                <Navigate to={getRoleDashboardPath()} replace />
+                <Navigate to={getRoleDashboardPath(user?.userType)} replace />
               ) : (
                 <Landing onDemoLogin={demoLogin} />
               )
@@ -97,7 +87,7 @@ export default function App() {
           path="/login"
           element={
             isAuthenticated && !user?.needsOnboarding ? (
-              <Navigate to={getRoleDashboardPath()} replace />
+              <Navigate to={getRoleDashboardPath(user?.userType)} replace />
             ) : (
               <Login onLogin={login} onDemoLogin={demoLogin} />
             )
@@ -107,7 +97,7 @@ export default function App() {
           path="/signup"
           element={
             isAuthenticated && !user?.needsOnboarding ? (
-              <Navigate to={getRoleDashboardPath()} replace />
+              <Navigate to={getRoleDashboardPath(user?.userType)} replace />
             ) : (
               <Signup onSignup={signup} onDemoLogin={demoLogin} />
             )
@@ -136,7 +126,7 @@ export default function App() {
             {/* Generic /dashboard auto-redirects based on user type */}
             <Route
               path="/dashboard"
-              element={<Navigate to={getRoleDashboardPath()} replace />}
+              element={<Navigate to={getRoleDashboardPath(user?.userType)} replace />}
             />
             <Route
               path="/student-dashboard"
