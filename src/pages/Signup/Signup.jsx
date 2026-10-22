@@ -70,7 +70,7 @@ export default function Signup({ onSignup, onDemoLogin }) {
   return (
     <main className="auth-page">
       <section className="intro">
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <div className="intro-top">
           <Link to="/" className="brand">
             <div className="brand-icon">F</div>
             <span>FinSight</span>
@@ -168,6 +168,7 @@ export default function Signup({ onSignup, onDemoLogin }) {
                   type="button"
                   id="togglePassword"
                   onClick={() => setShowPassword(!showPassword)}
+                  aria-label={showPassword ? 'Hide password' : 'Show password'}
                 >
                   {showPassword ? 'Hide' : 'Show'}
                 </button>
@@ -201,7 +202,7 @@ export default function Signup({ onSignup, onDemoLogin }) {
               </label>
             </div>
 
-            {error && <p className="error" id="error">{error}</p>}
+            {error && <p className="error" id="error" role="alert">{error}</p>}
 
             <button className="submit-btn" type="submit" id="submitBtn">
               Create account

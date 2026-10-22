@@ -66,7 +66,7 @@ export default function BusinessDashboard({
     <div className="dashboard-wrapper">
       <div className="dash-header-row">
         <div>
-          <span className="eyebrow eyebrow-gold">CORPORATE TREASURY INTELLIGENCE</span>
+          <span className="eyebrow">CORPORATE TREASURY INTELLIGENCE</span>
           <h1 className="page-title">
             {businessTitle}
           </h1>
@@ -186,7 +186,7 @@ export default function BusinessDashboard({
             {marketOutlook}
           </p>
 
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', background: 'var(--bg)', padding: '14px', borderRadius: '10px', border: '1px solid var(--border)' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: '10px', background: 'var(--bg)', padding: '14px', borderRadius: '10px', border: '1px solid var(--border)' }}>
             <div>
               <span style={{ fontSize: '11px', color: 'var(--muted)', display: 'block' }}>Annualized Volatility</span>
               <strong>{riskMetrics?.annualizedVolatility || 'N/A'}</strong>

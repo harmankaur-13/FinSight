@@ -17,7 +17,7 @@ export default function Ratings() {
   return (
     <div className="container" style={{ padding: '40px 0 90px' }}>
       <div className="page-header">
-        <span className="eyebrow eyebrow-gold">INSTITUTIONAL CONSENSUS</span>
+        <span className="eyebrow">INSTITUTIONAL CONSENSUS</span>
         <h1 className="page-title">Stock & Asset Ratings</h1>
         <p className="page-subtitle">
           Independent quantitative ratings, 12-month analyst targets, price-to-earnings valuations, and risk matrices.

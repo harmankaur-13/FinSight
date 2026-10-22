@@ -4,7 +4,7 @@ export default function Features() {
   return (
     <div className="container" style={{ padding: '40px 0 90px' }}>
       <div className="page-header">
-        <span className="eyebrow eyebrow-gold">CAPABILITIES & ARCHITECTURE</span>
+        <span className="eyebrow">CAPABILITIES & ARCHITECTURE</span>
         <h1 className="page-title">Designed for absolute financial clarity.</h1>
         <p className="page-subtitle">
           Explore the tools and intelligence modules that help individuals, growing businesses, and technology enterprises manage their wealth with discipline.

@@ -34,8 +34,8 @@ export default function ProjectionCard({ projections = [], costLoss = '₹18.4L'
         ))}
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '18px' }}>
-        <div style={{ background: 'var(--error-light)', border: '1px solid #f2c7c2', borderRadius: '10px', padding: '16px' }}>
+      <div className="projection-highlights-grid">
+        <div style={{ background: 'var(--error-light)', border: '1px solid var(--badge-sell-border, rgba(217, 83, 79, 0.3))', borderRadius: '10px', padding: '16px' }}>
           <span style={{ fontSize: '11px', color: 'var(--error)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.5px' }}>
             Cost / Loss Analysis
           </span>
@@ -49,7 +49,7 @@ export default function ProjectionCard({ projections = [], costLoss = '₹18.4L'
 
         {crunchData && (
           <div style={{ background: 'var(--bg)', border: '1px solid var(--border)', borderRadius: '10px', padding: '16px' }}>
-            <span style={{ fontSize: '11px', color: 'var(--gold)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+            <span style={{ fontSize: '11px', color: 'var(--accent-label)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.5px' }}>
               {crunchData.title}
             </span>
             <div style={{ fontSize: '14px', fontWeight: 700, color: 'var(--text)', margin: '4px 0' }}>

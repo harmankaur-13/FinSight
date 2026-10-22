@@ -64,7 +64,7 @@ export default function Login({ onLogin, onDemoLogin }) {
   return (
     <main className="auth-page">
       <section className="intro">
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <div className="intro-top">
           <Link to="/" className="brand">
             <div className="brand-icon">F</div>
             <span>FinSight</span>
@@ -116,8 +116,8 @@ export default function Login({ onLogin, onDemoLogin }) {
 
           <div className="header">
             <p className="label" id="modeLabel">WELCOME BACK</p>
-            <h2 id="title">Welcome back</h2>
-            <p id="subtitle">Log in to continue to your financial dashboard.</p>
+            <h2 id="title">Log in to your account</h2>
+            <p id="subtitle">Access your financial dashboard and portfolio insights.</p>
           </div>
 
           <form onSubmit={handleSubmit} id="authForm">
@@ -153,13 +153,14 @@ export default function Login({ onLogin, onDemoLogin }) {
                   type="button"
                   id="togglePassword"
                   onClick={() => setShowPassword(!showPassword)}
+                  aria-label={showPassword ? 'Hide password' : 'Show password'}
                 >
                   {showPassword ? 'Hide' : 'Show'}
                 </button>
               </div>
             </div>
 
-            {error && <p className="error" id="error">{error}</p>}
+            {error && <p className="error" id="error" role="alert">{error}</p>}
 
             <button className="submit-btn" type="submit" id="submitBtn">
               Log in

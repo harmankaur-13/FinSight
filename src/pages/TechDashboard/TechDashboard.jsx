@@ -67,7 +67,7 @@ export default function TechDashboard({
     <div className="dashboard-wrapper">
       <div className="dash-header-row">
         <div>
-          <span className="eyebrow eyebrow-gold">ENTERPRISE TREASURY & TECH PERSPECTIVE</span>
+          <span className="eyebrow">ENTERPRISE TREASURY & TECH PERSPECTIVE</span>
           <h1 className="page-title">
             {enterpriseTitle}
           </h1>
@@ -201,8 +201,9 @@ export default function TechDashboard({
                       fontWeight: 700, 
                       padding: '2px 8px', 
                       borderRadius: '4px',
-                      background: r.severity === 'High' ? 'var(--error-light)' : r.severity === 'Medium' ? 'var(--gold-light)' : 'var(--green-light)',
-                      color: r.severity === 'High' ? 'var(--error)' : r.severity === 'Medium' ? '#7d5722' : 'var(--green-dark)'
+                      background: r.severity === 'High' ? 'var(--error-light)' : r.severity === 'Medium' ? 'var(--surface-2)' : 'var(--green-light)',
+                      color: r.severity === 'High' ? 'var(--error)' : r.severity === 'Medium' ? 'var(--text)' : 'var(--green-dark)',
+                      border: r.severity === 'Medium' ? '1px solid var(--border)' : 'none'
                     }}
                   >
                     {r.severity} Severity

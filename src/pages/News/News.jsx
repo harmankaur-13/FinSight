@@ -15,7 +15,7 @@ export default function News() {
   return (
     <div className="container" style={{ padding: '40px 0 90px' }}>
       <div className="page-header">
-        <span className="eyebrow eyebrow-gold">FINANCIAL INTELLIGENCE DISPATCH</span>
+        <span className="eyebrow">FINANCIAL INTELLIGENCE DISPATCH</span>
         <h1 className="page-title">Market & Macro News</h1>
         <p className="page-subtitle">
           Curated institutional insights, central bank monetary updates, and corporate developments with zero distraction.

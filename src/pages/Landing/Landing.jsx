@@ -37,37 +37,37 @@ export default function Landing({ onDemoLogin }) {
 
   return (
     <>
+      {/* Hero Section */}
       <section className="hero">
         <div className="hero-content">
           <div className="eyebrow">
-            <span className="pulse"></span>
             PERSONAL WEALTH INTELLIGENCE
           </div>
 
           <h1 className="hero-title">
-            Make every financial
-            <span>decision count.</span>
+            Everything your money needs
+            <span>in one platform.</span>
           </h1>
 
           <p className="hero-text">
-            FinSight brings your investments, goals, market insights and
-            rebalancing decisions into one intelligent dashboard.
+            Bring your investments, financial goals, market insights, and
+            portfolio decisions together in one place.
           </p>
 
           <div className="hero-actions">
             <button 
               className="btn btn-primary btn-large" 
               id="heroStart"
-              onClick={scrollToFeatures}
+              onClick={() => navigate('/signup')}
             >
-              Explore your finances <span>→</span>
+              Get Started Free <span>→</span>
             </button>
             <button 
               className="btn btn-outline btn-large" 
               id="demoBtn"
               onClick={() => handleDemoClick('student')}
             >
-              View demo
+              Explore Live Demo
             </button>
           </div>
 
@@ -87,9 +87,8 @@ export default function Landing({ onDemoLogin }) {
           </div>
         </div>
 
+        {/* Product Visual: Clean, balanced single card preview */}
         <div className="hero-visual">
-          <div className="glow"></div>
-
           <div className="dashboard-card">
             <div className="card-top">
               <div>
@@ -101,21 +100,14 @@ export default function Landing({ onDemoLogin }) {
 
             <div className="chart">
               <div className="chart-grid"></div>
-              <svg viewBox="0 0 520 220" preserveAspectRatio="none">
-                <defs>
-                  <linearGradient id="areaGradLanding" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="#276653" stopOpacity="0.25" />
-                    <stop offset="100%" stopColor="#276653" stopOpacity="0.0" />
-                  </linearGradient>
-                </defs>
+              <svg viewBox="0 0 520 200" preserveAspectRatio="none">
                 <path
                   className="area"
-                  fill="url(#areaGradLanding)"
-                  d="M0 185 C45 170 60 150 95 160 C130 170 145 135 180 145 C220 158 235 105 275 120 C315 135 325 85 365 100 C400 112 425 65 460 78 C485 88 500 55 520 48 L520 220 L0 220 Z"
+                  d="M0 160 C50 145 70 130 110 138 C150 146 170 115 210 125 C250 135 280 88 320 102 C360 115 400 68 440 78 C480 88 500 50 520 42 L520 200 L0 200 Z"
                 />
                 <path
                   className="line"
-                  d="M0 185 C45 170 60 150 95 160 C130 170 145 135 180 145 C220 158 235 105 275 120 C315 135 325 85 365 100 C400 112 425 65 460 78 C485 88 500 55 520 48"
+                  d="M0 160 C50 145 70 130 110 138 C150 146 170 115 210 125 C250 135 280 88 320 102 C360 115 400 68 440 78 C480 88 500 50 520 42"
                 />
               </svg>
             </div>
@@ -135,34 +127,10 @@ export default function Landing({ onDemoLogin }) {
               </div>
             </div>
           </div>
-
-          <div className="float-card allocation-float">
-            <div className="mini-icon">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
-                <circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" strokeWidth="2.5" />
-                <path d="M12 3 A9 9 0 0 1 12 21 Z" />
-              </svg>
-            </div>
-            <div>
-              <small>Allocation drift</small>
-              <strong>2.4%</strong>
-            </div>
-          </div>
-
-          <div className="float-card insight-float">
-            <div className="mini-icon">
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M12 2L22 12L12 22L2 12Z" />
-              </svg>
-            </div>
-            <div>
-              <small>FinSight insight</small>
-              <strong>Portfolio is healthy</strong>
-            </div>
-          </div>
         </div>
       </section>
 
+      {/* Features Section */}
       <section className="features" id="features">
         <div className="section-heading">
           <p className="eyebrow">ONE PLACE. CLEARER DECISIONS.</p>
@@ -190,17 +158,20 @@ export default function Landing({ onDemoLogin }) {
         </div>
       </section>
 
+      {/* Audience Section */}
       <section className="audience" id="dashboards">
-        <div>
+        <div className="section-heading">
           <p className="eyebrow">BUILT FOR DIFFERENT GOALS</p>
           <h2>One FinSight. Multiple perspectives.</h2>
         </div>
 
         <div className="audience-grid">
           <div 
-            className="audience-card student" 
-            style={{ cursor: 'pointer' }}
+            className="audience-card" 
             onClick={() => handleDemoClick('student')}
+            role="button"
+            tabIndex={0}
+            onKeyDown={(e) => e.key === 'Enter' && handleDemoClick('student')}
           >
             <span className="card-number">01</span>
             <h3>Student</h3>
@@ -209,9 +180,11 @@ export default function Landing({ onDemoLogin }) {
           </div>
 
           <div 
-            className="audience-card business" 
-            style={{ cursor: 'pointer' }}
+            className="audience-card" 
             onClick={() => handleDemoClick('business')}
+            role="button"
+            tabIndex={0}
+            onKeyDown={(e) => e.key === 'Enter' && handleDemoClick('business')}
           >
             <span className="card-number">02</span>
             <h3>Business</h3>
@@ -220,9 +193,11 @@ export default function Landing({ onDemoLogin }) {
           </div>
 
           <div 
-            className="audience-card enterprise" 
-            style={{ cursor: 'pointer' }}
+            className="audience-card" 
             onClick={() => handleDemoClick('tech')}
+            role="button"
+            tabIndex={0}
+            onKeyDown={(e) => e.key === 'Enter' && handleDemoClick('tech')}
           >
             <span className="card-number">03</span>
             <h3>Big Tech</h3>
@@ -236,3 +211,4 @@ export default function Landing({ onDemoLogin }) {
     </>
   );
 }
+

@@ -205,10 +205,12 @@ export default function RebalanceEngine({
     <div className="panel-card rebalance-engine-card" id="rebalance-engine">
       <div className="panel-header">
         <div className="rebalance-header-title-wrap">
-          <span className="eyebrow eyebrow-green" style={{ display: 'inline-block', marginBottom: '6px' }}>PORTFOLIO REBALANCING ENGINE</span>
+          <span className="eyebrow eyebrow-green" style={{ display: 'inline-block', marginBottom: '6px' }}>
+            PORTFOLIO REBALANCING ENGINE
+          </span>
           <h3 className="panel-title">Target Rebalancing & Trade Planner</h3>
           <span className="panel-subtitle">
-            Calculate exact BUY / SELL trade amounts or fresh contribution plans to align with target asset allocation
+            Align your portfolio to your target asset allocation with calculated buy/sell trades and contribution planning.
           </span>
         </div>
       </div>
@@ -236,16 +238,82 @@ export default function RebalanceEngine({
         </div>
       ) : (
         <div className="rebalance-body">
-          {/* Top Control Grid: Target Editor + Rebalancing Settings */}
+          {/* Executive Summary Bar */}
+          <div className="rebalance-summary-strip">
+            <div className="rebalance-summary-col">
+              <span className="summary-strip-label">Current Drift</span>
+              <div className="summary-strip-value-wrap">
+                <span className={`summary-strip-val ${parseFloat(driftBeforeFormatted) > 5 ? 'drift-high' : ''}`}>
+                  {driftBeforeFormatted}
+                </span>
+              </div>
+              <span className="summary-strip-sub">Max allocation variance</span>
+            </div>
+
+            <div className="rebalance-summary-divider" />
+
+            <div className="rebalance-summary-col">
+              <span className="summary-strip-label">Projected Drift</span>
+              <div className="summary-strip-value-wrap">
+                <span className="summary-strip-val drift-after">
+                  {isTargetSumValid ? driftAfterFormatted : '—'}
+                </span>
+              </div>
+              <span className="summary-strip-sub">After planned execution</span>
+            </div>
+
+            <div className="rebalance-summary-divider" />
+
+            <div className="rebalance-summary-col">
+              <span className="summary-strip-label">Post-Rebalance Value</span>
+              <div className="summary-strip-value-wrap">
+                <span className="summary-strip-val">
+                  {formatCurrency(rebalanceResult.totalPostValue || rebalanceResult.totalCurrentValue)}
+                </span>
+              </div>
+              <span className="summary-strip-sub">
+                {newCash > 0 ? `Includes +${formatCurrency(newCash)} cash` : 'Current holdings baseline'}
+              </span>
+            </div>
+
+            <div className="rebalance-summary-divider" />
+
+            <div className="rebalance-summary-col">
+              <span className="summary-strip-label">Recommended Plan</span>
+              <div className="summary-strip-value-wrap">
+                <span className={`summary-strip-status-pill ${
+                  !isTargetSumValid
+                    ? 'pill-invalid'
+                    : rebalanceResult.trades && rebalanceResult.trades.length > 0
+                    ? 'pill-active'
+                    : 'pill-balanced'
+                }`}>
+                  {!isTargetSumValid
+                    ? 'Target Sum != 100%'
+                    : rebalanceResult.trades && rebalanceResult.trades.length > 0
+                    ? `${rebalanceResult.trades.length} Trade${rebalanceResult.trades.length > 1 ? 's' : ''} Recommended`
+                    : 'Fully Balanced'}
+                </span>
+              </div>
+              <span className="summary-strip-sub">
+                {!isTargetSumValid
+                  ? `Allocations total ${targetSum}%`
+                  : rebalanceResult.trades && rebalanceResult.trades.length > 0
+                  ? (allowSell ? 'Sell & Buy execution' : 'Buy-only capital allocation')
+                  : 'No trading required'}
+              </span>
+            </div>
+          </div>
+
+          {/* Controls: Target Allocation Editor (Left) & Strategy/Cash (Right) */}
           <div className="rebalance-controls-grid">
-            {/* Left: Target Allocation Editor */}
-            <div className="rebalance-section-box">
-              <div className="rebalance-sub-header">
+            {/* Left: Target Allocation Configuration */}
+            <div className="rebalance-panel-section">
+              <div className="rebalance-section-head">
                 <div>
                   <h4 className="rebalance-sub-title">Target Allocation Editor</h4>
                   <span className="rebalance-sub-desc">Adjust desired portfolio percentage per asset class</span>
                 </div>
-                {/* Live Total Indicator */}
                 <div
                   className={`target-total-badge ${isTargetSumValid ? 'valid' : 'invalid'}`}
                   title={isTargetSumValid ? 'Target allocation equals 100%' : `Target allocations sum to ${targetSum}%. Must equal 100%.`}
@@ -264,26 +332,38 @@ export default function RebalanceEngine({
                 </div>
               </div>
 
-              {/* Quick Presets */}
+              {/* Presets */}
               <div className="rebalance-presets-row">
                 <span className="presets-label">Presets:</span>
                 <button
                   type="button"
-                  className="preset-btn"
+                  className={`preset-btn ${
+                    targets['Stocks'] === 60 && targets['Bonds'] === 25 && targets['Crypto'] === 15 && Object.keys(targets).length === 3
+                      ? 'active'
+                      : ''
+                  }`}
                   onClick={() => applyPreset('balanced')}
                 >
                   60/25/15 Balanced
                 </button>
                 <button
                   type="button"
-                  className="preset-btn"
+                  className={`preset-btn ${
+                    targets['Stocks'] === 70 && targets['Mutual Funds'] === 15 && targets['Bonds'] === 15 && Object.keys(targets).length === 3
+                      ? 'active'
+                      : ''
+                  }`}
                   onClick={() => applyPreset('growth')}
                 >
                   70/15/15 Growth
                 </button>
                 <button
                   type="button"
-                  className="preset-btn"
+                  className={`preset-btn ${
+                    targets['Stocks'] === 40 && targets['Bonds'] === 40 && targets['Mutual Funds'] === 20 && Object.keys(targets).length === 3
+                      ? 'active'
+                      : ''
+                  }`}
                   onClick={() => applyPreset('conservative')}
                 >
                   40/40/20 Shield
@@ -303,16 +383,49 @@ export default function RebalanceEngine({
                   const currAlloc = currentAllocations.find((a) => a.name === type);
                   const currPct = currAlloc ? currAlloc.percentage : 0;
                   const targetVal = targets[type] !== undefined ? targets[type] : '';
+                  const targetNum = targetVal === '' ? 0 : Number(targetVal);
                   const color = ASSET_COLORS[type] || ASSET_COLORS['Other'];
+                  const driftDiff = Number((currPct - targetNum).toFixed(1));
+                  const isOverweight = driftDiff > 0;
+                  const driftLabel = isOverweight ? `+${driftDiff}% Overweight` : `${driftDiff}% Underweight`;
 
                   return (
                     <div key={type} className="target-input-row">
-                      <div className="target-asset-meta">
-                        <span className="asset-color-dot" style={{ backgroundColor: color }} />
-                        <span className="target-asset-name">{type}</span>
-                        <span className="target-asset-current">
-                          Current: <strong>{currPct.toFixed(1)}%</strong>
-                        </span>
+                      <div className="target-row-main">
+                        <div className="target-asset-meta">
+                          <span className="asset-color-dot" style={{ backgroundColor: color }} />
+                          <span className="target-asset-name">{type}</span>
+                          {driftDiff !== 0 && (
+                            <span className={`target-drift-tag ${isOverweight ? 'drift-over' : 'drift-under'}`}>
+                              {driftLabel}
+                            </span>
+                          )}
+                        </div>
+
+                        {/* Dual Allocation Bar */}
+                        <div className="target-alloc-comparison-bar">
+                          <div className="alloc-bar-track">
+                            <div
+                              className="alloc-bar-current"
+                              style={{
+                                width: `${Math.min(100, Math.max(0, currPct))}%`,
+                                backgroundColor: color
+                              }}
+                              title={`Current: ${currPct.toFixed(1)}%`}
+                            />
+                            {targetNum > 0 && (
+                              <div
+                                className="alloc-bar-target-marker"
+                                style={{ left: `${Math.min(100, Math.max(0, targetNum))}%` }}
+                                title={`Target: ${targetNum}%`}
+                              />
+                            )}
+                          </div>
+                          <div className="alloc-bar-labels">
+                            <span className="bar-label-current">Current: <strong>{currPct.toFixed(1)}%</strong></span>
+                            <span className="bar-label-target">Target: <strong>{targetNum}%</strong></span>
+                          </div>
+                        </div>
                       </div>
 
                       <div className="target-input-wrapper">
@@ -325,6 +438,7 @@ export default function RebalanceEngine({
                           value={targetVal}
                           onChange={(e) => handleTargetChange(type, e.target.value)}
                           className="target-num-input"
+                          aria-label={`${type} target percentage`}
                         />
                         <span className="target-input-unit">%</span>
                         {Object.keys(targets).length > 1 && (
@@ -350,6 +464,7 @@ export default function RebalanceEngine({
                     value={selectedAssetToAdd}
                     onChange={(e) => setSelectedAssetToAdd(e.target.value)}
                     className="fin-select select-small"
+                    aria-label="Add asset category"
                   >
                     <option value="">+ Add Asset Category...</option>
                     {availableTypesToAdd.map((t) => (
@@ -371,42 +486,46 @@ export default function RebalanceEngine({
               )}
             </div>
 
-            {/* Right: Cash Contribution & Execution Strategy */}
-            <div className="rebalance-section-box">
-              <div className="rebalance-sub-header">
+            {/* Right: Strategy & Cash Injection */}
+            <div className="rebalance-panel-section">
+              <div className="rebalance-section-head">
                 <div>
                   <h4 className="rebalance-sub-title">Rebalancing Strategy & Cash</h4>
                   <span className="rebalance-sub-desc">Configure fresh cash injection and selling preferences</span>
                 </div>
               </div>
 
-              {/* Mode Toggle Switch */}
-              <div className="rebalance-toggle-box">
-                <div className="toggle-info">
-                  <strong className="toggle-title">
-                    {allowSell ? 'Full Rebalancing (Sell & Buy)' : 'Buy Only (No Selling)'}
-                  </strong>
-                  <p className="toggle-desc">
-                    {allowSell
-                      ? 'Sells overweight assets and buys underweight assets to reach exact target proportions.'
-                      : 'Never sells any holdings. Directs fresh cash only to underweight assets to glide toward targets.'}
-                  </p>
+              {/* Strategy Selector (Clean Segmented Option) */}
+              <div className="rebalance-strategy-selector">
+                <span className="field-label-bold">Execution Strategy</span>
+                <div className="strategy-segmented-controls" role="group" aria-label="Rebalance Strategy Selection">
+                  <button
+                    type="button"
+                    className={`strategy-segment-btn ${allowSell ? 'active' : ''}`}
+                    onClick={() => setAllowSell(true)}
+                  >
+                    Full Rebalance (Sell & Buy)
+                  </button>
+                  <button
+                    type="button"
+                    className={`strategy-segment-btn ${!allowSell ? 'active' : ''}`}
+                    onClick={() => setAllowSell(false)}
+                  >
+                    Buy Only (No Selling)
+                  </button>
                 </div>
-                <label className="switch-toggle" aria-label="Toggle Buy Only mode">
-                  <input
-                    type="checkbox"
-                    checked={!allowSell}
-                    onChange={(e) => setAllowSell(!e.target.checked)}
-                  />
-                  <span className="slider round" />
-                </label>
+                <p className="strategy-description">
+                  {allowSell
+                    ? 'Sells overweight assets and buys underweight assets to reach exact target proportions.'
+                    : 'Never sells any holdings. Directs fresh cash only to underweight assets to glide toward targets.'}
+                </p>
               </div>
 
               {/* Fresh Cash Contribution Controls */}
               <div className="cash-contribution-group">
                 <div className="cash-header-row">
                   <label htmlFor="new-cash-input" className="field-label-bold">
-                    Fresh Capital Contribution (₹)
+                    Fresh Capital Contribution
                   </label>
                   <span className="cash-current-val">{formatCurrency(newCash)}</span>
                 </div>
@@ -486,25 +605,6 @@ export default function RebalanceEngine({
                 </div>
               </div>
 
-              {/* Rebalance Summary Bar */}
-              <div className="drift-summary-card">
-                <div className="drift-summary-item">
-                  <span className="summary-label">Max Drift Before</span>
-                  <strong className="summary-val before">{driftBeforeFormatted}</strong>
-                </div>
-                <div className="drift-arrow">→</div>
-                <div className="drift-summary-item">
-                  <span className="summary-label">Max Drift After</span>
-                  <strong className="summary-val after">{driftAfterFormatted}</strong>
-                </div>
-                <div className="drift-summary-item net-portfolio">
-                  <span className="summary-label">Post-Rebalance Value</span>
-                  <strong className="summary-val total">
-                    {formatCurrency(rebalanceResult.totalPostValue || rebalanceResult.totalCurrentValue)}
-                  </strong>
-                </div>
-              </div>
-
               {/* Unallocated Cash Alert in Buy-Only Mode */}
               {!allowSell && rebalanceResult.unallocatedCash > 0 && (
                 <div className="unallocated-cash-callout">
@@ -520,7 +620,7 @@ export default function RebalanceEngine({
             </div>
           </div>
 
-          {/* Bottom Trade List Section */}
+          {/* Trade Recommendations Section */}
           <div className="rebalance-trades-section">
             <div className="trades-header-row">
               <div>
@@ -558,47 +658,62 @@ export default function RebalanceEngine({
                 <table className="fin-table rebalance-table">
                   <thead>
                     <tr>
-                      <th>Action</th>
-                      <th>Asset Class</th>
-                      <th>Trade Amount</th>
-                      <th>Current Value</th>
-                      <th>Target Value</th>
-                      <th>Post-Rebalance %</th>
+                      <th style={{ textAlign: 'left' }}>Action</th>
+                      <th style={{ textAlign: 'left' }}>Asset Class</th>
+                      <th style={{ textAlign: 'right' }}>Current Alloc</th>
+                      <th style={{ textAlign: 'right' }}>Target Alloc</th>
+                      <th style={{ textAlign: 'right' }}>Alloc Diff</th>
+                      <th style={{ textAlign: 'right' }}>Recommended Trade</th>
+                      <th style={{ textAlign: 'right' }}>Post-Rebalance</th>
                     </tr>
                   </thead>
                   <tbody>
                     {rebalanceResult.trades.map((trade, idx) => {
                       const isBuy = trade.action === 'BUY';
                       const color = ASSET_COLORS[trade.assetType] || ASSET_COLORS['Other'];
+                      const driftDiff = Number((trade.currentPercentage - trade.targetPercentage).toFixed(1));
+                      const isOverweight = driftDiff > 0;
+                      const diffBadgeLabel = isOverweight ? `+${driftDiff}% Overweight` : `${driftDiff}% Underweight`;
 
                       return (
                         <tr key={`${trade.assetType}-${trade.action}-${idx}`}>
-                          <td>
+                          <td style={{ textAlign: 'left' }}>
                             <span className={`trade-badge ${isBuy ? 'trade-buy' : 'trade-sell'}`}>
                               {isBuy ? '+ BUY' : '- SELL'}
                             </span>
                           </td>
-                          <td>
+                          <td style={{ textAlign: 'left' }}>
                             <div className="trade-asset-cell">
                               <span className="asset-color-dot" style={{ backgroundColor: color }} />
                               <strong className="trade-asset-title">{trade.assetType}</strong>
                             </div>
                           </td>
-                          <td>
+                          <td style={{ textAlign: 'right' }}>
+                            <div className="table-numeric-pair">
+                              <span className="table-primary-num">{formatCurrency(trade.currentAmount)}</span>
+                              <span className="table-secondary-num">{trade.currentPercentage}%</span>
+                            </div>
+                          </td>
+                          <td style={{ textAlign: 'right' }}>
+                            <div className="table-numeric-pair">
+                              <span className="table-primary-num">{formatCurrency(trade.targetAmount)}</span>
+                              <span className="table-secondary-num">{trade.targetPercentage}%</span>
+                            </div>
+                          </td>
+                          <td style={{ textAlign: 'right' }}>
+                            <span className={`trade-diff-badge ${isOverweight ? 'diff-over' : 'diff-under'}`}>
+                              {diffBadgeLabel}
+                            </span>
+                          </td>
+                          <td style={{ textAlign: 'right' }}>
                             <strong className={`trade-amount ${isBuy ? 'buy-text' : 'sell-text'}`}>
-                              {formatCurrency(trade.amount)}
+                              {isBuy ? 'Buy' : 'Sell'} {formatCurrency(trade.amount)}
                             </strong>
                           </td>
-                          <td style={{ color: 'var(--muted)' }}>
-                            {formatCurrency(trade.currentAmount)} ({trade.currentPercentage}%)
-                          </td>
-                          <td style={{ color: 'var(--text)' }}>
-                            {formatCurrency(trade.targetAmount)} ({trade.targetPercentage}%)
-                          </td>
-                          <td>
-                            <div className="post-alloc-cell">
-                              <strong style={{ color: 'var(--green-dark)' }}>{trade.postPercentage}%</strong>
-                              <span className="post-alloc-sub">({formatCurrency(trade.postAmount)})</span>
+                          <td style={{ textAlign: 'right' }}>
+                            <div className="table-numeric-pair">
+                              <span className="table-primary-num post-alloc-num">{trade.postPercentage}%</span>
+                              <span className="table-secondary-num">{formatCurrency(trade.postAmount)}</span>
                             </div>
                           </td>
                         </tr>

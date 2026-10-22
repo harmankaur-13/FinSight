@@ -137,8 +137,8 @@ export default function EducationCard({
                     <img src={m.image} alt={m.title} className="edu-thumb-img" />
                   )}
                   <div className="edu-thumb-overlay" />
-                  <div style={{ display: 'flex', gap: '6px', position: 'absolute', top: '12px', left: '12px', zIndex: 2 }}>
-                    <span className="edu-tag" style={{ position: 'static' }}>{m.category}</span>
+                  <div className="edu-thumb-badges">
+                    <span className="edu-tag">{m.category}</span>
                     {isCompleted && (
                       <span className="badge-completed">✓ Completed</span>
                     )}
@@ -147,11 +147,11 @@ export default function EducationCard({
                 </div>
                 <div className="edu-content">
                   <h4>{m.title}</h4>
-                  <p>{m.summary}</p>
-                  <div className="edu-footer" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <span>{isCompleted ? 'Review Module →' : 'Start Learning →'}</span>
+                  <p className="edu-desc">{m.summary}</p>
+                  <div className="edu-footer">
+                    <span className="edu-footer-action">{isCompleted ? 'Review Module →' : 'Start Learning →'}</span>
                     {m.difficulty && (
-                      <span style={{ fontSize: '10px', color: 'var(--muted)', textTransform: 'uppercase' }}>
+                      <span className="edu-meta-badge">
                         {m.difficulty}
                       </span>
                     )}
@@ -197,8 +197,8 @@ export default function EducationCard({
                       </svg>
                     </div>
                   </div>
-                  <div style={{ display: 'flex', gap: '6px', position: 'absolute', top: '12px', left: '12px', zIndex: 2 }}>
-                    <span className="edu-tag" style={{ position: 'static' }}>{v.topic}</span>
+                  <div className="edu-thumb-badges">
+                    <span className="edu-tag">{v.topic}</span>
                     {isWatched && (
                       <span className="badge-watched">✓ Watched</span>
                     )}
@@ -207,12 +207,12 @@ export default function EducationCard({
                 </div>
                 <div className="edu-content">
                   <h4>{v.title}</h4>
-                  <p style={{ margin: 0, color: 'var(--muted)', fontSize: '12px' }}>
+                  <p className="edu-desc edu-source">
                     Source: {v.channel}
                   </p>
-                  <div className="edu-footer" style={{ marginTop: '12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <span>{isWatched ? 'Watch Again →' : 'Watch Video →'}</span>
-                    <span style={{ fontSize: '10px', color: 'var(--muted)' }}>HD Tutorial</span>
+                  <div className="edu-footer">
+                    <span className="edu-footer-action">{isWatched ? 'Watch Again →' : 'Watch Video →'}</span>
+                    <span className="edu-meta-badge">HD Tutorial</span>
                   </div>
                 </div>
               </div>
@@ -471,7 +471,7 @@ export default function EducationCard({
                   </h4>
                   {activeVideo.keyNotes.map((note, idx) => (
                     <div key={idx} className="checklist-item">
-                      <span className="checklist-icon" style={{ color: 'var(--gold)' }}>★</span>
+                      <span className="checklist-icon" style={{ color: 'var(--accent-text)' }}>✓</span>
                       <span>{note}</span>
                     </div>
                   ))}

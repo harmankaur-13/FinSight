@@ -116,7 +116,7 @@ export default function StudentDashboard({
     <div className="dashboard-wrapper">
       <div className="dash-header-row">
         <div>
-          <span className="eyebrow eyebrow-gold">STUDENT WEALTH PORTAL</span>
+          <span className="eyebrow">STUDENT WEALTH PORTAL</span>
           <h1 className="page-title">
             Welcome back, {displayName}
           </h1>

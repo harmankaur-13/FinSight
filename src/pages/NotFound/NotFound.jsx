@@ -8,7 +8,7 @@ export default function NotFound({ user }) {
 
   return (
     <div className="container" style={{ padding: '80px 0', textAlign: 'center', minHeight: '60vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
-      <span className="eyebrow eyebrow-gold">ERROR 404</span>
+      <span className="eyebrow">ERROR 404</span>
       <h1 style={{ fontSize: '56px', letterSpacing: '-2px', margin: '12px 0' }}>
         Page Not Found
       </h1>
