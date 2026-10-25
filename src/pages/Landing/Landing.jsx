@@ -28,13 +28,6 @@ export default function Landing({ onDemoLogin }) {
     }
   };
 
-  const scrollToFeatures = () => {
-    const el = document.getElementById('features');
-    if (el) {
-      el.scrollIntoView({ behavior: 'smooth' });
-    }
-  };
-
   return (
     <>
       {/* Hero Section */}

@@ -165,7 +165,6 @@ body {
 .onboarding-card,
 .rating-card,
 .news-card,
-.feature-card,
 .modal-card,
 .portfolio-modal-card,
 .dashboard-nav-wrapper,
@@ -638,8 +637,7 @@ nav a.active::after,
 ================================================= */
 
 .eyebrow,
-.eyebrow-green,
-.eyebrow-gold {
+.eyebrow-green {
   color: var(--accent-label);
   letter-spacing: 2px;
   font-size: 11px;
@@ -2406,8 +2404,7 @@ footer .logo span {
     grid-template-columns: 1fr;
   }
 
-  .auth-page .intro,
-  .auth-intro {
+  .auth-page .intro {
     display: none;
   }
 
@@ -3158,20 +3155,6 @@ footer .logo span {
 .rebalance-header-title-wrap {
   display: flex;
   flex-direction: column;
-}
-
-.badge-pill-inline {
-  display: inline-block;
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 0.6px;
-  color: var(--green-dark);
-  background: var(--green-light);
-  padding: 3px 8px;
-  border-radius: 4px;
-  width: fit-content;
-  margin-bottom: 6px;
-  text-transform: uppercase;
 }
 
 .rebalance-empty-state {

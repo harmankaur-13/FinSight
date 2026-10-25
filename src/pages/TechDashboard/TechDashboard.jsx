@@ -29,7 +29,6 @@ export default function TechDashboard({
     costLossExposure,
     techSectorExposure,
     allocationDrift,
-    driftConfigured,
     insightMessage,
     allocations,
     holdings,

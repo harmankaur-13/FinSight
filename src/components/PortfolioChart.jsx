@@ -104,7 +104,7 @@ export default function PortfolioChart({
   const formatXAxis = (dateStr) => {
     if (!dateStr) return '';
     try {
-      const [y, m, d] = dateStr.split('-');
+      const [, m, d] = dateStr.split('-');
       if (!m || !d) return dateStr;
       const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
       const monthName = monthNames[parseInt(m, 10) - 1] || m;

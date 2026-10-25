@@ -1,11 +1,10 @@
 import { Link, NavLink, useNavigate } from 'react-router-dom';
-import { formatHumanName, getRoleDashboardPath } from '../hooks/useFinanceData';
+import { getRoleDashboardPath } from '../hooks/useFinanceData';
 import FloatingSettings from './FloatingSettings';
 
 export default function DashboardNav({ user, onLogout, onSwitchRole }) {
   const navigate = useNavigate();
   const role = user?.userType || 'student';
-  const displayName = formatHumanName(user?.name);
 
   const getDashboardRoute = () => getRoleDashboardPath(role);
 

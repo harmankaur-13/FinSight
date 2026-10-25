@@ -50,7 +50,7 @@ export default function Login({ onLogin, onDemoLogin }) {
 
   const handleDemo = () => {
     triggerToast('Opening FinSight demo...');
-    const demoUser = onDemoLogin('student');
+    onDemoLogin('student');
     setTimeout(() => {
       navigate('/student-dashboard');
     }, 500);

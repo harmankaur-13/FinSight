@@ -86,7 +86,7 @@ describe('Settings & User Profile Component', () => {
   });
 
   it('renders student-specific financial preferences exclusively for student persona', () => {
-    const html = renderSettings({
+    renderSettings({
       user: {
         name: 'Aman Sharma',
         email: 'student@finsight.demo',
