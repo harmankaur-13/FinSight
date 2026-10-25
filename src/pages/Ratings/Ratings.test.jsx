@@ -104,7 +104,7 @@ describe('Ratings page integration', () => {
   it('renders page layout, header, tabs, and all twelve stocks', () => {
     const html = renderToString(<Ratings />);
 
-    expect(html).toContain('INSTITUTIONAL CONSENSUS');
+    expect(html).toContain('ILLUSTRATIVE RESEARCH');
     expect(html).toContain('Stock &amp; Asset Ratings');
     expect(html).toContain('Search by company or ticker...');
     expect(html).toContain('Connecting Market Feed');

@@ -1,6 +1,6 @@
 import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { formatHumanName, getRoleDashboardPath } from '../hooks/useFinanceData';
-import ThemeToggle from './ThemeToggle';
+import FloatingSettings from './FloatingSettings';
 
 export default function DashboardNav({ user, onLogout, onSwitchRole }) {
   const navigate = useNavigate();
@@ -80,14 +80,7 @@ export default function DashboardNav({ user, onLogout, onSwitchRole }) {
             </div>
           )}
 
-          <div className="user-profile-pill">
-            <div className="user-avatar">
-              {(displayName || 'U').charAt(0).toUpperCase()}
-            </div>
-            <span style={{ fontWeight: 600 }}>{displayName}</span>
-          </div>
-
-          <ThemeToggle size="small" />
+          <FloatingSettings user={user} onLogout={onLogout} />
 
           <button 
             className="btn btn-outline btn-small"

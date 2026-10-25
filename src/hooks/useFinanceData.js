@@ -337,22 +337,26 @@ export function useFinanceData() {
     return mockProfile;
   }, []);
 
-  // Update profile from onboarding
+  // Update profile from onboarding or settings
   const updateProfile = useCallback((profileData) => {
     setUser((prev) => {
-      const emailKey = (profileData.email || prev?.email || '').toLowerCase().trim();
+      const oldEmailKey = (prev?.email || '').toLowerCase().trim();
+      const newEmailKey = (profileData.email || prev?.email || '').toLowerCase().trim();
       const updatedUser = {
         ...(prev || {}),
         ...profileData,
         isLoggedIn: true,
-        isDemo: false,
+        isDemo: profileData.isDemo !== undefined ? profileData.isDemo : Boolean(prev?.isDemo),
         needsOnboarding: false
       };
 
-      if (emailKey) {
+      if (newEmailKey) {
         try {
           const savedAccounts = JSON.parse(localStorage.getItem(STORAGE_KEY_ACCOUNTS) || '{}');
-          savedAccounts[emailKey] = updatedUser;
+          savedAccounts[newEmailKey] = updatedUser;
+          if (oldEmailKey && oldEmailKey !== newEmailKey) {
+            delete savedAccounts[oldEmailKey];
+          }
           localStorage.setItem(STORAGE_KEY_ACCOUNTS, JSON.stringify(savedAccounts));
         } catch (e) {
           console.error('Failed to sync updated profile to accounts', e);
@@ -360,10 +364,13 @@ export function useFinanceData() {
       }
 
       // If financial data is provided in onboarding
-      if (profileData.financialData && emailKey) {
+      if (profileData.financialData && newEmailKey) {
         try {
           const allFinData = JSON.parse(localStorage.getItem(STORAGE_KEY_FINANCIAL_DATA) || '{}');
-          allFinData[emailKey] = profileData.financialData;
+          allFinData[newEmailKey] = profileData.financialData;
+          if (oldEmailKey && oldEmailKey !== newEmailKey) {
+            delete allFinData[oldEmailKey];
+          }
           localStorage.setItem(STORAGE_KEY_FINANCIAL_DATA, JSON.stringify(allFinData));
           setFinancialData(profileData.financialData);
         } catch (e) {

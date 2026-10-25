@@ -22,6 +22,7 @@ import Features from './pages/Features/Features';
 import News from './pages/News/News';
 import Ratings from './pages/Ratings/Ratings';
 import About from './pages/About/About';
+import Settings from './pages/Settings/Settings';
 import NotFound from './pages/NotFound/NotFound';
 
 export default function App() {
@@ -184,6 +185,22 @@ export default function App() {
                   />
                 </ProtectedRoute>
               }
+            />
+            <Route
+              path="/settings"
+              element={
+                <Settings
+                  user={user}
+                  onUpdateProfile={updateProfile}
+                  onLogout={logout}
+                  financialData={financialData}
+                  onUpdateMonthlySavings={updateMonthlySavings}
+                />
+              }
+            />
+            <Route
+              path="/profile"
+              element={<Navigate to="/settings" replace />}
             />
           </Route>
         </Route>

@@ -42,17 +42,17 @@ export default function Navbar({ user, onLogout }) {
       </nav>
 
       <div className="nav-actions">
-        <ThemeToggle />
+        {!isAuth && <ThemeToggle />}
         {isAuth ? (
           <>
-            <button 
+            <button
               className="btn btn-ghost"
               onClick={() => navigate(dashPath)}
             >
               Dashboard
             </button>
-            <button 
-              className="btn btn-outline" 
+            <button
+              className="btn btn-outline"
               onClick={() => {
                 if (onLogout) onLogout();
                 navigate('/login');

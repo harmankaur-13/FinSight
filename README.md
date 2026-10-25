@@ -90,6 +90,40 @@ FinSight provides tailored dashboards based on the user's selected profile:
 
 ---
 
+## Getting Started
+
+1. **Install dependencies**
+   ```bash
+   npm install
+   ```
+
+2. **Configure environment variables**
+   Copy the example environment file to `.env`:
+   ```bash
+   cp .env.example .env
+   ```
+   Open `.env` and set your Finnhub API key:
+   ```env
+   VITE_FINNHUB_API_KEY=your_api_key_here
+   ```
+
+3. **Start the development server**
+   ```bash
+   npm run dev
+   ```
+
+4. **Run tests**
+   ```bash
+   npm test
+   ```
+
+5. **Build for production**
+   ```bash
+   npm run build
+   ```
+
+---
+
 ## React Concepts
 
 This project uses core React concepts including:
