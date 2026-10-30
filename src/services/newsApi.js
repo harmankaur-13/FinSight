@@ -190,7 +190,16 @@ export async function fetchMarketNews(category = 'general', customApiKey = null)
 
   // Step 8: Normalize articles into FinSight schema
   const normalizedArticles = data
-    .map((item, index) => normalizeFinnhubArticle(item, index))
+    .map((item, index) => {
+      const article = normalizeFinnhubArticle(item, index);
+      if (!article) return null;
+      if (item && typeof item === 'object') {
+        if (item.datetime) article.datetime = item.datetime;
+        if (item.image) article.image = item.image;
+        if (item.related) article.related = item.related;
+      }
+      return article;
+    })
     .filter(Boolean);
 
   if (normalizedArticles.length === 0) {

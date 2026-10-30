@@ -48,15 +48,15 @@ export default function Landing({ onDemoLogin }) {
           </p>
 
           <div className="hero-actions">
-            <button 
-              className="btn btn-primary btn-large" 
+            <button
+              className="btn btn-primary btn-large"
               id="heroStart"
               onClick={() => navigate('/signup')}
             >
               Get Started Free <span>→</span>
             </button>
-            <button 
-              className="btn btn-outline btn-large" 
+            <button
+              className="btn btn-outline btn-large"
               id="demoBtn"
               onClick={() => handleDemoClick('student')}
             >
@@ -159,8 +159,8 @@ export default function Landing({ onDemoLogin }) {
         </div>
 
         <div className="audience-grid">
-          <div 
-            className="audience-card" 
+          <div
+            className="audience-card"
             onClick={() => handleDemoClick('student')}
             role="button"
             tabIndex={0}
@@ -172,8 +172,8 @@ export default function Landing({ onDemoLogin }) {
             <span className="btn-link">Preview Dashboard →</span>
           </div>
 
-          <div 
-            className="audience-card" 
+          <div
+            className="audience-card"
             onClick={() => handleDemoClick('business')}
             role="button"
             tabIndex={0}
@@ -185,8 +185,8 @@ export default function Landing({ onDemoLogin }) {
             <span className="btn-link">Preview Dashboard →</span>
           </div>
 
-          <div 
-            className="audience-card" 
+          <div
+            className="audience-card"
             onClick={() => handleDemoClick('tech')}
             role="button"
             tabIndex={0}

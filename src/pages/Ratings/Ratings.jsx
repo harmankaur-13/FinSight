@@ -53,8 +53,8 @@ export default function Ratings() {
   const filteredRatings = RATINGS_DATA.filter((item) => {
     const matchesFilter = filter === 'All' || item.rating === filter || item.riskLevel === filter;
     const matchesSearch = item.name.toLowerCase().includes(search.toLowerCase()) ||
-                          item.symbol.toLowerCase().includes(search.toLowerCase()) ||
-                          item.sector.toLowerCase().includes(search.toLowerCase());
+      item.symbol.toLowerCase().includes(search.toLowerCase()) ||
+      item.sector.toLowerCase().includes(search.toLowerCase());
     return matchesFilter && matchesSearch;
   });
 
@@ -123,8 +123,8 @@ export default function Ratings() {
               ? 'Fetching daily NSE closing quotes via TejHQ API...'
               : hasLiveQuotes
                 ? (successCount === totalCount
-                    ? `Daily closing prices via TejHQ (NSE) as of ${latestDate}. Illustrative research ratings and targets; not verified analyst consensus.`
-                    : `${successCount} of ${totalCount} closing prices updated via TejHQ. Unavailable stocks display sample prices.`)
+                  ? `Daily closing prices via TejHQ (NSE) as of ${latestDate}. Illustrative research ratings and targets; not verified analyst consensus.`
+                  : `${successCount} of ${totalCount} closing prices updated via TejHQ. Unavailable stocks display sample prices.`)
                 : 'Market API offline. Showing sample prices and illustrative research ratings.'}
           </span>
         </div>

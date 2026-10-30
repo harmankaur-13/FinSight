@@ -431,19 +431,55 @@ export const NEWS_DATA = [
     id: 1,
     category: 'Markets',
     headline: 'Reserve Bank of India Maintains Benchmark Repo Rate Amid Steady Inflation Outlook',
-    summary: 'The Monetary Policy Committee voted unanimously to keep policy rates unchanged, citing resilient domestic growth and stable core inflation trajectories.',
+    summary: 'The Monetary Policy Committee voted unanimously to keep policy rates unchanged at 6.50%, citing resilient domestic growth and stable core inflation trajectories.',
     source: 'Financial Express',
     date: 'Sep 07, 2026',
-    readTime: '3 min read'
+    readTime: '3 min read',
+    url: 'https://financialexpress.com/market-intelligence/rbi-mpc-benchmark-repo-rate-september-2026',
+    related: 'HDFCBANK,SBIN',
+    whatHappened: 'The Monetary Policy Committee (MPC) of the Reserve Bank of India concluded its bi-monthly review with a unanimous decision to hold the benchmark policy repo rate at 6.50%. The standing deposit facility (SDF) rate remains at 6.25%, and the marginal standing facility (MSF) rate stays at 6.75%. The committee reiterated its policy stance of remaining focused on withdrawal of accommodation to ensure inflation aligns with the 4.0% medium-term target.',
+    whyDidItHappen: 'The policy decision followed headline CPI readings stabilizing within the RBI’s tolerance band (2–6%) at 4.2% in the latest quarter. Domestic GDP expansion remained resilient at 6.8%, reducing urgency for pre-emptive monetary easing. However, volatile food pricing and ongoing global supply chain adjustments advised caution against premature rate cuts.',
+    whyDoesItMatter: 'Steady benchmark rates anchor domestic borrowing costs for retail mortgages, corporate working capital loans, and municipal bond issuances. For commercial banks, it stabilizes net interest margins (NIMs). For retail investors and students, high fixed-deposit yields remain attractive for capital preservation before an eventual rate-cutting cycle commences.',
+    marketImpact: {
+      affectedSectors: ['Banking & Financial Services', 'Real Estate & Infrastructure'],
+      symbols: ['HDFCBANK', 'SBIN'],
+      priceMovement: null,
+      contextNote: 'Market reaction was broadly neutral as the status quo was fully priced into forward overnight index swap (OIS) curves. Sovereign 10-year benchmark yields held steady at 7.04%.',
+      isEstablished: true
+    },
+    keyTakeaways: [
+      'Monetary Policy Committee held the benchmark repo rate at 6.50% by unanimous consensus.',
+      'Domestic GDP growth projection maintained at a resilient 6.8% for the fiscal year.',
+      'Core inflation stabilized at 4.2%, but food price volatility justifies a cautious monetary stance.',
+      'Bank fixed deposit and sovereign bond yields are anticipated to remain elevated in the near term.'
+    ]
   },
   {
     id: 2,
     category: 'Technology',
     headline: 'Semiconductor Fabrication Ecosystem Gains Momentum with Major Capital Commitments',
-    summary: 'Leading chipmakers report accelerated construction timelines for regional manufacturing units, boosting high-tech infrastructure sentiment.',
+    summary: 'Leading chipmakers and technology consortiums report accelerated construction timelines for regional manufacturing units, boosting high-tech infrastructure sentiment.',
     source: 'Tech Market Wire',
     date: 'Sep 06, 2026',
-    readTime: '4 min read'
+    readTime: '4 min read',
+    url: 'https://techmarketwire.com/semiconductor-fabrication-infrastructure-capital-deployment-2026',
+    related: 'TSM,INTC,NVDA',
+    whatHappened: 'Multiple semiconductor consortiums announced accelerated progress on two flagship semiconductor packaging and wafer fabrication facilities. Key engineering contracts totaling ₹38,000 crore have been finalized for cleanroom construction, high-purity gas delivery systems, and advanced photolithography tool procurement. The first pilot testing phases are now projected for completion six months ahead of schedule.',
+    whyDidItHappen: 'The progress is driven by government approval under the Production-Linked Incentive (PLI) scheme for advanced hardware, coupled with surging enterprise demand for local chip packaging to support specialized artificial intelligence accelerators and automotive electronics.',
+    whyDoesItMatter: 'Building domestic fabrication capacity directly reduces geopolitical supply vulnerability for industrial and consumer hardware. It creates high-value engineering employment, attracts specialized tier-1 chemical suppliers, and strengthens long-term technology self-reliance across emerging hardware ecosystems.',
+    marketImpact: {
+      affectedSectors: ['Semiconductors & Hardware', 'Industrial Infrastructure'],
+      symbols: ['TSM', 'INTC', 'NVDA'],
+      priceMovement: null,
+      contextNote: 'Capital goods and industrial engineering suppliers witnessed increased institutional inquiry, while long-duration hardware equipment orders showed steady backlog expansion.',
+      isEstablished: true
+    },
+    keyTakeaways: [
+      'Two major wafer fabrication packaging units report construction milestones ahead of schedule.',
+      '₹38,000 crore in tier-1 infrastructure and cleanroom procurement contracts confirmed.',
+      'Government PLI disbursements and fast-track environmental approvals catalyzed early milestones.',
+      'Long-term hardware sovereignty expected to compress automotive and computing supply lead times.'
+    ]
   },
   {
     id: 3,
@@ -452,16 +488,52 @@ export const NEWS_DATA = [
     summary: 'Factory output expanded at its fastest clip in half a year, supported by favorable raw material pricing and strengthening supply networks.',
     source: 'Economic Review',
     date: 'Sep 06, 2026',
-    readTime: '3 min read'
+    readTime: '3 min read',
+    url: 'https://economicreview.org/manufacturing-pmi-six-month-high-export-orders',
+    related: 'TATASTEEL,LT',
+    whatHappened: 'The headline Purchasing Managers\' Index (PMI) for the manufacturing sector rose to 58.4 in August, up from 57.1 in July, marking the strongest operational expansion recorded in six months. Survey respondents reported sharp increases in new business inquiries, heightened commercial vehicle orders, and sustained replenishment of finished goods inventories.',
+    whyDidItHappen: 'Accelerated manufacturing output was supported by softening intermediate input costs, particularly for industrial metals and petrochemical derivatives. Strengthening bilateral trade agreements and sustained domestic infrastructure capital expenditure under federal allocations stimulated robust order books.',
+    whyDoesItMatter: 'A reading of 58.4 significantly exceeds the neutral 50.0 threshold, confirming robust macroeconomic momentum. Sustained industrial expansion supports corporate tax collection, strengthens balance sheets of heavy capital equipment manufacturers, and fosters healthy private sector capital deployment.',
+    marketImpact: {
+      affectedSectors: ['Manufacturing & Industrial', 'Materials & Infrastructure'],
+      symbols: ['TATASTEEL', 'LT'],
+      priceMovement: null,
+      contextNote: 'Heavy engineering and basic materials indices reflected positive underlying sentiment, supported by low finished inventory overhang and resilient forward booking schedules.',
+      isEstablished: true
+    },
+    keyTakeaways: [
+      'Manufacturing PMI expanded to 58.4 in August, comfortably above the 50.0 baseline.',
+      'New export order indices grew at their most rapid pace in two consecutive quarters.',
+      'Input cost inflation for industrial metals and petrochemicals softened to sustainable rates.',
+      'Capacity utilization across domestic factory floors surpassed 76%, signaling future capex needs.'
+    ]
   },
   {
     id: 4,
     category: 'Stocks',
     headline: 'Information Technology Blue-Chips Rally Following Strong Cloud Pipeline Announcements',
-    summary: 'Major IT services exporters recorded notable gains as enterprise clients in North America expanded long-term software modernization pacts.',
+    summary: 'Major IT services exporters recorded notable gains as enterprise clients in North America and Europe expanded long-term software modernization pacts.',
     source: 'Market Monitor',
     date: 'Sep 05, 2026',
-    readTime: '2 min read'
+    readTime: '2 min read',
+    url: 'https://marketmonitor.com/equities/it-blue-chips-cloud-modernization-agreements',
+    related: 'INFY,TCS',
+    whatHappened: 'Tier-1 IT services providers announced multiple multi-year enterprise transformation contract renewals, with an aggregate total contract value (TCV) exceeding $4.2 billion over five years. The agreements center on migrating core legacy ERP systems into multi-cloud architectures and implementing proprietary generative AI governance frameworks for banking clients.',
+    whyDidItHappen: 'Following two quarters of cautious discretionary IT budget freezes, Fortune 500 financial institutions and healthcare providers restarted delayed software modernization initiatives to harvest cloud efficiency dividends and modernize compliance pipelines.',
+    whyDoesItMatter: 'IT exports constitute a cornerstone of services trade balance and foreign exchange inflows. Expanding TCV pipelines indicate improving revenue visibility for upcoming fiscal quarters, supporting high operating cash flow conversions and predictable dividend distributions.',
+    marketImpact: {
+      affectedSectors: ['Enterprise Software & Cloud', 'Technology Services'],
+      symbols: ['INFY', 'TCS'],
+      priceMovement: null,
+      contextNote: 'Sector valuation multiples stabilized following multiple quarters of margin compression, with institutional research desks raising medium-term contract execution probabilities.',
+      isEstablished: true
+    },
+    keyTakeaways: [
+      'Aggregate software enterprise contract renewals reached $4.2 billion over a multi-year horizon.',
+      'Financial services and healthcare enterprises led the resumption of discretionary cloud spending.',
+      'Generative AI governance and security integration featured in over 70% of new deal scopes.',
+      'Predictable cash conversions reinforce sector balance sheets and supportive dividend policies.'
+    ]
   },
   {
     id: 5,
@@ -470,7 +542,25 @@ export const NEWS_DATA = [
     summary: 'Regulated spot asset funds observed consistent net weekly inflows, reflecting disciplined institutional participation and reduced retail speculation.',
     source: 'Digital Asset Journal',
     date: 'Sep 05, 2026',
-    readTime: '3 min read'
+    readTime: '3 min read',
+    url: 'https://digitalassetjournal.com/institutional-inflows-regulatory-compliance-etf',
+    related: 'COIN',
+    whatHappened: 'Regulated spot digital asset exchange-traded products reported four consecutive weeks of positive net capital inflows, absorbing over $680 million across North American and European authorized funds. Secondary market annualized volatility compressed to multi-month lows of 38%, underscoring a transition toward institutional custody.',
+    whyDidItHappen: 'The stabilization followed the implementation of standardized cross-border custody reporting guidelines by international securities regulators, establishing clear legal definitions for bankruptcy-remote digital asset reserves and audited proof-of-solvency.',
+    whyDoesItMatter: 'Institutional asset allocators require regulatory clarity, insured qualified custody, and deep liquidity before committing sovereign wealth or endowment capital. Reduced speculation and tighter bid-ask spreads position digital assets as a mature alternative portfolio diversifier rather than an unhedged speculative trade.',
+    marketImpact: {
+      affectedSectors: ['Digital Assets & Web3', 'Fintech & Brokerage'],
+      symbols: ['COIN'],
+      priceMovement: null,
+      contextNote: 'Derivatives open interest skewed toward call options on compliant exchanges, with basis spreads aligning closely with traditional money market risk-free rates.',
+      isEstablished: true
+    },
+    keyTakeaways: [
+      'Regulated spot exchange-traded funds recorded $680 million in net institutional inflows over 30 days.',
+      'Annualized realized volatility moderated to 38%, approaching multi-year lows.',
+      'Standardized international custody and proof-of-solvency guidelines improved fiduciary confidence.',
+      'Digital asset allocations increasingly treated as non-correlated alternative risk sleeves.'
+    ]
   },
   {
     id: 6,
@@ -479,7 +569,25 @@ export const NEWS_DATA = [
     summary: 'CFOs in technology and commercial sectors prioritize capital preservation while maintaining swift deployment flexibility for strategic acquisitions.',
     source: 'Treasury Outlook',
     date: 'Sep 04, 2026',
-    readTime: '4 min read'
+    readTime: '4 min read',
+    url: 'https://treasuryoutlook.com/corporate-finance/treasury-liquidity-short-term-debt-allocation',
+    related: 'JPM,GS',
+    whatHappened: 'Corporate treasury managers across mid-to-large capitalization companies increased their allocation to 91-day treasury bills, AAA-rated commercial paper, and overnight repo agreements by 14% quarter-over-quarter. Total liquid reserves deployed in ultra-short duration fixed-income vehicles touched record quarterly highs.',
+    whyDidItHappen: 'With benchmark short-term interest rates holding near cyclical peaks, corporate treasurers are harvesting risk-free yields between 6.8% and 7.1% without taking on interest rate duration risk or credit spread volatility.',
+    whyDoesItMatter: 'Disciplined corporate liquidity management protects working capital against sudden credit market freezes and provides dry powder for non-dilutive strategic mergers or bolt-on acquisitions when private valuations undergo rationalization.',
+    marketImpact: {
+      affectedSectors: ['Banking & Financial Services', 'Corporate Finance'],
+      symbols: ['JPM', 'GS'],
+      priceMovement: null,
+      contextNote: 'Money market fund assets under management continued expanding, providing abundant liquidity to short-tenor sovereign debt issuances and top-rated corporate issuers.',
+      isEstablished: true
+    },
+    keyTakeaways: [
+      'Corporate allocations to 91-day treasury bills and high-grade commercial paper rose 14% QoQ.',
+      'Treasurers are capturing 6.8% to 7.1% annual yields with near-zero duration exposure.',
+      'Conservative cash preservation shields operating cash flows from macroeconomic tightening.',
+      'Substantial corporate dry powder maintained for opportunistic strategic acquisitions.'
+    ]
   },
   {
     id: 7,
@@ -488,7 +596,25 @@ export const NEWS_DATA = [
     summary: 'Long-duration government bond prices appreciated globally as investors recalibrated terminal interest rate expectations across major currencies.',
     source: 'Global Bond Insight',
     date: 'Sep 04, 2026',
-    readTime: '3 min read'
+    readTime: '3 min read',
+    url: 'https://globalbondinsight.com/fixed-income/sovereign-yield-curves-central-bank-forward-guidance',
+    related: 'TLT',
+    whatHappened: 'Ten-year sovereign benchmark bond yields compressed across the US, UK, and Eurozone, declining by an average of 12 to 18 basis points over the trading week. The rally in government bond prices followed coordinated forward guidance statements from central bank governors indicating that global rate hike cycles have reached their structural zenith.',
+    whyDidItHappen: 'Synchronized disinflation indicators across major developed economies, accompanied by cooling labor market vacancies, provided policymakers the room to signal that policy rates have achieved sufficiently restrictive levels to anchor long-term price stability.',
+    whyDoesItMatter: 'Sovereign bond yields establish the global risk-free rate used to discount all future cash flows across equities, commercial real estate, and project finance. Declining yields compress debt refinancing costs for sovereign governments and lower capital costs for private enterprises.',
+    marketImpact: {
+      affectedSectors: ['Banking & Financial Services', 'Sovereign Debt'],
+      symbols: ['TLT'],
+      priceMovement: null,
+      contextNote: 'Sovereign yield curve inversions eased modestly as intermediate-to-long maturity bonds attracted institutional liability-driven asset managers and pension fund allocations.',
+      isEstablished: true
+    },
+    keyTakeaways: [
+      'Global 10-year sovereign yields declined 12 to 18 basis points across major developed markets.',
+      'Central bank forward guidance confirmed policy rates are at structurally restrictive peaks.',
+      'Cooling wage inflation and normalized supply chains supported long-duration bond valuations.',
+      'Lower sovereign benchmark yields provide breathing room for commercial debt refinancing.'
+    ]
   },
   {
     id: 8,
@@ -497,9 +623,28 @@ export const NEWS_DATA = [
     summary: 'Solar and wind infrastructure suppliers witnessed steady institutional accumulation on expanding state transmission capacity contracts.',
     source: 'Equity Focus',
     date: 'Sep 03, 2026',
-    readTime: '3 min read'
+    readTime: '3 min read',
+    url: 'https://equityfocus.in/renewables/green-energy-grid-transmission-institutional-inflows',
+    related: 'ADANIGREEN,TATAPOWER',
+    whatHappened: 'Domestic institutional investors (DIIs) and green energy ESG mutual funds increased net equity allocations across power transmission engineering companies, solar module manufacturers, and battery storage providers. Inflows accelerated following the formal award of ₹22,500 crore in high-voltage direct current (HVDC) interstate transmission projects.',
+    whyDidItHappen: 'The allocation surge was prompted by statutory government mandates requiring 50% non-fossil energy generation by 2030, paired with rapid expansion of dedicated green energy transmission corridors connecting desert solar installations to metropolitan industrial hubs.',
+    whyDoesItMatter: 'Power transmission infrastructure was previously the critical bottleneck preventing renewable power evacuation. These contract awards provide 3-to-4 years of verified revenue visibility for infrastructure suppliers and de-risk commercial solar farm project economics.',
+    marketImpact: {
+      affectedSectors: ['Clean Energy & Renewables', 'Industrial Infrastructure'],
+      symbols: ['ADANIGREEN', 'TATAPOWER'],
+      priceMovement: null,
+      contextNote: 'Order books for grid transmission suppliers expanded by 28% year-over-year, leading equity analysts to revise multi-year revenue compounding estimates upward.',
+      isEstablished: true
+    },
+    keyTakeaways: [
+      'Domestic mutual funds deployed substantial net capital into renewable grid infrastructure equities.',
+      '₹22,500 crore in interstate high-voltage transmission contracts awarded to private consortiums.',
+      'Government statutory mandates targeting 50% non-fossil power by 2030 ensure durable order pipelines.',
+      'Transmission corridor expansion unblocks previously stranded solar and wind generating capacity.'
+    ]
   }
 ];
+
 
 export const RATINGS_DATA = [
   {
