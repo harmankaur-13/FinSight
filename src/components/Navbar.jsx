@@ -1,9 +1,10 @@
-import { Link, NavLink, useNavigate } from 'react-router-dom';
+import { Link, NavLink, useNavigate, useLocation } from 'react-router-dom';
 import ThemeToggle from './ThemeToggle';
 import { getRoleDashboardPath } from '../hooks/useFinanceData';
 
 export default function Navbar({ user, onLogout }) {
   const navigate = useNavigate();
+  const location = useLocation();
   const isAuth = Boolean(user?.isLoggedIn && !user?.needsOnboarding);
   const role = user?.userType || 'student';
   const dashPath = getRoleDashboardPath(role);
@@ -33,8 +34,11 @@ export default function Navbar({ user, onLogout }) {
         <NavLink to="/news" className={({ isActive }) => (isActive ? 'active' : '')}>
           News
         </NavLink>
-        <NavLink to="/ratings" className={({ isActive }) => (isActive ? 'active' : '')}>
-          Ratings
+        <NavLink
+          to="/stocks"
+          className={({ isActive }) => (isActive || location.pathname === '/markets' || location.pathname === '/ratings' ? 'active' : '')}
+        >
+          Stocks
         </NavLink>
         <NavLink to="/about" className={({ isActive }) => (isActive ? 'active' : '')}>
           About

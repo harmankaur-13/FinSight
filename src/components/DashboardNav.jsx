@@ -1,9 +1,10 @@
-import { Link, NavLink, useNavigate } from 'react-router-dom';
+import { Link, NavLink, useNavigate, useLocation } from 'react-router-dom';
 import { getRoleDashboardPath } from '../hooks/useFinanceData';
 import FloatingSettings from './FloatingSettings';
 
 export default function DashboardNav({ user, onLogout, onSwitchRole }) {
   const navigate = useNavigate();
+  const location = useLocation();
   const role = user?.userType || 'student';
 
   const getDashboardRoute = () => getRoleDashboardPath(role);
@@ -34,8 +35,11 @@ export default function DashboardNav({ user, onLogout, onSwitchRole }) {
           <NavLink to="/news" className={({ isActive }) => (isActive ? 'active' : '')}>
             News
           </NavLink>
-          <NavLink to="/ratings" className={({ isActive }) => (isActive ? 'active' : '')}>
-            Ratings
+          <NavLink
+            to="/stocks"
+            className={({ isActive }) => (isActive || location.pathname === '/markets' || location.pathname === '/ratings' ? 'active' : '')}
+          >
+            Stocks
           </NavLink>
           <NavLink to="/about" className={({ isActive }) => (isActive ? 'active' : '')}>
             About

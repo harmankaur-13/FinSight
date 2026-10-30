@@ -1,13 +1,15 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import RatingCard from '../../components/RatingCard';
 import { RATINGS_DATA } from '../../data/mockData';
-import { fetchStockQuote } from '../../services/ratingsApi';
+import { fetchStockQuote, formatCurrencyINR } from '../../services/ratingsApi';
+import './Ratings.css';
 
 export default function Ratings() {
   const [filter, setFilter] = useState('All');
   const [search, setSearch] = useState('');
   const [quotes, setQuotes] = useState({});
   const [isLoading, setIsLoading] = useState(true);
+  const [viewMode, setViewMode] = useState('grid'); // 'grid' | 'table'
 
   // Fetch daily quotes on component mount with cleanup to prevent stale state on unmount
   useEffect(() => {
@@ -50,13 +52,17 @@ export default function Ratings() {
     };
   }, []);
 
-  const filteredRatings = RATINGS_DATA.filter((item) => {
-    const matchesFilter = filter === 'All' || item.rating === filter || item.riskLevel === filter;
-    const matchesSearch = item.name.toLowerCase().includes(search.toLowerCase()) ||
-      item.symbol.toLowerCase().includes(search.toLowerCase()) ||
-      item.sector.toLowerCase().includes(search.toLowerCase());
-    return matchesFilter && matchesSearch;
-  });
+  const filteredRatings = useMemo(() => {
+    return RATINGS_DATA.filter((item) => {
+      const matchesFilter = filter === 'All' || item.rating === filter || item.riskLevel === filter;
+      const q = search.toLowerCase().trim();
+      const matchesSearch = !q ||
+        item.name.toLowerCase().includes(q) ||
+        item.symbol.toLowerCase().includes(q) ||
+        item.sector.toLowerCase().includes(q);
+      return matchesFilter && matchesSearch;
+    });
+  }, [filter, search]);
 
   const successQuotes = Object.values(quotes).filter((q) => q && q.status === 'success' && q.data);
   const successCount = successQuotes.length;
@@ -70,13 +76,18 @@ export default function Ratings() {
     .sort()
     .reverse()[0] || '';
 
+  // Calculate market universe metrics
+  const strongBuyCount = RATINGS_DATA.filter(r => r.rating === 'Strong Buy').length;
+  const lowRiskCount = RATINGS_DATA.filter(r => r.riskLevel === 'Low').length;
+
   return (
     <div className="container" style={{ padding: '40px 0 90px' }}>
+      {/* Page Header */}
       <div className="page-header">
-        <span className="eyebrow">ILLUSTRATIVE RESEARCH</span>
-        <h1 className="page-title">Stock & Asset Ratings</h1>
+        <span className="eyebrow">ILLUSTRATIVE RESEARCH &amp; BENCHMARKS</span>
+        <h1 className="page-title">Stock &amp; Asset Ratings</h1>
         <p className="page-subtitle">
-          Illustrative stock ratings, research targets, valuations, and risk indicators.
+          Institutional research consensus, price targets, valuation multiples, and live daily market closing prices.
         </p>
       </div>
 
@@ -155,41 +166,207 @@ export default function Ratings() {
         </span>
       </div>
 
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '16px', margin: '24px 0' }}>
+      {/* Market Breadth Summary Strip */}
+      <div className="stock-summary-strip">
+        <div className="stock-summary-item">
+          <span className="stock-summary-label">Universe Tracked</span>
+          <span className="stock-summary-value">{totalCount} Equities</span>
+          <span className="stock-summary-sub">Large-cap NSE leaders</span>
+        </div>
+        <div className="stock-summary-item">
+          <span className="stock-summary-label">High Conviction</span>
+          <span className="stock-summary-value" style={{ color: 'var(--green)' }}>
+            {strongBuyCount} Strong Buys
+          </span>
+          <span className="stock-summary-sub">Top upside potential</span>
+        </div>
+        <div className="stock-summary-item">
+          <span className="stock-summary-label">Risk Distribution</span>
+          <span className="stock-summary-value">
+            {lowRiskCount} Low Risk
+          </span>
+          <span className="stock-summary-sub">Defensive blue-chips</span>
+        </div>
+        <div className="stock-summary-item">
+          <span className="stock-summary-label">Market Source</span>
+          <span className="stock-summary-value" style={{ fontSize: '16px', paddingTop: '4px' }}>
+            {hasLiveQuotes ? 'TejHQ (NSE)' : 'Curated Sample'}
+          </span>
+          <span className="stock-summary-sub">End-of-day daily close</span>
+        </div>
+      </div>
+
+      {/* Toolbar: Category Filters, Search Input, and View Mode Switcher */}
+      <div className="stock-toolbar-row">
         <div className="category-tabs" style={{ margin: 0 }}>
-          {['All', 'Strong Buy', 'Buy', 'Hold', 'Low', 'Medium'].map((tab) => (
-            <button
-              key={tab}
-              type="button"
-              className={`cat-tab ${filter === tab ? 'active' : ''}`}
-              onClick={() => setFilter(tab)}
-            >
-              {tab === 'Low' || tab === 'Medium' ? `${tab} Risk` : tab}
-            </button>
-          ))}
+          {['All', 'Strong Buy', 'Buy', 'Hold', 'Low', 'Medium'].map((tab) => {
+            const label = tab === 'Low' || tab === 'Medium' ? `${tab} Risk` : tab;
+            return (
+              <button
+                key={tab}
+                type="button"
+                className={`cat-tab ${filter === tab ? 'active' : ''}`}
+                onClick={() => setFilter(tab)}
+              >
+                {label}
+              </button>
+            );
+          })}
         </div>
 
-        <input
-          type="text"
-          placeholder="Search by company or ticker..."
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          className="form-input"
-          style={{ maxWidth: '280px', height: '40px' }}
-        />
+        <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap' }}>
+          {/* Search Box */}
+          <div className="stock-search-wrap">
+            <span className="stock-search-icon">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <circle cx="11" cy="11" r="8"></circle>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+              </svg>
+            </span>
+            <input
+              type="text"
+              placeholder="Search by company or ticker..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="stock-search-input"
+              aria-label="Search by company or ticker"
+            />
+            {search && (
+              <button
+                type="button"
+                className="stock-search-clear"
+                onClick={() => setSearch('')}
+                aria-label="Clear stock search"
+              >
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <line x1="18" y1="6" x2="6" y2="18"></line>
+                  <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+              </button>
+            )}
+          </div>
+
+          {/* View Mode Toggle: Cards vs Table */}
+          <div className="stock-view-switcher" role="radiogroup" aria-label="View layout">
+            <button
+              type="button"
+              className={`btn-view-toggle ${viewMode === 'grid' ? 'active' : ''}`}
+              onClick={() => setViewMode('grid')}
+              aria-label="Grid cards layout"
+            >
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <rect x="3" y="3" width="7" height="7"></rect>
+                <rect x="14" y="3" width="7" height="7"></rect>
+                <rect x="14" y="14" width="7" height="7"></rect>
+                <rect x="3" y="14" width="7" height="7"></rect>
+              </svg>
+              <span>Cards</span>
+            </button>
+            <button
+              type="button"
+              className={`btn-view-toggle ${viewMode === 'table' ? 'active' : ''}`}
+              onClick={() => setViewMode('table')}
+              aria-label="Tabular layout"
+            >
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <line x1="8" y1="6" x2="21" y2="6"></line>
+                <line x1="8" y1="12" x2="21" y2="12"></line>
+                <line x1="8" y1="18" x2="21" y2="18"></line>
+                <line x1="3" y1="6" x2="3.01" y2="6"></line>
+                <line x1="3" y1="12" x2="3.01" y2="12"></line>
+                <line x1="3" y1="18" x2="3.01" y2="18"></line>
+              </svg>
+              <span>Table</span>
+            </button>
+          </div>
+        </div>
       </div>
 
-      <div className="ratings-grid">
-        {filteredRatings.map((rating) => (
-          <RatingCard
-            key={rating.id}
-            rating={rating}
-            quote={quotes[rating.symbol]}
-            isLoading={isLoading}
-          />
-        ))}
-      </div>
+      {/* VIEW A: Cards Grid */}
+      {viewMode === 'grid' && (
+        <div className="ratings-grid">
+          {filteredRatings.map((rating) => (
+            <RatingCard
+              key={rating.id}
+              rating={rating}
+              quote={quotes[rating.symbol]}
+              isLoading={isLoading}
+            />
+          ))}
+        </div>
+      )}
 
+      {/* VIEW B: High-Density Institutional Table */}
+      {viewMode === 'table' && filteredRatings.length > 0 && (
+        <div className="stocks-table-container">
+          <div className="stocks-table-scroll">
+            <table className="stocks-table">
+              <thead>
+                <tr>
+                  <th>Ticker &amp; Company</th>
+                  <th>Sector</th>
+                  <th>Closing Price</th>
+                  <th>12M Target</th>
+                  <th>Rating</th>
+                  <th>P/E</th>
+                  <th>Risk Profile</th>
+                  <th>Sentiment</th>
+                  <th>Outlook</th>
+                </tr>
+              </thead>
+              <tbody>
+                {filteredRatings.map((rating) => {
+                  const q = quotes[rating.symbol];
+                  const hasLive = Boolean(q && q.status === 'success' && q.data);
+                  const priceStr = isLoading
+                    ? '—'
+                    : hasLive
+                      ? formatCurrencyINR(q.data.price) || rating.price
+                      : rating.price;
+
+                  return (
+                    <tr key={rating.id}>
+                      <td>
+                        <div className="stocks-table-symbol">{rating.symbol}</div>
+                        <div className="stocks-table-company">{rating.name}</div>
+                      </td>
+                      <td style={{ color: 'var(--muted)', whiteSpace: 'nowrap' }}>
+                        {rating.sector}
+                      </td>
+                      <td>
+                        <div className="stocks-table-price">{priceStr}</div>
+                        <span style={{ fontSize: '10px', color: 'var(--muted)' }}>
+                          {hasLive ? 'Daily Close' : 'Sample'}
+                        </span>
+                      </td>
+                      <td>
+                        <div className="stocks-table-target">{rating.target}</div>
+                      </td>
+                      <td>
+                        <span className={`rating-badge rating-${rating.ratingType}`} style={{ fontSize: '10px', padding: '2px 6px' }}>
+                          {rating.rating}
+                        </span>
+                      </td>
+                      <td><strong>{rating.peRatio}</strong></td>
+                      <td>
+                        <span className={`stock-risk-text ${rating.riskLevel === 'Low' ? 'low-risk' : 'med-risk'}`} style={{ fontWeight: 600 }}>
+                          {rating.riskLevel}
+                        </span>
+                      </td>
+                      <td style={{ whiteSpace: 'nowrap' }}>{rating.sentiment}</td>
+                      <td style={{ maxWidth: '280px', color: 'var(--muted)', fontSize: '11px', lineHeight: 1.4 }}>
+                        {rating.rationale}
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
+
+      {/* Empty State */}
       {filteredRatings.length === 0 && (
         <div
           style={{
@@ -201,12 +378,24 @@ export default function Ratings() {
             color: 'var(--muted)'
           }}
         >
-          <h3 style={{ fontSize: '18px', marginBottom: '6px', color: 'var(--text)' }}>
+          <h3 style={{ fontSize: '18px', marginBottom: '6px', color: 'var(--text)', fontFamily: 'Space Grotesk, sans-serif' }}>
             No stocks found
           </h3>
-          <p style={{ fontSize: '13px', margin: 0 }}>
+          <p style={{ fontSize: '13px', margin: '0 auto 16px', maxWidth: '420px', lineHeight: 1.5 }}>
             No ratings match your current filter and search query. Try clearing the search or switching filters.
           </p>
+          {(search || filter !== 'All') && (
+            <button
+              type="button"
+              className="btn btn-outline"
+              onClick={() => {
+                setSearch('');
+                setFilter('All');
+              }}
+            >
+              Reset Filters
+            </button>
+          )}
         </div>
       )}
     </div>

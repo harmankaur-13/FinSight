@@ -78,6 +78,8 @@ export default function App() {
         >
           <Route path="/features" element={<Features />} />
           <Route path="/news" element={<News />} />
+          <Route path="/stocks" element={<Ratings />} />
+          <Route path="/markets" element={<Ratings />} />
           <Route path="/ratings" element={<Ratings />} />
           <Route path="/about" element={<About />} />
           <Route path="*" element={<NotFound user={user} />} />
