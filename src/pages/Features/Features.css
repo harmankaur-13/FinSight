@@ -1,0 +1,1140 @@
+/* ==========================================================================
+   FINSIGHT FEATURES PAGE — EDITORIAL FINTECH REDESIGN
+   Preserving FinSight Brand: DM Sans & Space Grotesk, #f5f2ea, #fffdf8, #276653, #b88746, #17231f
+   Fully supports Light & Dark themes, responsive layout, subtle interactions
+   ========================================================================== */
+
+.features-page {
+  padding-bottom: 100px;
+}
+
+/* --------------------------------------------------------------------------
+   Hero Section
+   -------------------------------------------------------------------------- */
+.features-hero {
+  padding: 48px 0 64px;
+  text-align: center;
+}
+
+.features-hero-content {
+  max-width: 860px;
+  margin: 0 auto;
+}
+
+.features-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: "Space Grotesk", sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--accent-text);
+  background: var(--green-subtle);
+  border: 1px solid rgba(39, 102, 83, 0.2);
+  padding: 6px 14px;
+  border-radius: 999px;
+  margin-bottom: 20px;
+}
+
+[data-theme="dark"] .features-eyebrow {
+  border-color: rgba(72, 180, 148, 0.25);
+}
+
+.features-hero-title {
+  font-family: "Space Grotesk", sans-serif;
+  font-size: clamp(34px, 5.2vw, 54px);
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: -0.03em;
+  color: var(--text);
+  margin-bottom: 22px;
+}
+
+.features-hero-desc {
+  font-size: clamp(16px, 1.8vw, 19px);
+  line-height: 1.6;
+  color: var(--text-secondary);
+  max-width: 760px;
+  margin: 0 auto 32px;
+}
+
+.features-hero-actions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 48px;
+}
+
+/* Product Visual Mockup Container */
+.features-hero-visual {
+  max-width: 1040px;
+  margin: 0 auto;
+  position: relative;
+}
+
+.features-browser-frame {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  box-shadow: var(--shadow-lg);
+  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.features-browser-frame:hover {
+  box-shadow: 0 30px 75px rgba(23, 35, 31, 0.12);
+}
+
+[data-theme="dark"] .features-browser-frame:hover {
+  box-shadow: 0 30px 75px rgba(0, 0, 0, 0.6);
+}
+
+.features-browser-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 18px;
+  background: var(--surface-2);
+  border-bottom: 1px solid var(--border);
+}
+
+.features-browser-dots {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.features-browser-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--muted-light);
+  opacity: 0.6;
+}
+
+.features-browser-url {
+  font-family: "Space Grotesk", sans-serif;
+  font-size: 11px;
+  color: var(--muted);
+  background: var(--input-bg);
+  padding: 4px 16px;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.features-browser-badge {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--green-dark);
+  background: var(--green-light);
+  padding: 3px 8px;
+  border-radius: 4px;
+}
+
+[data-theme="dark"] .features-browser-badge {
+  color: #3ea083;
+}
+
+.features-browser-content {
+  position: relative;
+  background: var(--bg);
+}
+
+.features-browser-img {
+  width: 100%;
+  height: auto;
+  display: block;
+  object-fit: cover;
+  border-bottom: 1px solid var(--border);
+}
+
+.features-hero-telemetry {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  padding: 18px 24px;
+  background: var(--surface);
+  gap: 16px;
+}
+
+.features-telemetry-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  text-align: left;
+}
+
+.features-telemetry-label {
+  font-family: "Space Grotesk", sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  color: var(--accent-text);
+  text-transform: uppercase;
+}
+
+.features-telemetry-value {
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.45;
+}
+
+/* --------------------------------------------------------------------------
+   Financial Intelligence Split Sections (Alternating Layout)
+   -------------------------------------------------------------------------- */
+.features-section-group {
+  margin-top: 60px;
+  display: flex;
+  flex-direction: column;
+  gap: 90px;
+}
+
+.features-split-section {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  gap: 60px;
+}
+
+.features-split-section.reverse {
+  direction: rtl;
+}
+
+.features-split-section.reverse > * {
+  direction: ltr;
+}
+
+.features-section-text {
+  display: flex;
+  flex-direction: column;
+}
+
+.features-section-num {
+  font-family: "Space Grotesk", sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  color: var(--accent-text);
+  text-transform: uppercase;
+  margin-bottom: 12px;
+}
+
+.features-section-title {
+  font-family: "Space Grotesk", sans-serif;
+  font-size: clamp(26px, 3.2vw, 36px);
+  font-weight: 700;
+  line-height: 1.22;
+  letter-spacing: -0.02em;
+  color: var(--text);
+  margin-bottom: 18px;
+}
+
+.features-section-body {
+  font-size: 15px;
+  line-height: 1.65;
+  color: var(--text-secondary);
+  margin-bottom: 24px;
+}
+
+.features-capability-list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.features-capability-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--text);
+}
+
+.features-check-icon {
+  flex-shrink: 0;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--green-light);
+  color: var(--green);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 2px;
+}
+
+[data-theme="dark"] .features-check-icon {
+  color: #3ea083;
+}
+
+/* --------------------------------------------------------------------------
+   Visual Composition Cards
+   -------------------------------------------------------------------------- */
+.features-visual-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  box-shadow: var(--shadow-md);
+  padding: 28px;
+  position: relative;
+  transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+.features-visual-card:hover {
+  transform: translateY(-3px);
+  border-color: var(--accent-text);
+  box-shadow: var(--shadow-lg);
+}
+
+.features-card-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--border-light);
+}
+
+.features-card-heading {
+  font-family: "Space Grotesk", sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.features-card-subhead {
+  font-size: 12px;
+  color: var(--muted);
+  display: block;
+  margin-top: 2px;
+  font-weight: 400;
+}
+
+.features-status-pill {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 3px 10px;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.features-status-pill.success {
+  background: var(--green-light);
+  color: var(--green-dark);
+}
+
+[data-theme="dark"] .features-status-pill.success {
+  color: #3ea083;
+}
+
+.features-status-pill.warning {
+  background: rgba(184, 135, 70, 0.14);
+  color: var(--gold);
+}
+
+.features-status-pill.neutral {
+  background: var(--surface-2);
+  color: var(--muted);
+}
+
+/* Section 1 Specific Composition: Portfolio Metrics */
+.features-kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.features-kpi-box {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 12px 14px;
+}
+
+.features-kpi-label {
+  font-size: 11px;
+  color: var(--muted);
+  display: block;
+  margin-bottom: 4px;
+}
+
+.features-kpi-value {
+  font-family: "Space Grotesk", sans-serif;
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.features-kpi-gain {
+  color: var(--green-dark);
+  font-weight: 700;
+  font-size: 15px;
+}
+
+[data-theme="dark"] .features-kpi-gain {
+  color: #3ea083;
+}
+
+.features-progress-stack {
+  display: flex;
+  height: 10px;
+  border-radius: 999px;
+  overflow: hidden;
+  margin: 16px 0 14px;
+  background: var(--surface-2);
+}
+
+.features-progress-bar {
+  height: 100%;
+  transition: width 0.3s ease;
+}
+
+.features-progress-bar.equities {
+  background: #276653;
+}
+
+.features-progress-bar.bonds {
+  background: #4f46e5;
+}
+
+.features-progress-bar.liquid {
+  background: #b88746;
+}
+
+.features-asset-rows {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.features-asset-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 9px 12px;
+  background: var(--bg);
+  border: 1px solid var(--border-light);
+  border-radius: 8px;
+  font-size: 13px;
+}
+
+.features-asset-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.features-asset-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+}
+
+.features-asset-dot.equities { background: #276653; }
+.features-asset-dot.bonds { background: #4f46e5; }
+.features-asset-dot.liquid { background: #b88746; }
+
+.features-asset-target {
+  font-size: 11px;
+  color: var(--muted);
+}
+
+.features-card-footnote {
+  font-size: 11px;
+  color: var(--muted);
+  line-height: 1.45;
+  margin-top: 16px;
+  padding-top: 12px;
+  border-top: 1px dashed var(--border);
+}
+
+/* Section 2 Specific Composition: Drift Monitoring */
+.features-drift-alert-box {
+  background: rgba(184, 135, 70, 0.12);
+  border: 1px solid rgba(184, 135, 70, 0.28);
+  border-radius: 10px;
+  padding: 12px 14px;
+  margin-bottom: 18px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.features-drift-alert-icon {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--gold);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.features-drift-alert-text {
+  font-size: 12px;
+  line-height: 1.4;
+  color: var(--text);
+}
+
+.features-drift-alert-title {
+  font-weight: 700;
+  display: block;
+}
+
+.features-drift-table {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.features-drift-item {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 12px 14px;
+}
+
+.features-drift-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.features-drift-val-badges {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.features-drift-badge {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 4px;
+}
+
+.features-drift-badge.overweight {
+  background: rgba(184, 135, 70, 0.16);
+  color: var(--gold);
+}
+
+.features-drift-badge.underweight {
+  background: rgba(79, 70, 229, 0.12);
+  color: #4f46e5;
+}
+
+.features-drift-badge.balanced {
+  background: var(--green-light);
+  color: var(--green-dark);
+}
+
+[data-theme="dark"] .features-drift-badge.balanced {
+  color: #3ea083;
+}
+
+.features-drift-track {
+  height: 7px;
+  background: var(--surface-2);
+  border-radius: 999px;
+  position: relative;
+  overflow: visible;
+  margin-bottom: 6px;
+}
+
+.features-drift-current-bar {
+  height: 100%;
+  border-radius: 999px;
+}
+
+.features-drift-target-marker {
+  position: absolute;
+  top: -3px;
+  width: 3px;
+  height: 13px;
+  background: var(--text);
+  border-radius: 1px;
+  transform: translateX(-50%);
+}
+
+.features-drift-meta-sub {
+  display: flex;
+  justify-content: space-between;
+  font-size: 11px;
+  color: var(--muted);
+}
+
+/* Section 3 Specific Composition: Market Intelligence */
+.features-news-tabs {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding-bottom: 10px;
+  margin-bottom: 16px;
+  border-bottom: 1px solid var(--border-light);
+}
+
+.features-news-tab {
+  background: transparent;
+  border: 1px solid var(--border);
+  padding: 5px 12px;
+  border-radius: 6px;
+  font-family: "Space Grotesk", sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--muted);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.features-news-tab:hover {
+  color: var(--text);
+  border-color: var(--accent-text);
+}
+
+.features-news-tab.active {
+  background: var(--green);
+  border-color: var(--green);
+  color: #ffffff;
+}
+
+.features-news-feed {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.features-news-item {
+  background: var(--bg);
+  border: 1px solid var(--border-light);
+  border-radius: 10px;
+  padding: 14px;
+  transition: border-color 0.2s ease;
+}
+
+.features-news-item:hover {
+  border-color: var(--accent-text);
+}
+
+.features-news-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+  margin-bottom: 6px;
+}
+
+.features-news-category {
+  font-family: "Space Grotesk", sans-serif;
+  font-weight: 700;
+  color: var(--accent-text);
+  letter-spacing: 0.5px;
+}
+
+.features-news-time {
+  color: var(--muted);
+}
+
+.features-news-headline {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text);
+  line-height: 1.35;
+  margin-bottom: 6px;
+}
+
+.features-news-summary {
+  font-size: 12px;
+  color: var(--text-secondary);
+  line-height: 1.5;
+  margin-bottom: 8px;
+}
+
+.features-news-context-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--green-dark);
+  background: var(--green-light);
+  padding: 3px 8px;
+  border-radius: 4px;
+}
+
+[data-theme="dark"] .features-news-context-tag {
+  color: #3ea083;
+}
+
+/* Section 4 Specific Composition: Illustrative Research Sandbox */
+.features-disclaimer-banner {
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 10px 12px;
+  font-size: 11px;
+  line-height: 1.45;
+  color: var(--muted);
+  margin-bottom: 18px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.features-research-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.features-research-row {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 14px;
+  display: grid;
+  grid-template-columns: 1.6fr 1fr 1fr;
+  align-items: center;
+  gap: 12px;
+}
+
+.features-research-instrument {
+  display: flex;
+  flex-direction: column;
+}
+
+.features-research-ticker {
+  font-family: "Space Grotesk", sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.features-research-sector {
+  font-size: 11px;
+  color: var(--muted);
+}
+
+.features-research-metric {
+  display: flex;
+  flex-direction: column;
+}
+
+.features-research-metric-label {
+  font-size: 10px;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.features-research-metric-val {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.features-rating-pill {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 4px;
+  text-align: center;
+  display: inline-block;
+}
+
+.features-rating-pill.buy {
+  background: var(--green-light);
+  color: var(--green-dark);
+}
+
+[data-theme="dark"] .features-rating-pill.buy {
+  color: #3ea083;
+}
+
+.features-rating-pill.accumulate {
+  background: var(--gold-light);
+  color: var(--gold);
+}
+
+.features-rating-pill.hold {
+  background: var(--surface-2);
+  color: var(--muted);
+}
+
+/* Section 5 Specific Composition: Goals & Projections */
+.features-goal-items {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.features-goal-card {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 12px 14px;
+}
+
+.features-goal-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+.features-goal-progress-track {
+  height: 6px;
+  background: var(--surface-2);
+  border-radius: 999px;
+  overflow: hidden;
+  margin-bottom: 6px;
+}
+
+.features-goal-progress-fill {
+  height: 100%;
+  background: var(--green);
+  border-radius: 999px;
+}
+
+.features-goal-subtext {
+  display: flex;
+  justify-content: space-between;
+  font-size: 11px;
+  color: var(--muted);
+}
+
+.features-sim-box {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 14px;
+}
+
+.features-sim-toggle-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.features-sim-toggles {
+  display: flex;
+  gap: 6px;
+}
+
+.features-sim-btn {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  font-family: "Space Grotesk", sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 6px;
+  color: var(--muted);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.features-sim-btn.active {
+  background: var(--green);
+  border-color: var(--green);
+  color: #fff;
+}
+
+.features-sim-output {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  padding: 10px 14px;
+  background: var(--green-light);
+  border: 1px solid rgba(39, 102, 83, 0.2);
+  border-radius: 8px;
+}
+
+.features-sim-output-val {
+  font-family: "Space Grotesk", sans-serif;
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--green-dark);
+}
+
+[data-theme="dark"] .features-sim-output-val {
+  color: #3ea083;
+}
+
+/* --------------------------------------------------------------------------
+   Section 6: Visually Distinct Three-Column Perspective Workspaces
+   -------------------------------------------------------------------------- */
+.features-perspectives-section {
+  margin-top: 100px;
+  padding-top: 60px;
+  border-top: 1px solid var(--border);
+}
+
+.features-perspectives-header {
+  text-align: center;
+  max-width: 720px;
+  margin: 0 auto 48px;
+}
+
+.features-perspectives-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+
+.features-perspective-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 32px 28px;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+  box-shadow: var(--shadow-sm);
+}
+
+.features-perspective-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--accent-text);
+  box-shadow: var(--shadow-md);
+}
+
+.features-perspective-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 18px;
+}
+
+.features-perspective-num {
+  font-family: "Space Grotesk", sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--accent-text);
+  letter-spacing: 0.5px;
+}
+
+.features-perspective-badge {
+  font-family: "Space Grotesk", sans-serif;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  padding: 3px 8px;
+  border-radius: 4px;
+  background: var(--surface-2);
+  color: var(--muted);
+  border: 1px solid var(--border);
+}
+
+.features-perspective-card.student .features-perspective-badge {
+  background: var(--green-light);
+  color: var(--green-dark);
+  border-color: rgba(39, 102, 83, 0.2);
+}
+
+[data-theme="dark"] .features-perspective-card.student .features-perspective-badge {
+  color: #3ea083;
+}
+
+.features-perspective-card.business .features-perspective-badge {
+  background: var(--gold-light);
+  color: var(--gold);
+  border-color: rgba(184, 135, 70, 0.25);
+}
+
+.features-perspective-card.tech .features-perspective-badge {
+  background: rgba(79, 70, 229, 0.12);
+  color: #4f46e5;
+  border-color: rgba(79, 70, 229, 0.2);
+}
+
+.features-perspective-title {
+  font-family: "Space Grotesk", sans-serif;
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 8px;
+}
+
+.features-perspective-tagline {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--accent-text);
+  line-height: 1.4;
+  margin-bottom: 16px;
+  min-height: 38px;
+}
+
+.features-perspective-desc {
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--text-secondary);
+  margin-bottom: 24px;
+  min-height: 68px;
+}
+
+.features-perspective-bullets {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  border-top: 1px solid var(--border-light);
+  padding-top: 18px;
+}
+
+.features-perspective-bullet {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 13px;
+  color: var(--text);
+  line-height: 1.45;
+}
+
+.features-bullet-marker {
+  color: var(--accent-text);
+  font-weight: 700;
+  font-size: 14px;
+  line-height: 1;
+}
+
+.features-perspective-action {
+  margin-top: auto;
+  width: 100%;
+}
+
+/* --------------------------------------------------------------------------
+   Final CTA Section
+   -------------------------------------------------------------------------- */
+.features-final-cta {
+  margin-top: 100px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 60px 32px;
+  text-align: center;
+  box-shadow: var(--shadow-sm);
+  position: relative;
+  overflow: hidden;
+}
+
+.features-final-cta-content {
+  max-width: 680px;
+  margin: 0 auto;
+}
+
+.features-final-cta-title {
+  font-family: "Space Grotesk", sans-serif;
+  font-size: clamp(28px, 4vw, 40px);
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+  color: var(--text);
+  margin-bottom: 18px;
+}
+
+.features-final-cta-desc {
+  font-size: 16px;
+  line-height: 1.65;
+  color: var(--text-secondary);
+  margin-bottom: 24px;
+}
+
+.features-final-cta-closing {
+  font-family: "Space Grotesk", sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--accent-text);
+  letter-spacing: 0.5px;
+  margin-bottom: 32px;
+  display: block;
+}
+
+.features-final-cta-buttons {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+/* --------------------------------------------------------------------------
+   Responsive Breakpoints
+   -------------------------------------------------------------------------- */
+@media (max-width: 992px) {
+  .features-split-section {
+    grid-template-columns: 1fr;
+    gap: 36px;
+  }
+
+  .features-split-section.reverse {
+    direction: ltr;
+  }
+
+  .features-perspectives-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .features-perspective-tagline,
+  .features-perspective-desc {
+    min-height: auto;
+  }
+
+  .features-hero-telemetry {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+}
+
+@media (max-width: 640px) {
+  .features-hero {
+    padding: 32px 0 48px;
+  }
+
+  .features-visual-card {
+    padding: 18px;
+  }
+
+  .features-kpi-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .features-research-row {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+
+  .features-final-cta {
+    padding: 40px 20px;
+  }
+}
