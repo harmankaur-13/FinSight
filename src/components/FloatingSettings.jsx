@@ -3,7 +3,14 @@ import { useNavigate } from 'react-router-dom';
 import { useTheme } from '../context/ThemeContext';
 import { formatHumanName } from '../hooks/useFinanceData';
 
-export default function FloatingSettings({ user, onLogout, initialOpen = false }) {
+export default function FloatingSettings({
+  user,
+  onLogout,
+  initialOpen = false,
+  showProfilePill = true,
+  size = 'default',
+  className = ''
+}) {
   const [isOpen, setIsOpen] = useState(initialOpen);
   const { theme, setTheme } = useTheme();
   const navigate = useNavigate();
@@ -12,10 +19,17 @@ export default function FloatingSettings({ user, onLogout, initialOpen = false }
   const profileBtnRef = useRef(null);
   const panelRef = useRef(null);
 
-  const displayName = formatHumanName(user?.name) || 'User';
+  const isLoggedIn = Boolean(user && (user.isLoggedIn || user.email || (user.name && user.name.toLowerCase() !== 'guest user')));
+  const displayName = formatHumanName(user?.name) || 'Guest User';
   const email = user?.email || '';
-  const role = user?.userType || 'student';
-  const roleTitle = role === 'tech' ? 'Large Enterprise' : role === 'business' ? 'Business Intelligence' : 'Student Learner';
+  const role = user?.userType || null;
+  const roleTitle = role === 'tech'
+    ? 'Large Enterprise'
+    : role === 'business'
+      ? 'Business Intelligence'
+      : role === 'student'
+        ? 'Student Learner'
+        : null;
 
   // Toggle panel
   const togglePanel = () => {
@@ -75,38 +89,40 @@ export default function FloatingSettings({ user, onLogout, initialOpen = false }
   };
 
   return (
-    <div className="nav-profile-settings-group">
+    <div className={`nav-profile-settings-group ${className}`}>
       {/* User Profile Pill Trigger */}
-      <button
-        ref={profileBtnRef}
-        type="button"
-        className={`user-profile-pill ${isOpen ? 'active' : ''}`}
-        onClick={togglePanel}
-        aria-label={`Account menu for ${displayName}`}
-        aria-haspopup="dialog"
-        aria-expanded={isOpen}
-        aria-controls="floating-account-panel"
-        title="Profile & Settings"
-      >
-        <div className="user-avatar" style={{ overflow: 'hidden' }}>
-          {user?.avatar ? (
-            <img
-              src={user.avatar}
-              alt={displayName}
-              style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-            />
-          ) : (
-            (displayName || 'U').charAt(0).toUpperCase()
-          )}
-        </div>
-        <span className="user-profile-name">{displayName}</span>
-      </button>
+      {showProfilePill && (
+        <button
+          ref={profileBtnRef}
+          type="button"
+          className={`user-profile-pill ${isOpen ? 'active' : ''}`}
+          onClick={togglePanel}
+          aria-label={`Account menu for ${displayName}`}
+          aria-haspopup="dialog"
+          aria-expanded={isOpen}
+          aria-controls="floating-account-panel"
+          title="Profile & Settings"
+        >
+          <div className="user-avatar" style={{ overflow: 'hidden' }}>
+            {user?.avatar ? (
+              <img
+                src={user.avatar}
+                alt={displayName}
+                style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+              />
+            ) : (
+              (displayName || 'G').charAt(0).toUpperCase()
+            )}
+          </div>
+          <span className="user-profile-name">{displayName}</span>
+        </button>
+      )}
 
       {/* Setting Option on Top with Profile */}
       <button
         ref={triggerRef}
         type="button"
-        className={`nav-settings-btn floating-settings-trigger ${isOpen ? 'active' : ''}`}
+        className={`nav-settings-btn floating-settings-trigger ${size === 'small' ? 'nav-settings-btn-sm' : ''} ${isOpen ? 'active' : ''}`}
         onClick={togglePanel}
         aria-label="Open account settings"
         aria-haspopup="dialog"
@@ -116,8 +132,8 @@ export default function FloatingSettings({ user, onLogout, initialOpen = false }
       >
         <svg
           className="nav-gear-icon floating-gear-icon"
-          width="18"
-          height="18"
+          width={size === 'small' ? '16' : '18'}
+          height={size === 'small' ? '16' : '18'}
           viewBox="0 0 24 24"
           fill="none"
           stroke="currentColor"
@@ -151,26 +167,41 @@ export default function FloatingSettings({ user, onLogout, initialOpen = false }
                     className="floating-avatar-img"
                   />
                 ) : (
-                  <span>{(displayName || 'U').charAt(0).toUpperCase()}</span>
+                  <span>{(displayName || 'G').charAt(0).toUpperCase()}</span>
                 )}
               </div>
               <div className="floating-user-info">
                 <span className="floating-user-name">{displayName}</span>
                 {email && <span className="floating-user-email">{email}</span>}
-                <span className="floating-role-tag">{roleTitle}</span>
+                {isLoggedIn && roleTitle && (
+                  <span className="floating-role-tag">{roleTitle}</span>
+                )}
               </div>
             </div>
 
-            <button
-              type="button"
-              className="floating-manage-btn"
-              onClick={() => handleNavigate('/settings?tab=personal')}
-            >
-              Manage profile
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                <polyline points="9 18 15 12 9 6" />
-              </svg>
-            </button>
+            {isLoggedIn ? (
+              <button
+                type="button"
+                className="floating-manage-btn"
+                onClick={() => handleNavigate('/settings?tab=personal')}
+              >
+                Manage profile
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                  <polyline points="9 18 15 12 9 6" />
+                </svg>
+              </button>
+            ) : (
+              <button
+                type="button"
+                className="floating-manage-btn"
+                onClick={() => handleNavigate('/login')}
+              >
+                Sign In
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                  <polyline points="9 18 15 12 9 6" />
+                </svg>
+              </button>
+            )}
           </div>
 
           <div className="floating-panel-divider" />
@@ -308,20 +339,35 @@ export default function FloatingSettings({ user, onLogout, initialOpen = false }
 
           <div className="floating-panel-divider" />
 
-          {/* Sign Out Action */}
+          {/* Sign Out / Sign In Action */}
           <div className="floating-panel-footer">
-            <button
-              type="button"
-              className="floating-signout-btn"
-              onClick={handleSignOut}
-            >
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
-                <polyline points="16 17 21 12 16 7" />
-                <line x1="21" y1="12" x2="9" y2="12" />
-              </svg>
-              Sign Out
-            </button>
+            {isLoggedIn ? (
+              <button
+                type="button"
+                className="floating-signout-btn"
+                onClick={handleSignOut}
+              >
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                  <polyline points="16 17 21 12 16 7" />
+                  <line x1="21" y1="12" x2="9" y2="12" />
+                </svg>
+                Sign Out
+              </button>
+            ) : (
+              <button
+                type="button"
+                className="floating-signout-btn"
+                onClick={() => handleNavigate('/login')}
+              >
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4" />
+                  <polyline points="10 17 15 12 10 7" />
+                  <line x1="15" y1="12" x2="3" y2="12" />
+                </svg>
+                Sign In
+              </button>
+            )}
           </div>
         </div>
       )}

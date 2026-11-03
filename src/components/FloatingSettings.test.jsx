@@ -176,4 +176,16 @@ describe('FloatingSettings Component', () => {
     expect(openHtml).toContain('src="https://example.com/avatar.jpg"');
     expect(openHtml).toContain('alt="Aman Sharma"');
   });
+
+  it('does not display any persona tag or student learner when user is not logged in', () => {
+    const guestHtml = renderFloating({
+      initialOpen: true,
+      user: null
+    });
+
+    expect(guestHtml).toContain('Guest User');
+    expect(guestHtml).not.toContain('Student Learner');
+    expect(guestHtml).not.toContain('floating-role-tag');
+    expect(guestHtml).toContain('Sign In');
+  });
 });

@@ -18,18 +18,6 @@ export default function Landing({ onDemoLogin }) {
     }, 2400);
   };
 
-  const handleDemoClick = (role = 'student') => {
-    if (onDemoLogin) {
-      onDemoLogin(role);
-      triggerToast(`Loading ${role.charAt(0).toUpperCase() + role.slice(1)} demo dashboard...`);
-      setTimeout(() => {
-        navigate(getRoleDashboardPath(role));
-      }, 500);
-    } else {
-      navigate('/login');
-    }
-  };
-
   // Sparkline data for Pillar 1
   const horizonData = {
     '1M': {
@@ -81,13 +69,6 @@ export default function Landing({ onDemoLogin }) {
                 onClick={() => navigate('/signup')}
               >
                 Get Started Free <span>→</span>
-              </button>
-              <button
-                className="btn btn-outline btn-large"
-                id="demoBtn"
-                onClick={() => handleDemoClick('student')}
-              >
-                Explore Live Demo
               </button>
             </div>
 
@@ -381,10 +362,10 @@ export default function Landing({ onDemoLogin }) {
           {/* Card 1: Student */}
           <div
             className="perspective-card"
-            onClick={() => handleDemoClick('student')}
+            onClick={() => navigate('/onboarding')}
             role="button"
             tabIndex={0}
-            onKeyDown={(e) => e.key === 'Enter' && handleDemoClick('student')}
+            onKeyDown={(e) => e.key === 'Enter' && navigate('/onboarding')}
           >
             <div className="perspective-card-top">
               <span className="perspective-role-badge">Personal & Beginner</span>
@@ -412,7 +393,7 @@ export default function Landing({ onDemoLogin }) {
               </div>
             </div>
             <div className="perspective-card-action">
-              <span>Preview Student Dashboard</span>
+              <span>Get Started with Student Portal</span>
               <span>→</span>
             </div>
           </div>
@@ -420,10 +401,10 @@ export default function Landing({ onDemoLogin }) {
           {/* Card 2: Business */}
           <div
             className="perspective-card"
-            onClick={() => handleDemoClick('business')}
+            onClick={() => navigate('/onboarding')}
             role="button"
             tabIndex={0}
-            onKeyDown={(e) => e.key === 'Enter' && handleDemoClick('business')}
+            onKeyDown={(e) => e.key === 'Enter' && navigate('/onboarding')}
           >
             <div className="perspective-card-top">
               <span className="perspective-role-badge">Commercial & SME</span>
@@ -451,7 +432,7 @@ export default function Landing({ onDemoLogin }) {
               </div>
             </div>
             <div className="perspective-card-action">
-              <span>Preview Business Dashboard</span>
+              <span>Get Started with Business Treasury</span>
               <span>→</span>
             </div>
           </div>
@@ -459,10 +440,10 @@ export default function Landing({ onDemoLogin }) {
           {/* Card 3: Big Tech */}
           <div
             className="perspective-card"
-            onClick={() => handleDemoClick('tech')}
+            onClick={() => navigate('/onboarding')}
             role="button"
             tabIndex={0}
-            onKeyDown={(e) => e.key === 'Enter' && handleDemoClick('tech')}
+            onKeyDown={(e) => e.key === 'Enter' && navigate('/onboarding')}
           >
             <div className="perspective-card-top">
               <span className="perspective-role-badge">Quantitative & Advanced</span>
@@ -490,7 +471,7 @@ export default function Landing({ onDemoLogin }) {
               </div>
             </div>
             <div className="perspective-card-action">
-              <span>Preview Big Tech Dashboard</span>
+              <span>Get Started with Enterprise Analytics</span>
               <span>→</span>
             </div>
           </div>
@@ -511,16 +492,10 @@ export default function Landing({ onDemoLogin }) {
 
             <div className="closing-cta-buttons">
               <button
-                className="btn btn-primary"
+                className="btn btn-primary btn-large"
                 onClick={() => navigate('/signup')}
               >
                 Get Started Free <span>→</span>
-              </button>
-              <button
-                className="btn btn-outline"
-                onClick={() => handleDemoClick('student')}
-              >
-                Explore Live Demo
               </button>
             </div>
 

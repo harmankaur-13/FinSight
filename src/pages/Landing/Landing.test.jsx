@@ -28,12 +28,10 @@ describe('Landing Page Redesign Component', () => {
     expect(html).not.toContain('hero-status-pill');
   });
 
-  it('renders primary Get Started Free and secondary Explore Live Demo CTA buttons with correct IDs', () => {
+  it('renders primary Get Started Free CTA button with correct ID', () => {
     const html = renderLanding();
     expect(html).toContain('id="heroStart"');
-    expect(html).toContain('id="demoBtn"');
     expect(html).toContain('Get Started Free');
-    expect(html).toContain('Explore Live Demo');
   });
 
   it('renders the architectural background container and image without artificial glowing orbs', () => {
@@ -83,9 +81,9 @@ describe('Landing Page Redesign Component', () => {
     expect(html).toContain('Student Wealth Portal');
     expect(html).toContain('Business Treasury');
     expect(html).toContain('Tech &amp; Quantitative');
-    expect(html).toContain('Preview Student Dashboard');
-    expect(html).toContain('Preview Business Dashboard');
-    expect(html).toContain('Preview Big Tech Dashboard');
+    expect(html).toContain('Get Started with Student Portal');
+    expect(html).toContain('Get Started with Business Treasury');
+    expect(html).toContain('Get Started with Enterprise Analytics');
   });
 
   it('renders the compact refined closing CTA banner with action buttons', () => {

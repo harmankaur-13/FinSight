@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import Toast from '../../components/Toast';
-import ThemeToggle from '../../components/ThemeToggle';
+import SettingsButton from '../../components/SettingsButton';
 
 export default function Signup({ onSignup, onDemoLogin }) {
   const navigate = useNavigate();
@@ -59,14 +59,6 @@ export default function Signup({ onSignup, onDemoLogin }) {
     }, 600);
   };
 
-  const handleDemo = () => {
-    triggerToast('Opening FinSight demo...');
-    onDemoLogin('student');
-    setTimeout(() => {
-      navigate('/student-dashboard');
-    }, 500);
-  };
-
   return (
     <main className="auth-page">
       <section className="intro">
@@ -75,7 +67,6 @@ export default function Signup({ onSignup, onDemoLogin }) {
             <div className="brand-icon">F</div>
             <span>FinSight</span>
           </Link>
-          <ThemeToggle size="small" />
         </div>
 
         <div className="intro-content">
@@ -111,13 +102,16 @@ export default function Signup({ onSignup, onDemoLogin }) {
       </section>
 
       <section className="auth-area">
+        <div className="auth-top-action">
+          <SettingsButton size="small" />
+        </div>
         <div className="auth-card">
           <div className="mobile-auth-top">
             <Link to="/" className="mobile-brand">
               <div className="brand-icon">F</div>
               <span>FinSight</span>
             </Link>
-            <ThemeToggle size="small" />
+            <SettingsButton size="small" />
           </div>
 
           <div className="header">
@@ -213,20 +207,6 @@ export default function Signup({ onSignup, onDemoLogin }) {
             <span id="switchText">Already have an account?</span>
             <Link to="/login" id="switchBtn">Log in</Link>
           </div>
-
-          <div className="divider">
-            <span>or</span>
-          </div>
-
-          <button
-            className="demo-btn"
-            type="button"
-            id="demoBtn"
-            onClick={handleDemo}
-          >
-            Continue with demo
-          </button>
-          <p className="note">No real financial data required for the demo.</p>
         </div>
       </section>
 

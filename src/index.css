@@ -1090,6 +1090,17 @@ h1.hero-title span {
   justify-content: center;
   padding: 48px 32px;
   background: var(--bg);
+  position: relative;
+}
+
+.auth-top-action {
+  position: absolute;
+  top: 36px;
+  right: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  z-index: 20;
 }
 
 .auth-card {
@@ -1138,38 +1149,103 @@ h1.hero-title span {
 }
 
 .field {
-  margin-bottom: 18px;
+  margin-bottom: 20px;
 }
 
 .field label {
-  display: block;
-  margin-bottom: 6px;
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--text);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 7px;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
 }
 
-.field input {
+.field input,
+.field select,
+.field textarea {
   width: 100%;
-  height: 46px;
+  height: 44px;
   padding: 0 14px;
-  border: 1px solid var(--input-border);
+  border: 1px solid var(--border);
   border-radius: 8px;
   outline: none;
   background: var(--input-bg);
   color: var(--text);
   font-family: inherit;
-  font-size: 14px;
+  font-size: 13.5px;
   transition: border-color 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease;
 }
 
-.field input::placeholder {
+.field input::placeholder,
+.field textarea::placeholder {
   color: var(--muted-light);
+  font-size: 13px;
 }
 
-.field input:focus {
-  border-color: var(--accent-text);
-  box-shadow: 0 0 0 3px var(--green-subtle);
+.field input:focus,
+.field select:focus,
+.field textarea:focus {
+  border-color: var(--green);
+  box-shadow: 0 0 0 3px rgba(36, 94, 79, 0.12);
+}
+
+/* Adorned Input Group (Prefix & Suffix Support) */
+.input-adorned-group {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.input-affix {
+  position: absolute;
+  left: 14px;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--muted);
+  pointer-events: none;
+  user-select: none;
+  z-index: 2;
+}
+
+.input-affix.suffix {
+  left: auto;
+  right: 14px;
+}
+
+.input-adorned-group input {
+  padding-left: 32px !important;
+}
+
+.input-adorned-group.has-suffix input {
+  padding-right: 36px !important;
+}
+
+/* Live Currency Preview Helper */
+.field-currency-preview {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 6px;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--green);
+  letter-spacing: 0.02em;
+}
+
+.field-hint {
+  display: block;
+  margin-top: 5px;
+  font-size: 11.5px;
+  color: var(--muted);
+  line-height: 1.4;
 }
 
 .field input:-webkit-autofill,
@@ -1411,6 +1487,10 @@ h1.hero-title span {
     margin-bottom: 24px;
   }
 
+  .auth-top-action {
+    display: none;
+  }
+
   .auth-area {
     min-height: 100vh;
     padding: 32px 20px;
@@ -1452,16 +1532,16 @@ h1.hero-title span {
 ================================================= */
 
 .onboarding-container {
-  width: min(720px, 92%);
-  margin: 50px auto 80px;
+  width: min(1080px, 94%);
+  margin: 36px auto 80px;
 }
 
 .onboarding-card {
   background: var(--surface);
   border: 1px solid var(--border);
-  border-radius: 16px;
-  padding: 45px 50px;
-  box-shadow: var(--shadow-lg);
+  border-radius: 18px;
+  padding: 38px 46px 42px;
+  box-shadow: 0 24px 64px -16px rgba(0, 0, 0, 0.4), 0 0 0 1px var(--border);
 }
 
 .progress-bar-wrap {
@@ -2076,9 +2156,52 @@ h1.hero-title span {
 }
 
 .fin-slider {
+  -webkit-appearance: none;
+  appearance: none;
   width: 100%;
-  accent-color: var(--green);
+  height: 6px;
+  border-radius: 999px;
+  background: var(--border);
+  outline: none;
   cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.fin-slider:focus {
+  outline: none;
+}
+
+.fin-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--green);
+  border: 2px solid var(--surface);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.25);
+  cursor: pointer;
+  transition: transform 0.1s ease, background-color 0.15s ease;
+}
+
+.fin-slider::-webkit-slider-thumb:hover {
+  transform: scale(1.15);
+}
+
+.fin-slider::-moz-range-thumb {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--green);
+  border: 2px solid var(--surface);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.25);
+  cursor: pointer;
+}
+
+.fin-slider::-moz-range-track {
+  background: var(--border);
+  height: 6px;
+  border-radius: 999px;
 }
 
 .simulation-disclaimer {
@@ -2410,6 +2533,10 @@ footer .logo span {
 
   .mobile-auth-top {
     display: flex;
+  }
+
+  .auth-top-action {
+    display: none;
   }
 
   .mobile-brand {
@@ -2862,21 +2989,27 @@ footer .logo span {
 
 .fin-select {
   width: 100%;
-  height: 48px;
-  padding: 0 14px;
+  height: 44px;
+  padding: 0 38px 0 14px;
   border: 1px solid var(--border);
   border-radius: 8px;
   outline: none;
-  background: var(--input-bg);
+  background-color: var(--input-bg);
+  background-image: url("data:image/svg+xml,%3Csvg width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23777777' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round' xmlns='http://www.w3.org/2000/svg'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 14px center;
+  -webkit-appearance: none;
+  appearance: none;
   color: var(--text);
-  font-size: 14px;
-  transition: 0.2s;
+  font-family: inherit;
+  font-size: 13.5px;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
   cursor: pointer;
 }
 
 .fin-select:focus {
   border-color: var(--green);
-  box-shadow: 0 0 0 3px var(--green-subtle);
+  box-shadow: 0 0 0 3px rgba(36, 94, 79, 0.12);
 }
 
 .badge-tag {
@@ -4881,6 +5014,11 @@ footer .logo span {
   cursor: pointer;
   transition: all 0.15s ease;
   user-select: none;
+}
+
+.nav-settings-btn-sm {
+  width: 32px;
+  height: 32px;
 }
 
 .nav-settings-btn:hover {

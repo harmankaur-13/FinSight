@@ -1,5 +1,5 @@
 import { Link, NavLink, useNavigate, useLocation } from 'react-router-dom';
-import ThemeToggle from './ThemeToggle';
+import SettingsButton from './SettingsButton';
 import { getRoleDashboardPath } from '../hooks/useFinanceData';
 
 export default function Navbar({ user, onLogout }) {
@@ -47,7 +47,7 @@ export default function Navbar({ user, onLogout }) {
         </nav>
 
         <div className="nav-actions">
-          {!isAuth && <ThemeToggle />}
+          <SettingsButton user={user} onLogout={onLogout} />
           {isAuth ? (
             <>
               <button

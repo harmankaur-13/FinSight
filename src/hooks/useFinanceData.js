@@ -25,21 +25,24 @@ const STORAGE_KEY_FINANCIAL_DATA = 'finsight_financial_data';
 
 // Helper to format clean human name from email or raw string
 export function formatHumanName(input) {
-  if (!input) return 'User';
+  if (!input) return 'Guest User';
   let raw = input.split('@')[0].trim();
+  if (!raw || raw.toLowerCase() === 'user') return 'Guest User';
   
   // Remove numbers and replace punctuation with spaces
   let cleaned = raw.replace(/[0-9]+/g, '').replace(/[._-]+/g, ' ').trim();
+  if (!cleaned || cleaned.toLowerCase() === 'user') return 'Guest User';
 
   // Split CamelCase if any (e.g. HarmanKaur -> Harman Kaur)
   cleaned = cleaned.replace(/([a-z])([A-Z])/g, '$1 $2');
 
   // If already separated by spaces, capitalize each word nicely
   if (cleaned.includes(' ')) {
-    return cleaned
+    const res = cleaned
       .split(/\s+/)
       .map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase())
       .join(' ');
+    return res.toLowerCase() === 'user' ? 'Guest User' : res;
   }
 
   // Split common compound surnames if squished together without spaces

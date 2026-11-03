@@ -1,0 +1,717 @@
+/* ==========================================================================
+   FinSight — Manage Portfolio & Horizontal Input Console Stylesheet
+   Executive financial command bar, horizontally spanning inputs, zero emojis.
+   ========================================================================== */
+
+.portfolio-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: var(--modal-overlay);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 20px;
+  animation: modalFadeIn 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.portfolio-modal-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  max-width: 1120px;
+  width: min(1120px, 96vw);
+  max-height: 92vh;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 32px 72px -16px rgba(0, 0, 0, 0.45), 0 0 0 1px var(--border);
+  overflow: hidden;
+  animation: modalSlideUp 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes modalFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes modalSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(14px) scale(0.985);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* --------------------------------------------------
+   1. MODAL HEADER
+   -------------------------------------------------- */
+
+.portfolio-modal-header {
+  padding: 22px 30px 18px;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface);
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 18px;
+}
+
+.portfolio-modal-header .step-badge {
+  display: inline-block;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--accent-label);
+  margin-bottom: 6px;
+}
+
+.portfolio-modal-title {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: -0.6px;
+  color: var(--text);
+  margin: 0 0 4px;
+}
+
+.portfolio-modal-subtitle {
+  font-size: 13.5px;
+  line-height: 1.45;
+  color: var(--text-secondary);
+  margin: 0;
+  max-width: 720px;
+}
+
+.modal-close-icon-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--surface-hover);
+  color: var(--muted);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  flex-shrink: 0;
+}
+
+.modal-close-icon-btn:hover {
+  color: var(--text);
+  border-color: var(--muted);
+  background: var(--surface);
+}
+
+/* --------------------------------------------------
+   2. SEGMENTED NAVIGATION TABS
+   -------------------------------------------------- */
+
+.modal-tabs-row {
+  display: flex;
+  gap: 8px;
+  padding: 8px 24px;
+  background: var(--surface-2);
+  border-bottom: 1px solid var(--border);
+  overflow-x: auto;
+  scrollbar-width: thin;
+}
+
+.modal-tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  border-radius: 8px;
+  border: 1px solid transparent;
+  background: transparent;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--muted);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.15s ease;
+}
+
+.modal-tab:hover {
+  color: var(--text);
+  background: rgba(0, 0, 0, 0.04);
+}
+
+[data-theme='dark'] .modal-tab:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.modal-tab.active {
+  background: var(--surface);
+  border-color: var(--border);
+  color: var(--text);
+  box-shadow: var(--shadow-sm);
+}
+
+.modal-tab-badge {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 10.5px;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 10px;
+  background: var(--surface-hover);
+  color: var(--muted);
+}
+
+.modal-tab.active .modal-tab-badge {
+  background: var(--green-light);
+  color: var(--green-dark);
+}
+
+/* --------------------------------------------------
+   3. MODAL BODY & HOLDINGS SUMMARY BAR
+   -------------------------------------------------- */
+
+.modal-tab-body {
+  padding: 22px 30px;
+  overflow-y: auto;
+  flex: 1;
+}
+
+.holdings-summary-bar {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+  background: var(--surface-hover);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 12px 18px;
+  margin-bottom: 20px;
+}
+
+@media (max-width: 768px) {
+  .holdings-summary-bar {
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+}
+
+.summary-metric-item {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.summary-metric-label {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.summary-metric-value {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.summary-metric-sub {
+  font-size: 11px;
+  color: var(--muted);
+}
+
+.summary-metric-sub.gain {
+  color: var(--green-dark);
+  font-weight: 600;
+}
+
+.summary-metric-sub.loss {
+  color: var(--error);
+  font-weight: 600;
+}
+
+/* --------------------------------------------------
+   4. PREMIUM HORIZONTAL ASSET ENTRY CONSOLE
+   -------------------------------------------------- */
+
+.horizontal-entry-console {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 16px 20px 18px;
+  margin-bottom: 24px;
+  box-shadow: 0 4px 16px -4px rgba(0, 0, 0, 0.08);
+}
+
+.console-header-strip {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 14px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--border);
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.console-header-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.console-indicator-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--green);
+  box-shadow: 0 0 0 2px rgba(36, 94, 79, 0.2);
+}
+
+.console-eyebrow {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--accent-label);
+}
+
+.console-helper-text {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+/* Main Horizontal Input Deck */
+.horizontal-inputs-deck {
+  display: grid;
+  grid-template-columns: 1.6fr 1.1fr 1fr 1fr 0.85fr auto;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+@media (max-width: 980px) {
+  .horizontal-inputs-deck {
+    grid-template-columns: 1.5fr 1fr 1fr;
+    gap: 14px;
+  }
+}
+
+@media (max-width: 640px) {
+  .horizontal-inputs-deck {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+}
+
+.console-input-col {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.console-input-col label {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+.console-input-col input,
+.console-input-col select {
+  height: 42px;
+  background: var(--surface-hover);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0 12px;
+  font-size: 13.5px;
+  color: var(--text);
+  font-family: inherit;
+  transition: all 0.15s ease;
+  width: 100%;
+}
+
+.console-input-col input:focus,
+.console-input-col select:focus {
+  border-color: var(--green);
+  background: var(--surface);
+  box-shadow: 0 0 0 3px rgba(36, 94, 79, 0.12);
+  outline: none;
+}
+
+/* Micro Quick Suggestion Chips */
+.quick-suggestions-inline {
+  display: flex;
+  gap: 4px;
+  margin-top: 4px;
+  flex-wrap: wrap;
+}
+
+.quick-chip-micro {
+  padding: 2px 7px;
+  border-radius: 4px;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  color: var(--text-secondary);
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+}
+
+.quick-chip-micro:hover {
+  color: var(--green);
+  border-color: var(--green);
+  background: var(--surface);
+}
+
+/* Formatted Rupee Preview */
+.console-preview-text {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--green);
+  letter-spacing: 0.02em;
+  margin-top: 3px;
+  white-space: nowrap;
+}
+
+/* Allocation Tag Badge */
+.console-alloc-badge {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 10.5px;
+  font-weight: 700;
+  margin-top: 3px;
+  white-space: nowrap;
+}
+
+.console-alloc-badge.balanced {
+  color: var(--green);
+}
+
+.console-alloc-badge.under {
+  color: var(--text-secondary);
+}
+
+.console-alloc-badge.over {
+  color: var(--error);
+}
+
+/* Actions Column & Button */
+.console-actions-col {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.action-spacer {
+  font-size: 10.5px;
+  line-height: 1;
+  visibility: hidden;
+  user-select: none;
+}
+
+.console-btn-group {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.console-submit-btn {
+  height: 42px;
+  padding: 0 18px;
+  font-size: 13px;
+  font-weight: 700;
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+}
+
+.console-error {
+  margin-top: 10px;
+  font-size: 12px;
+}
+
+/* --------------------------------------------------
+   5. HORIZONTAL SAVINGS CONSOLE (TAB 2)
+   -------------------------------------------------- */
+
+.horizontal-savings-deck {
+  display: grid;
+  grid-template-columns: 1.4fr 2fr auto;
+  gap: 18px;
+  align-items: flex-start;
+}
+
+@media (max-width: 860px) {
+  .horizontal-savings-deck {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+}
+
+.savings-input-col,
+.savings-steppers-col,
+.savings-action-col {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.savings-input-col label,
+.savings-steppers-col label {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.savings-input-col input {
+  height: 42px;
+  background: var(--surface-hover);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0 12px;
+  font-size: 13.5px;
+  color: var(--text);
+  font-family: inherit;
+  width: 100%;
+}
+
+.savings-input-col input:focus {
+  border-color: var(--green);
+  background: var(--surface);
+  box-shadow: 0 0 0 3px rgba(36, 94, 79, 0.12);
+  outline: none;
+}
+
+.stepper-preset-pills {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  min-height: 42px;
+}
+
+.stepper-pill-btn {
+  padding: 6px 12px;
+  border-radius: 6px;
+  background: var(--surface-hover);
+  border: 1px solid var(--border);
+  color: var(--text-secondary);
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 11.5px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+}
+
+.stepper-pill-btn:hover {
+  color: var(--green);
+  border-color: var(--green);
+  background: var(--surface);
+}
+
+.stepper-pill-btn.clear:hover {
+  color: var(--error);
+  border-color: var(--error);
+}
+
+.savings-success-banner {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 12px;
+  padding: 8px 14px;
+  border-radius: 6px;
+  background: var(--green-light);
+  color: var(--green-dark);
+  font-size: 12.5px;
+  font-weight: 600;
+}
+
+/* --------------------------------------------------
+   6. HORIZONTAL GOALS CONSOLE (TAB 3)
+   -------------------------------------------------- */
+
+.horizontal-goals-deck {
+  display: grid;
+  grid-template-columns: 1.8fr 1.1fr 1.1fr auto;
+  gap: 14px;
+  align-items: flex-start;
+}
+
+@media (max-width: 860px) {
+  .horizontal-goals-deck {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 600px) {
+  .horizontal-goals-deck {
+    grid-template-columns: 1fr;
+  }
+}
+
+.horizontal-goal-simulation-bar {
+  margin-top: 14px;
+  padding: 10px 14px;
+  background: var(--surface-hover);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+
+.sim-meta-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 12px;
+  margin-bottom: 6px;
+  color: var(--muted);
+}
+
+.sim-meta-row strong {
+  font-family: 'Space Grotesk', sans-serif;
+  color: var(--green-dark);
+}
+
+/* --------------------------------------------------
+   7. EXISTING HOLDINGS & GOALS LEDGER LISTS
+   -------------------------------------------------- */
+
+.items-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.item-row-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 14px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.item-row-card:hover {
+  border-color: var(--muted);
+}
+
+.item-row-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.item-title-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.item-name {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 14.5px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.badge-tag {
+  display: inline-block;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  padding: 2px 7px;
+  border-radius: 4px;
+  background: var(--surface-hover);
+  border: 1px solid var(--border);
+  color: var(--text-secondary);
+}
+
+.item-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.item-meta-metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  gap: 10px;
+  padding-top: 8px;
+  border-top: 1px solid var(--border);
+}
+
+.meta-metric-col {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.meta-metric-label {
+  font-size: 10.5px;
+  color: var(--muted);
+}
+
+.meta-metric-val {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.meta-metric-val.gain {
+  color: var(--green-dark);
+}
+
+.meta-metric-val.loss {
+  color: var(--error);
+}
+
+/* --------------------------------------------------
+   8. FOOTER & EMPTY STATES
+   -------------------------------------------------- */
+
+.portfolio-modal-footer {
+  padding: 14px 30px;
+  border-top: 1px solid var(--border);
+  background: var(--surface-2);
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+.empty-state-box {
+  background: var(--surface-hover);
+  border: 1px dashed var(--border);
+  border-radius: 12px;
+  padding: 28px 20px;
+  text-align: center;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.5;
+}

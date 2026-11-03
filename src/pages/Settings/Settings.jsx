@@ -404,7 +404,7 @@ export default function Settings({
     }
   };
 
-  const displayName = formatHumanName(formData.name) || 'User';
+  const displayName = formatHumanName(formData.name) || 'Guest User';
 
   return (
     <div className="container" style={{ padding: '36px 0 90px' }}>
@@ -541,7 +541,7 @@ export default function Settings({
                   />
                 ) : (
                   <span className="settings-avatar-fallback">
-                    {(displayName || 'U').charAt(0).toUpperCase()}
+                    {(displayName || 'G').charAt(0).toUpperCase()}
                   </span>
                 )}
               </div>

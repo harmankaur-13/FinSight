@@ -1,5 +1,31 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { ASSET_TYPES } from '../utils/financialCalculations';
+import './ManagePortfolioModal.css';
+
+// Quick suggestions for rapid user entry
+const QUICK_ASSETS = [
+  { name: 'Nifty 50 Index Fund', type: 'Mutual Funds' },
+  { name: 'Reliance Industries', type: 'Stocks' },
+  { name: 'HDFC Bank', type: 'Stocks' },
+  { name: 'Govt 10Y Sovereign Bond', type: 'Bonds' },
+  { name: 'Sovereign Gold Bond', type: 'Gold' },
+  { name: 'Bitcoin', type: 'Crypto' }
+];
+
+const SAVINGS_PRESETS = [1000, 2500, 5000, 10000, 25000];
+
+const QUICK_GOALS = [
+  { title: 'Emergency Reserve (6 Months)', target: 150000 },
+  { title: 'First ₹1 Lakh Wealth Milestone', target: 100000 },
+  { title: 'Annual Travel Fund', target: 60000 },
+  { title: 'House Down Payment Fund', target: 500000 }
+];
+
+function formatINRPreview(val) {
+  const num = parseFloat(val);
+  if (isNaN(num) || num < 0) return '';
+  return '₹' + num.toLocaleString('en-IN');
+}
 
 export default function ManagePortfolioModal({
   isOpen,
@@ -36,7 +62,66 @@ export default function ManagePortfolioModal({
   const [goalTarget, setGoalTarget] = useState('');
   const [goalError, setGoalError] = useState('');
 
-  if (!isOpen) return null;
+  // Sync savingsInput with financialData when opened
+  useEffect(() => {
+    if (financialData?.monthlySavings !== undefined) {
+      setSavingsInput(financialData.monthlySavings ?? '');
+    }
+  }, [financialData?.monthlySavings, isOpen]);
+
+  // Close on Escape key press
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape' && isOpen) {
+        onClose();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isOpen, onClose]);
+
+  const investments = financialData?.investments || [];
+  const goals = financialData?.goals || [];
+
+  // Computed Portfolio Metrics
+  const portfolioSummary = useMemo(() => {
+    let investedSum = 0;
+    let currentSum = 0;
+    let targetSum = 0;
+
+    investments.forEach((inv) => {
+      const invAmt = parseFloat(inv.investedAmount) || 0;
+      const curAmt = parseFloat(inv.currentValue !== undefined ? inv.currentValue : inv.investedAmount) || 0;
+      const target = parseFloat(inv.targetAllocation) || 0;
+
+      investedSum += invAmt;
+      currentSum += curAmt;
+      targetSum += target;
+    });
+
+    const gainLoss = currentSum - investedSum;
+    const gainLossPct = investedSum > 0 ? (gainLoss / investedSum) * 100 : 0;
+
+    return {
+      investedSum,
+      currentSum,
+      gainLoss,
+      gainLossPct,
+      targetSum
+    };
+  }, [investments]);
+
+  // Target allocation calculation excluding the item currently being edited
+  const otherHoldingsTargetAlloc = useMemo(() => {
+    return investments.reduce((sum, inv) => {
+      if (invEditingId && inv.id === invEditingId) return sum;
+      const val = parseFloat(inv.targetAllocation);
+      return sum + (isNaN(val) ? 0 : val);
+    }, 0);
+  }, [investments, invEditingId]);
+
+  const currentInputTargetAlloc = parseFloat(invTargetAlloc) || 0;
+  const combinedTargetAlloc = otherHoldingsTargetAlloc + currentInputTargetAlloc;
 
   // Investment Handlers
   const handleStartEditInvestment = (inv) => {
@@ -47,6 +132,11 @@ export default function ManagePortfolioModal({
     setInvCurrent(inv.currentValue !== undefined ? String(inv.currentValue) : '');
     setInvTargetAlloc(inv.targetAllocation !== undefined && inv.targetAllocation !== null ? String(inv.targetAllocation) : '');
     setInvError('');
+    // Scroll modal top smoothly to bring horizontal console into focus
+    const modalBody = document.querySelector('.modal-tab-body');
+    if (modalBody) {
+      modalBody.scrollTo({ top: 0, behavior: 'smooth' });
+    }
   };
 
   const handleCancelEditInvestment = () => {
@@ -123,7 +213,16 @@ export default function ManagePortfolioModal({
     }
     onUpdateMonthlySavings(val);
     setSavingsSavedMsg(true);
-    setTimeout(() => setSavingsSavedMsg(false), 2000);
+    setTimeout(() => setSavingsSavedMsg(false), 2500);
+  };
+
+  const handleAddSavingsPreset = (amount) => {
+    const current = parseFloat(savingsInput) || 0;
+    setSavingsInput(String(current + amount));
+  };
+
+  const handleResetSavings = () => {
+    setSavingsInput('0');
   };
 
   // Goal Handlers
@@ -133,6 +232,10 @@ export default function ManagePortfolioModal({
     setGoalCurrent(g.current !== undefined ? String(g.current) : '');
     setGoalTarget(g.target !== undefined ? String(g.target) : '');
     setGoalError('');
+    const modalBody = document.querySelector('.modal-tab-body');
+    if (modalBody) {
+      modalBody.scrollTo({ top: 0, behavior: 'smooth' });
+    }
   };
 
   const handleCancelEditGoal = () => {
@@ -184,125 +287,171 @@ export default function ManagePortfolioModal({
     handleCancelEditGoal();
   };
 
-  const investments = financialData?.investments || [];
-  const goals = financialData?.goals || [];
+  if (!isOpen) return null;
+
+  // Real-time progress computation for the Goal form
+  const goalCurrentNum = parseFloat(goalCurrent) || 0;
+  const goalTargetNum = parseFloat(goalTarget) || 0;
+  const goalSimulatedPct = goalTargetNum > 0 ? Math.min(100, Math.round((goalCurrentNum / goalTargetNum) * 100)) : 0;
+  const goalRemaining = Math.max(0, goalTargetNum - goalCurrentNum);
 
   return (
-    <div className="portfolio-modal-backdrop" onClick={onClose}>
+    <div className="portfolio-modal-backdrop" onClick={onClose} role="dialog" aria-modal="true" aria-labelledby="portfolio-modal-title">
       <div className="portfolio-modal-card" onClick={(e) => e.stopPropagation()}>
+        {/* Modal Header */}
         <div className="portfolio-modal-header">
           <div>
-            <span className="step-badge">PORTFOLIO MANAGEMENT</span>
-            <h2 className="portfolio-modal-title">Manage Your Portfolio & Goals</h2>
+            <span className="step-badge">PORTFOLIO LEDGER MANAGEMENT</span>
+            <h2 id="portfolio-modal-title" className="portfolio-modal-title">
+              Manage Assets &amp; Capital Targets
+            </h2>
             <p className="portfolio-modal-subtitle">
-              Add or update your real assets, monthly savings, and financial milestones.
+              Configure multi-asset holdings, systematic savings pace, and milestone targets using the horizontal command console.
             </p>
           </div>
           <button
             type="button"
-            className="btn btn-ghost btn-small modal-close-btn"
+            className="modal-close-icon-btn"
             onClick={onClose}
-            aria-label="Close"
+            aria-label="Close modal dialog"
           >
-            ✕
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <line x1="18" y1="6" x2="6" y2="18"></line>
+              <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
           </button>
         </div>
 
         {/* Navigation Tabs */}
-        <div className="modal-tabs-row">
+        <div className="modal-tabs-row" role="tablist">
           <button
             type="button"
+            role="tab"
+            aria-selected={activeTab === 'investments'}
             className={`modal-tab ${activeTab === 'investments' ? 'active' : ''}`}
             onClick={() => setActiveTab('investments')}
           >
-            Investments & Assets ({investments.length})
+            <span>Holdings &amp; Ledger</span>
+            <span className="modal-tab-badge">{investments.length}</span>
           </button>
           <button
             type="button"
+            role="tab"
+            aria-selected={activeTab === 'savings'}
             className={`modal-tab ${activeTab === 'savings' ? 'active' : ''}`}
             onClick={() => setActiveTab('savings')}
           >
-            Monthly Savings
+            <span>Systematic Savings Pace</span>
+            <span className="modal-tab-badge">
+              {financialData?.monthlySavings ? `₹${Number(financialData.monthlySavings).toLocaleString('en-IN')}` : 'Unset'}
+            </span>
           </button>
           <button
             type="button"
+            role="tab"
+            aria-selected={activeTab === 'goals'}
             className={`modal-tab ${activeTab === 'goals' ? 'active' : ''}`}
             onClick={() => setActiveTab('goals')}
           >
-            Financial Goals ({goals.length})
+            <span>Milestone Targets</span>
+            <span className="modal-tab-badge">{goals.length}</span>
           </button>
         </div>
 
-        {/* Tab 1: Investments */}
+        {/* =========================================================================
+            TAB 1: INVESTMENTS & HOLDINGS
+            ========================================================================= */}
         {activeTab === 'investments' && (
           <div className="modal-tab-body">
-            {/* Existing Investments List */}
-            <div className="modal-section">
-              <h3 className="modal-section-title">Current Holdings</h3>
-              {investments.length === 0 ? (
-                <div className="empty-state-box">
-                  <p>No investments added yet. Use the form below to add your first asset.</p>
+            {/* Holdings Summary Bar */}
+            {investments.length > 0 && (
+              <div className="holdings-summary-bar">
+                <div className="summary-metric-item">
+                  <span className="summary-metric-label">Invested Capital</span>
+                  <span className="summary-metric-value">₹{portfolioSummary.investedSum.toLocaleString('en-IN')}</span>
+                  <span className="summary-metric-sub">{investments.length} Active Positions</span>
                 </div>
-              ) : (
-                <div className="items-list">
-                  {investments.map((inv) => (
-                    <div key={inv.id} className="item-row-card">
-                      <div className="item-main-info">
-                        <div className="item-title-row">
-                          <strong className="item-name">{inv.name}</strong>
-                          <span className="badge-tag">{inv.type}</span>
-                        </div>
-                        <div className="item-meta-row">
-                          <span>Invested: <strong>₹{Number(inv.investedAmount).toLocaleString('en-IN')}</strong></span>
-                          <span>Current: <strong>₹{Number(inv.currentValue).toLocaleString('en-IN')}</strong></span>
-                          {inv.targetAllocation !== null && inv.targetAllocation !== undefined && (
-                            <span>Target: <strong>{inv.targetAllocation}%</strong></span>
-                          )}
-                        </div>
-                      </div>
-                      <div className="item-actions">
-                        <button
-                          type="button"
-                          className="btn btn-outline btn-small"
-                          onClick={() => handleStartEditInvestment(inv)}
-                        >
-                          Edit
-                        </button>
-                        <button
-                          type="button"
-                          className="btn btn-ghost btn-small text-danger"
-                          onClick={() => onDeleteInvestment(inv.id)}
-                        >
-                          Delete
-                        </button>
-                      </div>
-                    </div>
-                  ))}
+                <div className="summary-metric-item">
+                  <span className="summary-metric-label">Current Valuation</span>
+                  <span className="summary-metric-value">₹{portfolioSummary.currentSum.toLocaleString('en-IN')}</span>
+                  <span className="summary-metric-sub">Aggregated Net Value</span>
                 </div>
-              )}
-            </div>
+                <div className="summary-metric-item">
+                  <span className="summary-metric-label">Unrealized P&amp;L</span>
+                  <span className="summary-metric-value">
+                    {portfolioSummary.gainLoss >= 0 ? '+' : ''}₹{Math.abs(portfolioSummary.gainLoss).toLocaleString('en-IN')}
+                  </span>
+                  <span className={`summary-metric-sub ${portfolioSummary.gainLoss >= 0 ? 'gain' : 'loss'}`}>
+                    {portfolioSummary.gainLoss >= 0 ? '+' : ''}{portfolioSummary.gainLossPct.toFixed(2)}% Overall
+                  </span>
+                </div>
+                <div className="summary-metric-item">
+                  <span className="summary-metric-label">Target Weight Assigned</span>
+                  <span className="summary-metric-value">{portfolioSummary.targetSum.toFixed(0)}% / 100%</span>
+                  <span className="summary-metric-sub">
+                    {portfolioSummary.targetSum === 100
+                      ? 'Fully Balanced'
+                      : portfolioSummary.targetSum < 100
+                        ? `${(100 - portfolioSummary.targetSum).toFixed(0)}% Unallocated`
+                        : `${(portfolioSummary.targetSum - 100).toFixed(0)}% Over Target`}
+                  </span>
+                </div>
+              </div>
+            )}
 
-            {/* Add/Edit Investment Form */}
-            <div className="modal-section form-section">
-              <h3 className="modal-section-title">
-                {invEditingId ? 'Edit Investment' : 'Add New Investment'}
-              </h3>
-              <form onSubmit={handleSaveInvestment}>
-                <div className="form-grid-2">
-                  <div className="field">
-                    <label>Investment / Asset Name *</label>
+            {/* Premium Horizontal Asset Entry Console */}
+            <div className="horizontal-entry-console">
+              <div className="console-header-strip">
+                <div className="console-header-left">
+                  <span className="console-indicator-dot" />
+                  <span className="console-eyebrow">
+                    {invEditingId ? 'EDITING ASSET POSITION' : 'RAPID ASSET ENTRY CONSOLE'}
+                  </span>
+                </div>
+                <span className="console-helper-text">
+                  {invEditingId
+                    ? 'Adjust values across the row and click Update Position'
+                    : 'Input position details horizontally and press + Add Position'}
+                </span>
+              </div>
+
+              <form onSubmit={handleSaveInvestment} className="horizontal-entry-form">
+                <div className="horizontal-inputs-deck">
+                  {/* Col 1: Asset / Security Name */}
+                  <div className="console-input-col">
+                    <label htmlFor="invName">Asset / Security Name *</label>
                     <input
+                      id="invName"
                       type="text"
-                      placeholder="e.g. Reliance Industries, Nifty 50 Index"
+                      placeholder="e.g. Reliance, Nifty 50"
                       value={invName}
                       onChange={(e) => setInvName(e.target.value)}
                       required
                     />
+                    {!invEditingId && (
+                      <div className="quick-suggestions-inline">
+                        {QUICK_ASSETS.map((asset) => (
+                          <button
+                            key={asset.name}
+                            type="button"
+                            className="quick-chip-micro"
+                            onClick={() => {
+                              setInvName(asset.name);
+                              setInvType(asset.type);
+                            }}
+                          >
+                            {asset.name.split(' ')[0]}
+                          </button>
+                        ))}
+                      </div>
+                    )}
                   </div>
 
-                  <div className="field">
-                    <label>Asset Category *</label>
+                  {/* Col 2: Category Dropdown */}
+                  <div className="console-input-col">
+                    <label htmlFor="invType">Category *</label>
                     <select
+                      id="invType"
                       value={invType}
                       onChange={(e) => setInvType(e.target.value)}
                       className="fin-select"
@@ -314,115 +463,403 @@ export default function ManagePortfolioModal({
                       ))}
                     </select>
                   </div>
-                </div>
 
-                <div className="form-grid-3">
-                  <div className="field">
-                    <label>Amount Invested (₹) *</label>
-                    <input
-                      type="number"
-                      min="0"
-                      step="any"
-                      placeholder="e.g. 20000"
-                      value={invInvested}
-                      onChange={(e) => setInvInvested(e.target.value)}
-                      required
-                    />
+                  {/* Col 3: Invested Amount */}
+                  <div className="console-input-col">
+                    <label htmlFor="invInvested">Invested (₹) *</label>
+                    <div className="input-adorned-group">
+                      <span className="input-affix">₹</span>
+                      <input
+                        id="invInvested"
+                        type="number"
+                        min="0"
+                        step="any"
+                        placeholder="25000"
+                        value={invInvested}
+                        onChange={(e) => setInvInvested(e.target.value)}
+                        required
+                      />
+                    </div>
+                    {invInvested && (
+                      <span className="console-preview-text">
+                        {formatINRPreview(invInvested)}
+                      </span>
+                    )}
                   </div>
 
-                  <div className="field">
-                    <label>Current Value (₹) (Optional)</label>
-                    <input
-                      type="number"
-                      min="0"
-                      step="any"
-                      placeholder="e.g. 22500"
-                      value={invCurrent}
-                      onChange={(e) => setInvCurrent(e.target.value)}
-                    />
+                  {/* Col 4: Current Valuation */}
+                  <div className="console-input-col">
+                    <label htmlFor="invCurrent">Current Value (₹)</label>
+                    <div className="input-adorned-group">
+                      <span className="input-affix">₹</span>
+                      <input
+                        id="invCurrent"
+                        type="number"
+                        min="0"
+                        step="any"
+                        placeholder="28500"
+                        value={invCurrent}
+                        onChange={(e) => setInvCurrent(e.target.value)}
+                      />
+                    </div>
+                    {invCurrent && (
+                      <span className="console-preview-text">
+                        {formatINRPreview(invCurrent)}
+                      </span>
+                    )}
                   </div>
 
-                  <div className="field">
-                    <label>Target Allocation % (Optional)</label>
-                    <input
-                      type="number"
-                      min="0"
-                      max="100"
-                      step="any"
-                      placeholder="e.g. 40"
-                      value={invTargetAlloc}
-                      onChange={(e) => setInvTargetAlloc(e.target.value)}
-                    />
-                  </div>
-                </div>
-
-                {invError && <p className="error">{invError}</p>}
-
-                <div className="form-actions-row">
-                  {invEditingId && (
-                    <button
-                      type="button"
-                      className="btn btn-outline btn-small"
-                      onClick={handleCancelEditInvestment}
+                  {/* Col 5: Target Allocation */}
+                  <div className="console-input-col">
+                    <label htmlFor="invTargetAlloc">Target Weight %</label>
+                    <div className="input-adorned-group has-suffix">
+                      <input
+                        id="invTargetAlloc"
+                        type="number"
+                        min="0"
+                        max="100"
+                        step="any"
+                        placeholder="25"
+                        value={invTargetAlloc}
+                        onChange={(e) => setInvTargetAlloc(e.target.value)}
+                      />
+                      <span className="input-affix suffix">%</span>
+                    </div>
+                    <span
+                      className={`console-alloc-badge ${
+                        combinedTargetAlloc === 100
+                          ? 'balanced'
+                          : combinedTargetAlloc > 100
+                            ? 'over'
+                            : 'under'
+                      }`}
                     >
-                      Cancel
-                    </button>
-                  )}
-                  <button type="submit" className="btn btn-primary btn-small">
-                    {invEditingId ? 'Update Investment' : '+ Add Investment'}
-                  </button>
+                      {combinedTargetAlloc.toFixed(0)}% Total Portfolio
+                    </span>
+                  </div>
+
+                  {/* Col 6: Action Submit Button */}
+                  <div className="console-actions-col">
+                    <label className="action-spacer">&nbsp;</label>
+                    <div className="console-btn-group">
+                      {invEditingId && (
+                        <button
+                          type="button"
+                          className="btn btn-outline btn-small"
+                          onClick={handleCancelEditInvestment}
+                        >
+                          Cancel
+                        </button>
+                      )}
+                      <button type="submit" className="btn btn-primary console-submit-btn">
+                        {invEditingId ? 'Update' : '+ Add Position'}
+                      </button>
+                    </div>
+                  </div>
                 </div>
+
+                {invError && <p className="error console-error" role="alert">{invError}</p>}
               </form>
+            </div>
+
+            {/* Current Asset Positions Ledger List */}
+            <div className="modal-section">
+              <h3 className="modal-section-title">Current Asset Positions</h3>
+              {investments.length === 0 ? (
+                <div className="empty-state-box">
+                  <p>No investment positions recorded yet. Use the horizontal console above to add your first asset.</p>
+                </div>
+              ) : (
+                <div className="items-list">
+                  {investments.map((inv) => {
+                    const invested = Number(inv.investedAmount) || 0;
+                    const current = Number(inv.currentValue !== undefined ? inv.currentValue : inv.investedAmount) || 0;
+                    const diff = current - invested;
+                    const diffPct = invested > 0 ? (diff / invested) * 100 : 0;
+
+                    return (
+                      <div key={inv.id} className="item-row-card">
+                        <div className="item-row-top">
+                          <div className="item-title-row">
+                            <strong className="item-name">{inv.name}</strong>
+                            <span className="badge-tag">{inv.type}</span>
+                            {inv.targetAllocation !== null && inv.targetAllocation !== undefined && (
+                              <span className="badge-tag" style={{ color: 'var(--green-dark)' }}>
+                                {inv.targetAllocation}% Target Weight
+                              </span>
+                            )}
+                          </div>
+                          <div className="item-actions">
+                            <button
+                              type="button"
+                              className="btn btn-outline btn-small"
+                              onClick={() => handleStartEditInvestment(inv)}
+                            >
+                              Edit Position
+                            </button>
+                            <button
+                              type="button"
+                              className="btn btn-ghost btn-small text-danger"
+                              onClick={() => onDeleteInvestment(inv.id)}
+                            >
+                              Delete
+                            </button>
+                          </div>
+                        </div>
+
+                        <div className="item-meta-metrics-grid">
+                          <div className="meta-metric-col">
+                            <span className="meta-metric-label">Capital Invested</span>
+                            <span className="meta-metric-val">₹{invested.toLocaleString('en-IN')}</span>
+                          </div>
+                          <div className="meta-metric-col">
+                            <span className="meta-metric-label">Current Valuation</span>
+                            <span className="meta-metric-val">₹{current.toLocaleString('en-IN')}</span>
+                          </div>
+                          <div className="meta-metric-col">
+                            <span className="meta-metric-label">Position Return</span>
+                            <span className={`meta-metric-val ${diff >= 0 ? 'gain' : 'loss'}`}>
+                              {diff >= 0 ? '+' : ''}{diffPct.toFixed(1)}% ({diff >= 0 ? '+' : ''}₹{Math.abs(diff).toLocaleString('en-IN')})
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
             </div>
           </div>
         )}
 
-        {/* Tab 2: Monthly Savings */}
+        {/* =========================================================================
+            TAB 2: MONTHLY SAVINGS PACE
+            ========================================================================= */}
         {activeTab === 'savings' && (
           <div className="modal-tab-body">
-            <div className="modal-section">
-              <h3 className="modal-section-title">Monthly Capital Contribution</h3>
-              <p style={{ color: 'var(--muted)', fontSize: '13px', marginBottom: '20px' }}>
-                Set your systematic monthly investment or savings allocation. This is displayed on your dashboard and powers future growth calculations.
-              </p>
+            <div className="horizontal-entry-console">
+              <div className="console-header-strip">
+                <div className="console-header-left">
+                  <span className="console-indicator-dot" />
+                  <span className="console-eyebrow">SYSTEMATIC MONTHLY CAPITAL PACE</span>
+                </div>
+                <span className="console-helper-text">
+                  Powers compound trajectory forecasts and monthly drift calculations
+                </span>
+              </div>
 
-              <form onSubmit={handleSaveMonthlySavings} style={{ maxWidth: '420px' }}>
-                <div className="field">
-                  <label>Monthly Contribution (₹)</label>
-                  <input
-                    type="number"
-                    min="0"
-                    step="any"
-                    placeholder="e.g. 5000 (or leave empty)"
-                    value={savingsInput}
-                    onChange={(e) => setSavingsInput(e.target.value)}
-                  />
+              <form onSubmit={handleSaveMonthlySavings} className="horizontal-savings-form">
+                <div className="horizontal-savings-deck">
+                  {/* Col 1: Monthly Input */}
+                  <div className="savings-input-col">
+                    <label htmlFor="savingsInput">Monthly Capital Addition (₹)</label>
+                    <div className="input-adorned-group">
+                      <span className="input-affix">₹</span>
+                      <input
+                        id="savingsInput"
+                        type="number"
+                        min="0"
+                        step="any"
+                        placeholder="e.g. 5000"
+                        value={savingsInput}
+                        onChange={(e) => setSavingsInput(e.target.value)}
+                      />
+                    </div>
+                    {savingsInput && (
+                      <span className="console-preview-text">
+                        {formatINRPreview(savingsInput)} per month
+                      </span>
+                    )}
+                  </div>
+
+                  {/* Col 2: Quick Steppers */}
+                  <div className="savings-steppers-col">
+                    <label>Quick Increment Presets</label>
+                    <div className="stepper-preset-pills">
+                      {SAVINGS_PRESETS.map((amt) => (
+                        <button
+                          key={amt}
+                          type="button"
+                          className="stepper-pill-btn"
+                          onClick={() => handleAddSavingsPreset(amt)}
+                        >
+                          +₹{amt.toLocaleString('en-IN')}
+                        </button>
+                      ))}
+                      <button
+                        type="button"
+                        className="stepper-pill-btn clear"
+                        onClick={handleResetSavings}
+                      >
+                        Reset
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Col 3: Action Save Button */}
+                  <div className="savings-action-col">
+                    <label className="action-spacer">&nbsp;</label>
+                    <button type="submit" className="btn btn-primary console-submit-btn">
+                      Save Monthly Pace
+                    </button>
+                  </div>
                 </div>
 
-                <div style={{ display: 'flex', alignItems: 'center', gap: '14px', marginTop: '14px' }}>
-                  <button type="submit" className="btn btn-primary btn-small">
-                    Save Monthly Pace
-                  </button>
-                  {savingsSavedMsg && (
-                    <span className="gain" style={{ fontSize: '12px' }}>
-                      ✓ Saved successfully
-                    </span>
-                  )}
-                </div>
+                {savingsSavedMsg && (
+                  <div className="savings-success-banner">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                      <polyline points="20 6 9 17 4 12"></polyline>
+                    </svg>
+                    <span>Monthly contribution pace saved successfully!</span>
+                  </div>
+                )}
               </form>
             </div>
           </div>
         )}
 
-        {/* Tab 3: Goals */}
+        {/* =========================================================================
+            TAB 3: GOALS & MILESTONES
+            ========================================================================= */}
         {activeTab === 'goals' && (
           <div className="modal-tab-body">
+            {/* Horizontal Milestone Entry Console */}
+            <div className="horizontal-entry-console">
+              <div className="console-header-strip">
+                <div className="console-header-left">
+                  <span className="console-indicator-dot" />
+                  <span className="console-eyebrow">
+                    {goalEditingId ? 'EDITING MILESTONE TARGET' : 'RECORD NEW MILESTONE TARGET'}
+                  </span>
+                </div>
+                <span className="console-helper-text">
+                  Set measurable targets like emergency reserves or investment horizons
+                </span>
+              </div>
+
+              <form onSubmit={handleSaveGoal} className="horizontal-entry-form">
+                <div className="horizontal-goals-deck">
+                  {/* Col 1: Goal Title */}
+                  <div className="console-input-col">
+                    <label htmlFor="goalTitle">Milestone / Goal Title *</label>
+                    <input
+                      id="goalTitle"
+                      type="text"
+                      placeholder="e.g. Emergency Reserve, First ₹1 Lakh"
+                      value={goalTitle}
+                      onChange={(e) => setGoalTitle(e.target.value)}
+                      required
+                    />
+                    {!goalEditingId && (
+                      <div className="quick-suggestions-inline">
+                        {QUICK_GOALS.map((q) => (
+                          <button
+                            key={q.title}
+                            type="button"
+                            className="quick-chip-micro"
+                            onClick={() => {
+                              setGoalTitle(q.title);
+                              setGoalTarget(String(q.target));
+                            }}
+                          >
+                            {q.title.split(' ')[0]}
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Col 2: Current Capital */}
+                  <div className="console-input-col">
+                    <label htmlFor="goalCurrent">Current Capital (₹) *</label>
+                    <div className="input-adorned-group">
+                      <span className="input-affix">₹</span>
+                      <input
+                        id="goalCurrent"
+                        type="number"
+                        min="0"
+                        step="any"
+                        placeholder="15000"
+                        value={goalCurrent}
+                        onChange={(e) => setGoalCurrent(e.target.value)}
+                        required
+                      />
+                    </div>
+                    {goalCurrent && (
+                      <span className="console-preview-text">
+                        {formatINRPreview(goalCurrent)}
+                      </span>
+                    )}
+                  </div>
+
+                  {/* Col 3: Target Goal */}
+                  <div className="console-input-col">
+                    <label htmlFor="goalTarget">Target Milestone (₹) *</label>
+                    <div className="input-adorned-group">
+                      <span className="input-affix">₹</span>
+                      <input
+                        id="goalTarget"
+                        type="number"
+                        min="1"
+                        step="any"
+                        placeholder="50000"
+                        value={goalTarget}
+                        onChange={(e) => setGoalTarget(e.target.value)}
+                        required
+                      />
+                    </div>
+                    {goalTarget && (
+                      <span className="console-preview-text">
+                        {formatINRPreview(goalTarget)}
+                      </span>
+                    )}
+                  </div>
+
+                  {/* Col 4: Action Button */}
+                  <div className="console-actions-col">
+                    <label className="action-spacer">&nbsp;</label>
+                    <div className="console-btn-group">
+                      {goalEditingId && (
+                        <button
+                          type="button"
+                          className="btn btn-outline btn-small"
+                          onClick={handleCancelEditGoal}
+                        >
+                          Cancel
+                        </button>
+                      )}
+                      <button type="submit" className="btn btn-primary console-submit-btn">
+                        {goalEditingId ? 'Update' : '+ Add Milestone'}
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Live Simulation Progress Bar */}
+                {goalTargetNum > 0 && (
+                  <div className="horizontal-goal-simulation-bar">
+                    <div className="sim-meta-row">
+                      <span>Simulation Progress:</span>
+                      <strong>
+                        {goalSimulatedPct}% Achieved · ₹{goalRemaining.toLocaleString('en-IN')} Remaining
+                      </strong>
+                    </div>
+                    <div className="progress-track">
+                      <div className="progress-fill" style={{ width: `${goalSimulatedPct}%` }} />
+                    </div>
+                  </div>
+                )}
+
+                {goalError && <p className="error console-error" role="alert">{goalError}</p>}
+              </form>
+            </div>
+
             {/* Existing Goals List */}
             <div className="modal-section">
-              <h3 className="modal-section-title">Your Financial Goals</h3>
+              <h3 className="modal-section-title">Your Target Milestones</h3>
               {goals.length === 0 ? (
                 <div className="empty-state-box">
-                  <p>No financial goals added yet. Add a target milestone below.</p>
+                  <p>No financial milestone targets added yet. Add a target milestone using the horizontal console above.</p>
                 </div>
               ) : (
                 <div className="items-list">
@@ -433,32 +870,33 @@ export default function ManagePortfolioModal({
 
                     return (
                       <div key={g.id} className="item-row-card">
-                        <div className="item-main-info">
+                        <div className="item-row-top">
                           <div className="item-title-row">
                             <strong className="item-name">{g.title}</strong>
                             <span style={{ fontSize: '12px', fontWeight: 600, color: 'var(--green-dark)' }}>
                               ₹{current.toLocaleString('en-IN')} / ₹{target.toLocaleString('en-IN')} ({pct}%)
                             </span>
                           </div>
-                          <div className="progress-track" style={{ marginTop: '8px' }}>
-                            <div className="progress-fill" style={{ width: `${pct}%` }} />
+                          <div className="item-actions">
+                            <button
+                              type="button"
+                              className="btn btn-outline btn-small"
+                              onClick={() => handleStartEditGoal(g)}
+                            >
+                              Edit
+                            </button>
+                            <button
+                              type="button"
+                              className="btn btn-ghost btn-small text-danger"
+                              onClick={() => onDeleteGoal(g.id)}
+                            >
+                              Delete
+                            </button>
                           </div>
                         </div>
-                        <div className="item-actions">
-                          <button
-                            type="button"
-                            className="btn btn-outline btn-small"
-                            onClick={() => handleStartEditGoal(g)}
-                          >
-                            Edit
-                          </button>
-                          <button
-                            type="button"
-                            className="btn btn-ghost btn-small text-danger"
-                            onClick={() => onDeleteGoal(g.id)}
-                          >
-                            Delete
-                          </button>
+
+                        <div className="progress-track" style={{ marginTop: '8px' }}>
+                          <div className="progress-fill" style={{ width: `${pct}%` }} />
                         </div>
                       </div>
                     );
@@ -466,76 +904,13 @@ export default function ManagePortfolioModal({
                 </div>
               )}
             </div>
-
-            {/* Add/Edit Goal Form */}
-            <div className="modal-section form-section">
-              <h3 className="modal-section-title">
-                {goalEditingId ? 'Edit Goal' : 'Add New Goal'}
-              </h3>
-              <form onSubmit={handleSaveGoal}>
-                <div className="field">
-                  <label>Goal Title *</label>
-                  <input
-                    type="text"
-                    placeholder="e.g. Emergency Fund, First ₹50,000 Milestone"
-                    value={goalTitle}
-                    onChange={(e) => setGoalTitle(e.target.value)}
-                    required
-                  />
-                </div>
-
-                <div className="form-grid-2">
-                  <div className="field">
-                    <label>Current Saved Amount (₹) *</label>
-                    <input
-                      type="number"
-                      min="0"
-                      step="any"
-                      placeholder="e.g. 10000"
-                      value={goalCurrent}
-                      onChange={(e) => setGoalCurrent(e.target.value)}
-                      required
-                    />
-                  </div>
-
-                  <div className="field">
-                    <label>Target Goal Amount (₹) *</label>
-                    <input
-                      type="number"
-                      min="1"
-                      step="any"
-                      placeholder="e.g. 30000"
-                      value={goalTarget}
-                      onChange={(e) => setGoalTarget(e.target.value)}
-                      required
-                    />
-                  </div>
-                </div>
-
-                {goalError && <p className="error">{goalError}</p>}
-
-                <div className="form-actions-row">
-                  {goalEditingId && (
-                    <button
-                      type="button"
-                      className="btn btn-outline btn-small"
-                      onClick={handleCancelEditGoal}
-                    >
-                      Cancel
-                    </button>
-                  )}
-                  <button type="submit" className="btn btn-primary btn-small">
-                    {goalEditingId ? 'Update Goal' : '+ Add Goal'}
-                  </button>
-                </div>
-              </form>
-            </div>
           </div>
         )}
 
+        {/* Modal Footer */}
         <div className="portfolio-modal-footer">
           <button type="button" className="btn btn-primary" onClick={onClose}>
-            Done & Return to Dashboard
+            Done &amp; Return to Dashboard
           </button>
         </div>
       </div>

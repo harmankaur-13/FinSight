@@ -83,36 +83,21 @@ export default function Features() {
     }
   };
 
-  // Safe navigation for "Explore Live Demo"
-  // If user is already authenticated with real data, navigates to their own dashboard
-  // to avoid overwriting their session or localStorage data
-  const handleExploreDemo = () => {
-    if (user?.isLoggedIn && !user?.isDemo) {
-      navigate(getRoleDashboardPath(user?.userType));
-    } else {
-      demoLogin('student');
-      navigate(getRoleDashboardPath('student'));
-    }
+  // Safe navigation for viewing market ratings
+  const handleViewRatings = () => {
+    navigate('/ratings');
   };
 
   // Safe navigation for the three persona workspace buttons
-  // Respects real accounts vs demo accounts, protecting user data
   const handleWorkspaceNavigation = (role) => {
     if (user?.isLoggedIn) {
-      if (user?.isDemo) {
-        demoLogin(role);
+      if (user.userType === role) {
         navigate(getRoleDashboardPath(role));
       } else {
-        // Authenticated real user is locked to their role by ProtectedRoute
-        if (user.userType === role) {
-          navigate(getRoleDashboardPath(role));
-        } else {
-          navigate(getRoleDashboardPath(user.userType));
-        }
+        navigate(getRoleDashboardPath(user.userType));
       }
     } else {
-      demoLogin(role);
-      navigate(getRoleDashboardPath(role));
+      navigate('/onboarding');
     }
   };
 
@@ -183,9 +168,9 @@ export default function Features() {
             <button
               type="button"
               className="btn btn-outline btn-large"
-              onClick={handleExploreDemo}
+              onClick={handleViewRatings}
             >
-              Explore Live Demo
+              View Market Ratings
             </button>
           </div>
         </div>
@@ -205,13 +190,13 @@ export default function Features() {
                 <span>app.finsight.fi/student-wealth-portal</span>
               </div>
 
-              <span className="features-browser-badge">Sample Demo Interface</span>
+              <span className="features-browser-badge">Interactive Interface</span>
             </div>
 
             <div className="features-browser-content">
               <img
                 src="/images/dashboard-preview.png"
-                alt="FinSight Student Wealth Portal sample demo dashboard interface displaying portfolio allocation, monthly investment pace, and educational progress."
+                alt="FinSight Student Wealth Portal dashboard interface displaying portfolio allocation, monthly investment pace, and educational progress."
                 className="features-browser-img"
                 loading="eager"
               />
@@ -919,9 +904,9 @@ export default function Features() {
             <button
               type="button"
               className="btn btn-outline btn-large"
-              onClick={handleExploreDemo}
+              onClick={handleViewRatings}
             >
-              Explore Live Demo
+              View Market Ratings
             </button>
           </div>
         </div>
