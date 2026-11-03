@@ -388,7 +388,7 @@ export default function Landing({ onDemoLogin }) {
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                     <polyline points="20 6 9 17 4 12" />
                   </svg>
-                  <span>Interactive Educational Modules</span>
+                  <span>Financial & Trading Knowledge Hub</span>
                 </div>
               </div>
             </div>
@@ -500,11 +500,26 @@ export default function Landing({ onDemoLogin }) {
             </div>
 
             <div className="closing-trust-row">
-              <span>✓ No Broker Credentials</span>
+              <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                  <polyline points="20 6 9 17 4 12" />
+                </svg>
+                No Broker Credentials
+              </span>
               <span className="trust-dot">•</span>
-              <span>✓ 100% Client-Side Private</span>
+              <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                  <polyline points="20 6 9 17 4 12" />
+                </svg>
+                100% Client-Side Private
+              </span>
               <span className="trust-dot">•</span>
-              <span>✓ Instant Access</span>
+              <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                  <polyline points="20 6 9 17 4 12" />
+                </svg>
+                Instant Access
+              </span>
             </div>
           </div>
         </div>

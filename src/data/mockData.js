@@ -22,258 +22,214 @@ export const STUDENT_DATA = {
     { title: 'First ₹50,000 Milestone', current: 25400, target: 50000, unit: '₹' },
     { title: 'Annual Book & Course Fund', current: 7500, target: 10000, unit: '₹' }
   ],
-  educationalModules: [
+  educationalModules: [],
+  financialKnowledgeResources: [
     {
-      id: 'edu-1',
-      title: 'Understanding Diversification',
-      category: 'Core Fundamentals',
-      readTime: '5 min read',
-      difficulty: 'Beginner',
-      image: '/images/diversification.jpg',
-      summary: 'Learn how spreading capital across uncorrelated asset classes limits downside while preserving long-term growth.',
-      heroQuote: 'Diversification is the only free lunch in investing.',
-      sections: [
-        {
-          heading: 'Why You Shouldn’t Put All Eggs in One Basket',
-          body: 'When you invest 100% of your money into a single company or single sector, your financial destiny is tied entirely to that specific business. If that sector faces supply chain issues, regulatory crackdowns, or leadership failure, your portfolio can crash overnight. True diversification spreads risk across uncorrelated asset classes so that when one falls, another cushions the blow.'
-        },
-        {
-          heading: 'The 3 Pillar Asset Classes for Students',
-          body: '1. Equities (Stocks & Index Funds): Your high-powered wealth compounding engine (historical 12-14% CAGR over 10+ years).\n2. Fixed Income (Bonds & FDs): Stability and capital preservation with predictable yield (6-8% return).\n3. Cash & Alternatives (Gold, Liquid Funds, Crypto): High liquidity for emergencies and non-correlated inflation protection.'
-        },
-        {
-          heading: 'A Practical Stress-Test Example',
-          body: 'Consider a 20% stock market correction:\n• 100% Equity Portfolio: Falls by ₹5,000 on a ₹25,000 base.\n• 60/25/15 Diversified Portfolio: Equities drop ₹3,000, while Bonds & Gold gain or stay steady, limiting total loss to under ₹1,800. You remain calm and avoid emotional panic-selling.'
-        }
-      ],
-      actionSteps: [
-        'Review your current asset distribution against your 60/25/15 target.',
-        'Never concentrate more than 10% of total wealth in any single stock or token.',
-        'Rebalance semi-annually or whenever an asset drifts more than 5% from target.'
-      ],
-      quiz: {
-        question: 'What is the primary mathematical benefit of portfolio diversification across uncorrelated assets?',
-        options: [
-          'Guaranteed positive returns every single trading week',
-          'Reducing portfolio drawdown and risk without sacrificing long-term returns proportionally',
-          'Eliminating the need to ever pay capital gains taxes',
-          'Allowing you to trade daily with leverage'
-        ],
-        correctIndex: 1,
-        explanation: 'Diversification reduces unsystematic (company-specific) volatility through uncorrelated asset classes, providing a smooth and sustainable wealth compounding path.'
-      }
+      id: 'res-1',
+      title: 'Zerodha Varsity: Technical Analysis & Charting',
+      platform: 'Zerodha Varsity',
+      domain: 'zerodha.com/varsity',
+      url: 'https://zerodha.com/varsity/module/technical-analysis/',
+      topic: 'Trading & Technical Analysis',
+      difficulty: 'Beginner to Intermediate',
+      format: 'Comprehensive Course',
+      summary: 'The industry-standard technical trading curriculum in India. Covers candlestick theory, chart patterns, support & resistance, moving averages, and momentum indicators.',
+      takeaways: [
+        'Single & multiple candlestick patterns',
+        'Support, resistance, & trendline breakout dynamics',
+        'Dow Theory & volume confirmation filters',
+        'Moving averages, RSI, and MACD indicators'
+      ]
     },
     {
-      id: 'edu-2',
-      title: 'Beginner Investing Concepts',
-      category: 'Investing 101',
-      readTime: '7 min read',
-      difficulty: 'Foundational',
-      image: '/images/investing-concepts.jpg',
-      summary: 'Demystifying compound interest, systematic investment plans (SIPs), and index funds with zero jargon.',
-      heroQuote: 'Compound interest is the eighth wonder of the world. He who understands it, earns it; he who doesn’t, pays it.',
-      sections: [
-        {
-          heading: 'The Magic of Compound Growth & The Rule of 72',
-          body: 'Compound interest means you earn returns not just on your initial capital, but on the accumulated returns of past years. A handy mental math trick is the Rule of 72: Divide 72 by your expected annual return to find how many years it takes for your investment to double.\n• At 12% annual return: 72 / 12 = 6 years to double.\n• At 15% return: 72 / 15 = 4.8 years to double.'
-        },
-        {
-          heading: 'Why Automated SIPs Beat Market Timing',
-          body: 'Trying to predict when the stock market hits the bottom is virtually impossible even for Wall Street pros. A Systematic Investment Plan (SIP) invests a fixed sum (e.g. ₹3,500) automatically every month. When markets drop, your fixed amount buys MORE units; when markets rise, you buy fewer. This Rupee-Cost Averaging lowers your average purchase price effortlessly.'
-        },
-        {
-          heading: 'Active Stock Picking vs Low-Cost Index Funds',
-          body: 'Over a 10 to 15-year period, more than 85% of active fund managers fail to beat passive benchmark indices like the Nifty 50 or S&P 500. By investing in broad index funds with expense ratios under 0.20%, you capture total market growth while saving thousands in management fees.'
-        }
-      ],
-      actionSteps: [
-        'Automate your monthly SIP on salary or allowance day to pay yourself first.',
-        'Prioritize low-cost index funds before attempting speculative stock picking.',
-        'Increase your monthly contribution by 10% each year as your income grows.'
-      ],
-      quiz: {
-        question: 'Under the Rule of 72, how many years will it take for ₹25,000 to double to ₹50,000 at a 12% annual compounding rate?',
-        options: [
-          '12 years',
-          '8.5 years',
-          '6 years',
-          '10 years'
-        ],
-        correctIndex: 2,
-        explanation: '72 divided by 12 = 6 years. With consistent compounding at 12%, your initial ₹25,000 doubles to ₹50,000 in exactly 6 years.'
-      }
-    },
-    {
-      id: 'edu-3',
-      title: 'Understanding Market Risk',
-      category: 'Risk Management',
-      readTime: '6 min read',
+      id: 'res-2',
+      title: 'TradingView Education: Interactive Charting & Market Mechanics',
+      platform: 'TradingView',
+      domain: 'tradingview.com',
+      url: 'https://www.tradingview.com/education/',
+      topic: 'Trading & Technical Analysis',
       difficulty: 'Intermediate',
-      image: '/images/market-risk.jpg',
-      summary: 'The crucial difference between systematic market risk and company-specific risk, and how to stay resilient.',
-      heroQuote: 'Risk comes from not knowing what you are doing.',
-      sections: [
-        {
-          heading: 'Systematic vs Unsystematic Risk',
-          body: '• Systematic (Macro) Risk: Market-wide shocks such as inflation spikes, interest rate changes, or global geopolitical tensions that affect all businesses simultaneously. This risk cannot be diversified away.\n• Unsystematic (Company) Risk: Specific business vulnerabilities such as accounting fraud, loss of key clients, or supply shortages. This risk CAN be diversified away by holding 50+ businesses in an index fund.'
-        },
-        {
-          heading: 'Volatility vs Permanent Loss of Capital',
-          body: 'Price fluctuations on your screen are VOLATILITY, not loss. A temporary 15% drawdown in an index fund recovers when the underlying economy grows. Permanent loss only happens when you invest in flawed companies that go bankrupt, or when you panic-sell at the market bottom.'
-        },
-        {
-          heading: 'Developing Emotional Discipline',
-          body: 'Market corrections of 10% happen almost every calendar year. Cultivating a disciplined mindset allows you to view market pullbacks as discounted accumulation opportunities rather than existential threats.'
-        }
-      ],
-      actionSteps: [
-        'Never invest money you will need in the next 12-24 months into equities.',
-        'Build a separate liquid emergency fund so you never need to sell stocks in a crash.',
-        'Write an Investment Policy Statement outlining what actions to take during 20% drops.'
-      ],
-      quiz: {
-        question: 'Which type of risk is eliminated when you invest in a broad market index fund?',
-        options: [
-          'Systematic macroeconomic risk',
-          'Company-specific (unsystematic) risk',
-          'Global interest rate fluctuations',
-          'Currency exchange rate risk'
-        ],
-        correctIndex: 1,
-        explanation: 'Company-specific risk is eliminated because no single business failure can drastically damage an entire diversified index of 50 to 500 leading companies.'
-      }
+      format: 'Interactive Tooling',
+      summary: 'Hands-on training in multi-timeframe price action, trend channels, Fibonacci retracements, and configuring risk-defined stop-losses on institutional charts.',
+      takeaways: [
+        'Multi-timeframe charting architecture',
+        'Trend channels & volatility breakout envelopes',
+        'Order flow & volume profile mechanics',
+        'Interactive paper trading setup'
+      ]
     },
     {
-      id: 'edu-4',
-      title: 'Portfolio Allocation Basics',
-      category: 'Asset Strategy',
-      readTime: '8 min read',
-      difficulty: 'Practical',
-      image: '/images/portfolio-allocation.jpg',
-      summary: 'How time horizons and personal risk tolerances should dictate your target equity-debt split.',
-      heroQuote: 'Asset allocation accounts for over 90% of a portfolio’s long-term performance variation.',
-      sections: [
-        {
-          heading: 'Time Horizon: The Ultimate Arbitrage',
-          body: 'As a student with a 25 to 35-year time horizon before retirement, time is your greatest financial asset. You have the runway to endure short-term market cycles in exchange for superior long-term compound growth. This allows an aggressive 60-80% equity baseline compared to older investors nearing retirement.'
-        },
-        {
-          heading: 'Balancing Risk Capacity and Risk Tolerance',
-          body: '• Risk Capacity: The objective mathematical ability to take risk based on age, income stability, and debt obligations.\n• Risk Tolerance: The psychological emotional comfort level with seeing account values fluctuate on red market days. Your strategy must honor both.'
-        },
-        {
-          heading: 'Smart Rebalancing Without Tax Penalties',
-          body: 'When stocks surge and your equity allocation drifts from 60% up to 70%, rather than selling stocks and incurring capital gains tax, direct your NEXT monthly SIPs into bonds and debt until your portfolio naturally glides back to 60/25/15 balance.'
-        }
-      ],
-      actionSteps: [
-        'Determine your personal investment goal horizon for every rupee you invest.',
-        'Maintain a 5% drift threshold before executing any portfolio rebalancing.',
-        'Use incoming monthly capital to rebalance rather than selling winners prematurely.'
-      ],
-      quiz: {
-        question: 'If strong stock performance causes your equity allocation to drift from 60% up to 72%, what is the most tax-efficient rebalancing action for a student?',
-        options: [
-          'Sell all equity holdings immediately and hold 100% cash',
-          'Direct incoming monthly savings into fixed income and debt until balance is restored',
-          'Take on personal loans to buy even more equities',
-          'Do nothing and stop monitoring the portfolio forever'
-        ],
-        correctIndex: 1,
-        explanation: 'Directing new monthly savings into lagging asset classes rebalances your target allocation cleanly without triggering capital gains taxes or broker trading commissions.'
-      }
+      id: 'res-3',
+      title: 'BabyPips: School of Pipsology (Price Action & Structure)',
+      platform: 'BabyPips',
+      domain: 'babypips.com',
+      url: 'https://www.babypips.com/learn',
+      topic: 'Trading & Technical Analysis',
+      difficulty: 'Beginner to Advanced',
+      format: 'Structured Curriculum',
+      summary: 'Acclaimed global academy breaking down market structure, liquidity pools, breakout vs range strategies, and strict position-sizing mathematics.',
+      takeaways: [
+        'Market structure & price action identification',
+        'Risk-to-reward ratio calculations (1:2+)',
+        'Distinguishing true breakouts from liquidity traps',
+        'Trading plan design & disciplined journaling'
+      ]
+    },
+    {
+      id: 'res-4',
+      title: 'Zerodha Varsity: Fundamental Analysis & Financial Statements',
+      platform: 'Zerodha Varsity',
+      domain: 'zerodha.com/varsity',
+      url: 'https://zerodha.com/varsity/module/fundamental-analysis/',
+      topic: 'Fundamental Valuation',
+      difficulty: 'Intermediate',
+      format: 'Course Modules',
+      summary: 'A structured blueprint for analyzing corporate balance sheets, P&L statements, cash flows, and computing vital corporate valuation multiples.',
+      takeaways: [
+        'Reading balance sheet assets, liabilities, & equity',
+        'Calculating P/E, P/B, EV/EBITDA, and ROCE ratios',
+        'Operating cash flows vs reported net profits',
+        'Evaluating economic moats & business longevity'
+      ]
+    },
+    {
+      id: 'res-5',
+      title: 'Screener.in: Financial Statement Analyzer & Stock Screener',
+      platform: 'Screener.in',
+      domain: 'screener.in',
+      url: 'https://www.screener.in/',
+      topic: 'Fundamental Valuation',
+      difficulty: 'Practical Tool',
+      format: 'Financial Data Portal',
+      summary: 'The primary fundamental research portal for Indian equities. Access 10+ years of balance sheets, concall transcripts, shareholding trends, and custom filters.',
+      takeaways: [
+        '10-year historical financial records & trends',
+        'Quarterly earnings concalls & investor presentations',
+        'Peer group valuation & margin comparisons',
+        'Custom screening formulas for undervalued stocks'
+      ]
+    },
+    {
+      id: 'res-6',
+      title: 'Investopedia: Stock Market Order Execution & Trading Basics',
+      platform: 'Investopedia',
+      domain: 'investopedia.com',
+      url: 'https://www.investopedia.com/trading-4427765',
+      topic: 'Stock Markets & Exchanges',
+      difficulty: 'Foundational',
+      format: 'Reference Guide',
+      summary: 'Authoritative guide to stock exchange mechanics, market depth, bid-ask spread liquidity, market vs limit vs stop-loss orders, and trade settlement rules.',
+      takeaways: [
+        'Market vs Limit vs Stop-loss order types',
+        'Bid-Ask spread & order book depth dynamics',
+        'Clearing houses, depository participants, & brokers',
+        'Circuit breakers & exchange trading halts'
+      ]
+    },
+    {
+      id: 'res-7',
+      title: 'NSE India Investor Academy: Indian Market Architecture',
+      platform: 'NSE India',
+      domain: 'nseindia.com',
+      url: 'https://www.nseindia.com/learn/investor-education',
+      topic: 'Stock Markets & Exchanges',
+      difficulty: 'Institutional',
+      format: 'Official Exchange Portal',
+      summary: 'Official education initiative by the National Stock Exchange of India. Explains exchange operations, Nifty benchmark indices, and T+1 rolling settlements.',
+      takeaways: [
+        'Primary vs secondary market operations',
+        'T+1 rolling settlement and delivery obligations',
+        'Index construction & market-cap weighting criteria',
+        'Retail investor protections and market transparency'
+      ]
+    },
+    {
+      id: 'res-8',
+      title: 'Bogleheads: The Philosophy of Low-Cost Index Investing',
+      platform: 'Bogleheads Wiki',
+      domain: 'bogleheads.org',
+      url: 'https://www.bogleheads.org/wiki/Bogleheads%C2%AE_investment_philosophy',
+      topic: 'Investing & Asset Allocation',
+      difficulty: 'Core Philosophy',
+      format: 'Reference Wiki',
+      summary: 'Derived from Vanguard founder John Bogle, this guide outlines passive broad-market compounding, the three-fund portfolio, and avoiding active fund fee drag.',
+      takeaways: [
+        'Broad market index diversification over stock picking',
+        'Minimizing expense ratios & turnover taxation',
+        'Three-fund portfolio architecture for students',
+        'Systematic dollar-cost averaging through all cycles'
+      ]
+    },
+    {
+      id: 'res-9',
+      title: 'Morningstar Classroom: Asset Allocation & Fund Evaluation',
+      platform: 'Morningstar',
+      domain: 'morningstar.com',
+      url: 'https://www.morningstar.com/learn',
+      topic: 'Investing & Asset Allocation',
+      difficulty: 'Intermediate',
+      format: 'Analyst Academy',
+      summary: 'Institutional-grade tutorials on asset allocation modeling, portfolio risk-adjusted returns (Sharpe ratio, Alpha, Beta), and fund overlap elimination.',
+      takeaways: [
+        'Modern portfolio allocation principles & drift',
+        'Risk-adjusted performance metrics (Sharpe & Beta)',
+        'Mutual fund expense drag compounding math',
+        'Style box & sector concentration analysis'
+      ]
+    },
+    {
+      id: 'res-10',
+      title: 'Zerodha Varsity: Risk Management & Trading Mindset',
+      platform: 'Zerodha Varsity',
+      domain: 'zerodha.com/varsity',
+      url: 'https://zerodha.com/varsity/module/risk-management-mindset/',
+      topic: 'Risk & Trading Psychology',
+      difficulty: 'Crucial for Traders',
+      format: 'Strategy Blueprint',
+      summary: 'The dividing line between profitable traders and ruined accounts. Covers position sizing formulas, drawdown math, the 1-2% account risk rule, and cognitive bias control.',
+      takeaways: [
+        'The 1% - 2% maximum account risk rule per trade',
+        'Position sizing mathematical calculations',
+        'Asymmetric drawdown recovery mathematics',
+        'Managing FOMO, revenge trading, and greed'
+      ]
+    },
+    {
+      id: 'res-11',
+      title: 'SEBI Investor Education Portal: Rights, Safety & SCORES',
+      platform: 'SEBI India',
+      domain: 'investor.sebi.gov.in',
+      url: 'https://investor.sebi.gov.in/',
+      topic: 'Regulations & Investor Protection',
+      difficulty: 'Essential Safety',
+      format: 'Statutory Authority',
+      summary: 'Official retail investor protection hub by India’s capital markets regulator. Covers Demat account security, broker verification, SCORES grievance redressal, and avoiding illicit schemes.',
+      takeaways: [
+        'Investor rights & broker code of conduct',
+        'SEBI SCORES online grievance dispute system',
+        'Demat account safety & two-factor authorization',
+        'Recognizing illegal tip channels and fake advisory'
+      ]
+    },
+    {
+      id: 'res-12',
+      title: 'Reserve Bank of India (RBI): Financial Education & Macro Policy',
+      platform: 'RBI Financial Education',
+      domain: 'rbi.org.in',
+      url: 'https://rbi.org.in/financialeducation/',
+      topic: 'Macroeconomics & Central Banking',
+      difficulty: 'Macroeconomic Context',
+      format: 'Central Bank Portal',
+      summary: 'Foundational economic literacy from India’s central banking authority. Explains repo rates, inflation drivers, liquidity adjustments, debt markets, and deposit insurance.',
+      takeaways: [
+        'Monetary policy & repo rate transmission',
+        'Inflation mechanics & purchasing power protection',
+        'Government securities (G-Sec) & treasury bills',
+        'Banking regulations & DICGC deposit protection'
+      ]
     }
   ],
-  videoTutorials: [
-    {
-      id: 'yt-1',
-      title: 'Mastering Index Fund Investing for Beginners',
-      channel: 'FinSight Learning Lab',
-      duration: '14:20',
-      topic: 'Index Funds',
-      image: '/images/video-index-funds.jpg',
-      embedUrl: 'https://www.youtube.com/embed/fwe-PJRq1Ao',
-      videoUrl: 'https://www.youtube.com/watch?v=fwe-PJRq1Ao',
-      summary: 'A comprehensive beginner guide breaking down how index funds replicate market indices like Nifty 50 & S&P 500 with rock-bottom expense ratios.',
-      chapters: [
-        { time: '00:00', title: 'What is an Index Fund?' },
-        { time: '03:45', title: 'Active Mutual Funds vs Passive Index Funds' },
-        { time: '07:20', title: 'Expense Ratios & Tracking Error Explained' },
-        { time: '11:10', title: 'How to Place Your First SIP Order' }
-      ],
-      keyNotes: [
-        'Index funds replicate benchmark indices and remove fund manager human bias.',
-        'Expense ratios under 0.20% save thousands in compounding costs over 20 years.',
-        'Consistency through automated monthly SIPs beats market timing.'
-      ]
-    },
-    {
-      id: 'yt-2',
-      title: 'How Asset Allocation Actually Works',
-      channel: 'Financial Foundations',
-      duration: '11:45',
-      topic: 'Portfolio Strategy',
-      image: '/images/video-asset-allocation.jpg',
-      embedUrl: 'https://www.youtube.com/embed/o5T2QZ1Wz40',
-      videoUrl: 'https://www.youtube.com/watch?v=o5T2QZ1Wz40',
-      summary: 'Discover how top institutional wealth managers construct resilient multi-asset portfolios across equities, government bonds, and cash.',
-      chapters: [
-        { time: '00:00', title: 'The Core Principles of Asset Classes' },
-        { time: '02:50', title: 'Correlation Matrices & Risk Reduction' },
-        { time: '06:15', title: 'Designing the 60/25/15 Student Portfolio' },
-        { time: '09:30', title: 'When and How Often to Rebalance' }
-      ],
-      keyNotes: [
-        'Asset allocation accounts for over 90% of long-term portfolio return variance.',
-        'Bonds provide stability and liquidity during severe stock market downturns.',
-        'Maintain a +/- 5% tolerance band before triggering a rebalance.'
-      ]
-    },
-    {
-      id: 'yt-3',
-      title: 'Building Your First Emergency Fund',
-      channel: 'Wealth Building 101',
-      duration: '09:10',
-      topic: 'Personal Finance',
-      image: '/images/video-emergency-fund.jpg',
-      embedUrl: 'https://www.youtube.com/embed/Ede_4I-t0Jc',
-      videoUrl: 'https://www.youtube.com/watch?v=Ede_4I-t0Jc',
-      summary: 'Step-by-step guide to calculating your essential living expenses, where to park your liquid emergency cash, and avoiding high-interest debt.',
-      chapters: [
-        { time: '00:00', title: 'Why an Emergency Fund is Step Zero' },
-        { time: '02:15', title: 'Calculating 3 to 6 Months of True Expenses' },
-        { time: '05:00', title: 'Best Accounts: High-Yield Savings vs Liquid Funds' },
-        { time: '07:30', title: 'Rules for When (and When Not) to Use It' }
-      ],
-      keyNotes: [
-        'An emergency fund protects your investments from forced liquidation during emergencies.',
-        'Keep emergency funds in separate, easily accessible accounts without lock-in penalties.',
-        'Target 3 months for students / 6 months for freelancers and business owners.'
-      ]
-    },
-    {
-      id: 'yt-4',
-      title: 'Crypto vs Equities: Risk & Volatility Explained',
-      channel: 'Macro Analysis Hub',
-      duration: '16:30',
-      topic: 'Crypto & Assets',
-      image: '/images/video-crypto-equities.jpg',
-      embedUrl: 'https://www.youtube.com/embed/Yb68g5x44z4',
-      videoUrl: 'https://www.youtube.com/watch?v=Yb68g5x44z4',
-      summary: 'A deep comparative analysis between cashflow-generating productive equities and speculative decentralized digital assets.',
-      chapters: [
-        { time: '00:00', title: 'Fundamental Differences: Cashflow vs Scarcity' },
-        { time: '04:20', title: 'Historical Volatility and Maximum Drawdowns' },
-        { time: '09:15', title: 'Sizing Alternative Assets in a Student Portfolio (5-15% Max)' },
-        { time: '13:40', title: 'Custody, Security & Tax Implications' }
-      ],
-      keyNotes: [
-        'Equities represent ownership in companies with real earnings and dividends.',
-        'Crypto operates on supply scarcity and network adoption with significantly higher volatility.',
-        'Never allocate more than 10-15% of your total portfolio to high-risk digital assets.'
-      ]
-    }
-  ],
+  videoTutorials: [],
   assistantSuggestions: [
     'How do I rebalance my portfolio back to 60/25/15?',
     'What is an index fund and why should I start with it?',

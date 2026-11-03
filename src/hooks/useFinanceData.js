@@ -457,7 +457,8 @@ export function useFinanceData() {
       allocations,
       goals,
       educationalModules: STUDENT_DATA.educationalModules,
-      videoTutorials: STUDENT_DATA.videoTutorials,
+      financialKnowledgeResources: STUDENT_DATA.financialKnowledgeResources || [],
+      videoTutorials: STUDENT_DATA.financialKnowledgeResources || [],
       assistantSuggestions: STUDENT_DATA.assistantSuggestions
     };
   }, [isDemo, financialData, user?.name, user?.email]);

@@ -9,8 +9,7 @@ import AssistantCard from '../../components/AssistantCard';
 import EducationCard from '../../components/EducationCard';
 import ManagePortfolioModal from '../../components/ManagePortfolioModal';
 
-const STORAGE_KEY_COMPLETED_MODULES = 'finsight_completed_modules';
-const STORAGE_KEY_WATCHED_VIDEOS = 'finsight_watched_videos';
+const STORAGE_KEY_STUDIED_RESOURCES = 'finsight_studied_resources';
 
 export default function StudentDashboard({
   data,
@@ -36,7 +35,7 @@ export default function StudentDashboard({
     allocations,
     goals = [],
     educationalModules,
-    videoTutorials,
+    financialKnowledgeResources,
     assistantSuggestions
   } = data;
 
@@ -60,43 +59,22 @@ export default function StudentDashboard({
     return [];
   }, [financialData?.investments, user?.isDemo]);
 
-  const [completedModules, setCompletedModules] = useState(() => {
+  const [studiedResources, setStudiedResources] = useState(() => {
     try {
-      const saved = localStorage.getItem(STORAGE_KEY_COMPLETED_MODULES);
-      return saved ? JSON.parse(saved) : ['edu-1'];
+      const saved = localStorage.getItem(STORAGE_KEY_STUDIED_RESOURCES);
+      return saved ? JSON.parse(saved) : ['res-1'];
     } catch (e) {
-      return ['edu-1'];
+      return ['res-1'];
     }
   });
 
-  const [watchedVideos, setWatchedVideos] = useState(() => {
-    try {
-      const saved = localStorage.getItem(STORAGE_KEY_WATCHED_VIDEOS);
-      return saved ? JSON.parse(saved) : ['yt-1'];
-    } catch (e) {
-      return ['yt-1'];
-    }
-  });
-
-  const handleToggleModuleComplete = (modId) => {
-    setCompletedModules((prev) => {
-      const next = prev.includes(modId)
-        ? prev.filter((id) => id !== modId)
-        : [...prev, modId];
+  const handleToggleResourceStudied = (resId) => {
+    setStudiedResources((prev) => {
+      const next = prev.includes(resId)
+        ? prev.filter((id) => id !== resId)
+        : [...prev, resId];
       try {
-        localStorage.setItem(STORAGE_KEY_COMPLETED_MODULES, JSON.stringify(next));
-      } catch (e) {}
-      return next;
-    });
-  };
-
-  const handleToggleVideoWatched = (vidId) => {
-    setWatchedVideos((prev) => {
-      const next = prev.includes(vidId)
-        ? prev.filter((id) => id !== vidId)
-        : [...prev, vidId];
-      try {
-        localStorage.setItem(STORAGE_KEY_WATCHED_VIDEOS, JSON.stringify(next));
+        localStorage.setItem(STORAGE_KEY_STUDIED_RESOURCES, JSON.stringify(next));
       } catch (e) {}
       return next;
     });
@@ -107,8 +85,8 @@ export default function StudentDashboard({
     setIsModalOpen(true);
   };
 
-  const completedCount = completedModules.length;
-  const totalCount = educationalModules?.length || 4;
+  const studiedCount = studiedResources.length;
+  const totalResourcesCount = financialKnowledgeResources?.length || 12;
 
   const hasGoals = Array.isArray(goals) && goals.length > 0;
 
@@ -166,11 +144,11 @@ export default function StudentDashboard({
         />
 
         <PortfolioCard
-          title="Active Learning Streak"
-          value={`${completedCount} of ${totalCount} Done`}
-          change={completedCount === totalCount ? '100% Completed' : `${Math.round((completedCount / totalCount) * 100)}% Progress`}
-          isPositive={completedCount > 0}
-          subtitle="Financial mastery milestones"
+          title="Curriculum Mastery"
+          value={`${studiedCount} of ${totalResourcesCount} Studied`}
+          change={studiedCount === totalResourcesCount ? '100% Completed' : `${Math.round((studiedCount / (totalResourcesCount || 1)) * 100)}% Progress`}
+          isPositive={studiedCount > 0}
+          subtitle="Verified financial curriculums"
         />
       </div>
 
@@ -267,14 +245,11 @@ export default function StudentDashboard({
         onOpenManageModal={openManageModal}
       />
 
-      {/* Educational & YouTube Section */}
+      {/* Financial & Trading Knowledge Hub */}
       <EducationCard
-        modules={educationalModules}
-        videos={videoTutorials}
-        completedModules={completedModules}
-        onToggleModuleComplete={handleToggleModuleComplete}
-        watchedVideos={watchedVideos}
-        onToggleVideoWatched={handleToggleVideoWatched}
+        resources={financialKnowledgeResources}
+        studiedResources={studiedResources}
+        onToggleResourceStudied={handleToggleResourceStudied}
       />
 
       {/* AI Assistant (Rendered once at the bottom) */}
