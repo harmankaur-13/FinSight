@@ -1,7 +1,7 @@
 import React from 'react';
 import { calculateRelativeTime, extractEntities } from '../services/newsAnalysis';
 
-export default function NewsCard({ article, onReadMore }) {
+export default function NewsCard({ article, onReadMore, featured = false }) {
   if (!article) return null;
 
   const relativeTime = calculateRelativeTime(article.datetime || article.date);
@@ -19,7 +19,7 @@ export default function NewsCard({ article, onReadMore }) {
 
   return (
     <article
-      className="news-card"
+      className={`news-card ${featured ? 'news-card-featured' : ''}`}
       onClick={() => onReadMore && onReadMore(article)}
       tabIndex={0}
       role="button"
@@ -35,6 +35,9 @@ export default function NewsCard({ article, onReadMore }) {
         <div className="news-meta">
           <div className="news-meta-left">
             <span className="news-tag">{article.category}</span>
+            {featured && (
+              <span className="news-featured-tag">Lead Dispatch</span>
+            )}
             {tickerTags.length > 0 && (
               <div className="news-card-tickers">
                 {tickerTags.map((ticker) => (

@@ -147,7 +147,7 @@ export default function News({ initialArticles = null }) {
   };
 
   return (
-    <div className="container" style={{ padding: '40px 0 90px' }}>
+    <div className="news-page-container">
       {/* =========================================================================
           VIEW A: DEDICATED ARTICLE DETAIL READING EXPERIENCE
           ========================================================================= */}
@@ -546,38 +546,34 @@ export default function News({ initialArticles = null }) {
            VIEW B: MAIN NEWS FEED (Professional Scanning & Filtering)
            ========================================================================= */
         <div>
-          <div className="page-header">
+          <div className="news-header">
             <span className="eyebrow">FINANCIAL INTELLIGENCE DISPATCH</span>
-            <h1 className="page-title">Market & Macro News</h1>
+            <h1 className="page-title">Market &amp; Macro News</h1>
             <p className="page-subtitle">
               Institutional-grade market developments, central bank policy trajectories, and corporate earnings analysis with verified attribution.
             </p>
           </div>
 
-          {/* Connection & Status Banner */}
-          {!isLoading && (
-            <div className="news-status-banner">
-              <div className="news-status-info">
-                <span className={`news-status-indicator ${isLive ? 'live' : 'sample'}`} />
-                <span style={{ fontWeight: 600, color: 'var(--text)' }}>
-                  {isLive ? 'Live Market Feed' : 'Curated Research Archive'}
-                </span>
-                <span style={{ color: 'var(--border)' }}>•</span>
-                <span style={{ color: 'var(--muted)' }}>
-                  {isLive
-                    ? 'Connected to Finnhub API market-news service'
-                    : (errorMessage || 'Live API feed offline. Serving verified institutional sample dispatches.')}
-                </span>
-              </div>
-
-              <span className={`news-status-badge ${isLive ? 'live' : 'sample'}`}>
-                {isLive ? 'Live API Feed' : 'Archive Dispatch'}
-              </span>
-            </div>
-          )}
-
-          {/* Toolbar: Search, Sort, Refresh */}
+          {/* Toolbar: Category Tabs + Search/Sort Deck */}
           <div className="news-toolbar">
+            {/* Category Filter Ribbon on Top */}
+            <div className="news-category-bar" role="tablist" aria-label="News categories">
+              {categories.map((cat) => (
+                <button
+                  key={cat}
+                  type="button"
+                  role="tab"
+                  aria-selected={selectedCategory === cat}
+                  className={`news-cat-tab ${selectedCategory === cat ? 'active' : ''}`}
+                  onClick={() => setSelectedCategory(cat)}
+                >
+                  <span>{cat}</span>
+                  <span className="news-cat-badge">{categoryCounts[cat] || 0}</span>
+                </button>
+              ))}
+            </div>
+
+            {/* Controls Row: Search, Sort, Refresh */}
             <div className="news-controls-row">
               {/* Search Bar */}
               <div className="news-search-box">
@@ -642,57 +638,41 @@ export default function News({ initialArticles = null }) {
                 </button>
               </div>
             </div>
-
-            {/* Category Tabs */}
-            <div className="news-category-bar" role="tablist" aria-label="News categories">
-              {categories.map((cat) => (
-                <button
-                  key={cat}
-                  type="button"
-                  role="tab"
-                  aria-selected={selectedCategory === cat}
-                  className={`news-cat-tab ${selectedCategory === cat ? 'active' : ''}`}
-                  onClick={() => setSelectedCategory(cat)}
-                >
-                  <span>{cat}</span>
-                  <span className="news-cat-badge">{categoryCounts[cat] || 0}</span>
-                </button>
-              ))}
-            </div>
           </div>
 
           {/* Loading Skeletons */}
           {isLoading && (
             <div className="news-cards-grid" aria-busy="true" aria-label="Loading dispatches">
               {[1, 2, 3, 4, 5, 6].map((n) => (
-                <div key={`skel-${n}`} className="news-card" style={{ minHeight: '220px', opacity: 0.7 }}>
+                <div key={`skel-${n}`} className="news-card news-skeleton-card">
                   <div>
                     <div className="news-meta">
-                      <span style={{ width: '60px', height: '14px', borderRadius: '4px', background: 'var(--surface-2)', display: 'inline-block' }} />
-                      <span style={{ width: '45px', height: '12px', borderRadius: '4px', background: 'var(--surface-2)', display: 'inline-block' }} />
+                      <span className="news-skeleton-line short" />
+                      <span className="news-skeleton-line tiny" />
                     </div>
-                    <div style={{ width: '85%', height: '18px', borderRadius: '4px', background: 'var(--surface-2)', marginBottom: '10px' }} />
-                    <div style={{ width: '60%', height: '18px', borderRadius: '4px', background: 'var(--surface-2)', marginBottom: '16px' }} />
-                    <div style={{ width: '100%', height: '12px', borderRadius: '4px', background: 'var(--surface-2)', marginBottom: '8px' }} />
-                    <div style={{ width: '75%', height: '12px', borderRadius: '4px', background: 'var(--surface-2)' }} />
+                    <div className="news-skeleton-line title-1" />
+                    <div className="news-skeleton-line title-2" />
+                    <div className="news-skeleton-line text-full" />
+                    <div className="news-skeleton-line text-sub" />
                   </div>
                   <div className="news-footer">
-                    <span style={{ width: '90px', height: '12px', borderRadius: '4px', background: 'var(--surface-2)', display: 'inline-block' }} />
-                    <span style={{ width: '70px', height: '12px', borderRadius: '4px', background: 'var(--surface-2)', display: 'inline-block' }} />
+                    <span className="news-skeleton-line short" />
+                    <span className="news-skeleton-line tiny" />
                   </div>
                 </div>
               ))}
             </div>
           )}
 
-          {/* News Article Grid */}
+          {/* News Article Grid (Editorial Broadside: Lead Feature + 2-Column Stream, Zero Duplication) */}
           {!isLoading && displayedArticles.length > 0 && (
             <>
               <div className="news-cards-grid">
-                {displayedArticles.map((article) => (
+                {displayedArticles.map((article, index) => (
                   <NewsCard
                     key={article.id}
                     article={article}
+                    featured={!searchQuery && selectedCategory === 'All' && index === 0}
                     onReadMore={(art) => setActiveArticle(art)}
                   />
                 ))}
@@ -723,29 +703,19 @@ export default function News({ initialArticles = null }) {
           {/* Empty State / Live Category Fallback to Sample Archive */}
           {!isLoading && filteredArticles.length === 0 && (
             <div>
-              <div
-                style={{
-                  textAlign: 'center',
-                  padding: matchingSampleFallback.length > 0 ? '24px 20px' : '52px 24px',
-                  background: 'var(--surface)',
-                  border: '1px solid var(--border)',
-                  borderRadius: '12px',
-                  color: 'var(--muted)',
-                  marginBottom: matchingSampleFallback.length > 0 ? '24px' : '0'
-                }}
-              >
-                <div style={{ marginBottom: '12px', color: 'var(--muted)' }}>
+              <div className={`news-empty-state ${matchingSampleFallback.length > 0 ? 'has-fallback' : ''}`}>
+                <div className="news-empty-icon">
                   <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                     <circle cx="11" cy="11" r="8"></circle>
                     <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
                   </svg>
                 </div>
-                <h3 style={{ fontSize: '18px', marginBottom: '8px', color: 'var(--text)', fontFamily: 'Space Grotesk, sans-serif' }}>
+                <h3 className="news-empty-title">
                   {searchQuery
                     ? `No dispatches matching "${searchQuery}"`
                     : `No active dispatches under ${selectedCategory}`}
                 </h3>
-                <p style={{ fontSize: '13px', margin: '0 auto 16px', maxWidth: '440px', lineHeight: 1.5 }}>
+                <p className="news-empty-desc">
                   {searchQuery
                     ? 'Try refining your search terms or clearing the filter to view all available market dispatches.'
                     : (isLive && matchingSampleFallback.length > 0
@@ -766,7 +736,7 @@ export default function News({ initialArticles = null }) {
               {/* Clearly labeled Sample Archive reference cards */}
               {matchingSampleFallback.length > 0 && (
                 <div>
-                  <div style={{ marginBottom: '14px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                  <div className="news-archive-fallback-header">
                     <span className="eyebrow" style={{ margin: 0 }}>
                       SAMPLE ARCHIVE • {selectedCategory.toUpperCase()}
                     </span>

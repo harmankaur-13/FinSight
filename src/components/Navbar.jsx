@@ -10,79 +10,81 @@ export default function Navbar({ user, onLogout }) {
   const dashPath = getRoleDashboardPath(role);
 
   return (
-    <header className="navbar">
-      <div className="nav-left">
-        <Link to={isAuth ? dashPath : "/"} className="logo">
-          <span>F</span> FinSight
-        </Link>
-      </div>
+    <header className="navbar-wrapper">
+      <div className="navbar">
+        <div className="nav-left">
+          <Link to={isAuth ? dashPath : "/"} className="logo">
+            <span>F</span> FinSight
+          </Link>
+        </div>
 
-      <nav className="nav-center">
-        {!isAuth && (
-          <NavLink to="/" end className={({ isActive }) => (isActive ? 'active' : '')}>
-            Home
-          </NavLink>
-        )}
-        {isAuth && (
-          <NavLink to={dashPath} className={({ isActive }) => (isActive ? 'active' : '')}>
-            Dashboard
-          </NavLink>
-        )}
-        <NavLink to="/features" className={({ isActive }) => (isActive ? 'active' : '')}>
-          Features
-        </NavLink>
-        <NavLink to="/news" className={({ isActive }) => (isActive ? 'active' : '')}>
-          News
-        </NavLink>
-        <NavLink
-          to="/stocks"
-          className={({ isActive }) => (isActive || location.pathname === '/markets' || location.pathname === '/ratings' ? 'active' : '')}
-        >
-          Stocks
-        </NavLink>
-        <NavLink to="/about" className={({ isActive }) => (isActive ? 'active' : '')}>
-          About
-        </NavLink>
-      </nav>
-
-      <div className="nav-actions">
-        {!isAuth && <ThemeToggle />}
-        {isAuth ? (
-          <>
-            <button
-              className="btn btn-ghost"
-              onClick={() => navigate(dashPath)}
-            >
+        <nav className="nav-center">
+          {!isAuth && (
+            <NavLink to="/" end className={({ isActive }) => (isActive ? 'active' : '')}>
+              Home
+            </NavLink>
+          )}
+          {isAuth && (
+            <NavLink to={dashPath} className={({ isActive }) => (isActive ? 'active' : '')}>
               Dashboard
-            </button>
-            <button
-              className="btn btn-outline"
-              onClick={() => {
-                if (onLogout) onLogout();
-                navigate('/login');
-              }}
-            >
-              Log out
-            </button>
-          </>
-        ) : (
-          <>
-            <button 
-              className="btn btn-ghost" 
-              id="navLoginBtn"
-              onClick={() => navigate('/login')}
-            >
-              Log in
-            </button>
-            <button 
-              className="btn btn-primary" 
-              id="navSignupBtn"
-              onClick={() => navigate('/signup')}
-            >
-              Get Started
-            </button>
-          </>
-        )}
+            </NavLink>
+          )}
+          <NavLink to="/features" className={({ isActive }) => (isActive ? 'active' : '')}>
+            Features
+          </NavLink>
+          <NavLink to="/news" className={({ isActive }) => (isActive ? 'active' : '')}>
+            News
+          </NavLink>
+          <NavLink
+            to="/stocks"
+            className={({ isActive }) => (isActive || location.pathname === '/markets' || location.pathname === '/ratings' ? 'active' : '')}
+          >
+            Stocks
+          </NavLink>
+          <NavLink to="/about" className={({ isActive }) => (isActive ? 'active' : '')}>
+            About
+          </NavLink>
+        </nav>
+
+        <div className="nav-actions">
+          {!isAuth && <ThemeToggle />}
+          {isAuth ? (
+            <>
+              <button
+                className="btn btn-ghost"
+                onClick={() => navigate(dashPath)}
+              >
+                Dashboard
+              </button>
+              <button
+                className="btn btn-outline"
+                onClick={() => {
+                  if (onLogout) onLogout();
+                  navigate('/login');
+                }}
+              >
+                Log out
+              </button>
+            </>
+          ) : (
+            <>
+              <button 
+                className="btn btn-ghost" 
+                id="navLoginBtn"
+                onClick={() => navigate('/login')}
+              >
+                Log in
+              </button>
+              <button 
+                className="btn btn-primary" 
+                id="navSignupBtn"
+                onClick={() => navigate('/signup')}
+              >
+                Get Started
+              </button>
+            </>
+          )}
+        </div>
       </div>
     </header>
   );

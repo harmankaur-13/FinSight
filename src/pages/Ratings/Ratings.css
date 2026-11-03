@@ -1,47 +1,321 @@
 /* ==========================================================================
    FinSight — Stocks & Market Assets Stylesheet
-   Refined financial intelligence layout, high legibility, zero emojis.
+   Institutional wealth intelligence aesthetics, refined typography, zero emojis.
    ========================================================================== */
 
-/* Market Summary Strip */
+.ratings-page-container {
+  width: min(1200px, 92%);
+  margin: 0 auto;
+  padding: 48px 0 96px;
+}
+
+/* --------------------------------------------------
+   1. PAGE HEADER (INSTITUTIONAL EDITORIAL STYLE)
+   -------------------------------------------------- */
+
+.ratings-header {
+  margin-bottom: 36px;
+  max-width: 820px;
+}
+
+.ratings-header .eyebrow {
+  display: inline-block;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--accent-label);
+  margin-bottom: 12px;
+}
+
+.ratings-header .page-title {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: clamp(32px, 4.2vw, 46px);
+  font-weight: 700;
+  letter-spacing: -1.4px;
+  line-height: 1.1;
+  color: var(--text);
+  margin: 0 0 14px;
+}
+
+.ratings-header .page-subtitle {
+  font-size: 16px;
+  line-height: 1.65;
+  color: var(--text-secondary);
+  margin: 0;
+  max-width: 720px;
+}
+
+/* --------------------------------------------------
+   2. ACCESSIBILITY UTILITIES
+   -------------------------------------------------- */
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* --------------------------------------------------
+   3. TERMINAL OVERVIEW HUB (ASYMMETRIC)
+   -------------------------------------------------- */
+
+.terminal-overview-hub {
+  display: grid;
+  grid-template-columns: 1fr 1.35fr;
+  gap: 24px;
+  margin-bottom: 32px;
+}
+
 .stock-summary-strip {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  grid-template-columns: repeat(2, 1fr);
   gap: 14px;
-  margin-bottom: 24px;
 }
 
 .stock-summary-item {
   background: var(--surface);
   border: 1px solid var(--border);
-  border-radius: 10px;
-  padding: 14px 18px;
+  border-radius: 12px;
+  padding: 16px 18px;
   display: flex;
   flex-direction: column;
   gap: 4px;
+  box-shadow: var(--shadow-sm);
+  transition: border-color 0.2s ease, transform 0.2s ease;
+}
+
+.stock-summary-item:hover {
+  border-color: var(--accent-text);
+  transform: translateY(-2px);
 }
 
 .stock-summary-label {
-  font-size: 11px;
-  font-weight: 600;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 10.5px;
+  font-weight: 700;
   text-transform: uppercase;
   color: var(--muted);
-  letter-spacing: 0.04em;
+  letter-spacing: 0.8px;
 }
 
 .stock-summary-value {
-  font-family: 'Space Grotesk', var(--font-heading, sans-serif);
+  font-family: 'Space Grotesk', sans-serif;
   font-size: 20px;
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: -0.5px;
+}
+
+.stock-summary-value.high-conviction {
+  color: var(--green);
+}
+
+.stock-summary-value.source-label {
+  font-size: 17px;
+  padding-top: 2px;
+}
+
+.stock-summary-sub {
+  font-size: 11.5px;
+  color: var(--muted);
+}
+
+.stock-spotlight-hero {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 24px 26px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-shadow: var(--shadow-sm);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.stock-spotlight-hero:hover {
+  border-color: var(--accent-text);
+  box-shadow: var(--shadow-md);
+}
+
+.spotlight-hero-top {
+  margin-bottom: 14px;
+}
+
+.spotlight-eyebrow-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.spotlight-hero-eyebrow {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--accent-label);
+}
+
+.spotlight-asset-identity {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.spotlight-ticker {
+  font-family: 'Space Grotesk', monospace;
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--text);
+  background: var(--surface-2);
+  padding: 2px 8px;
+  border-radius: 4px;
+  border: 1px solid var(--border);
+}
+
+.spotlight-name {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: -0.3px;
+}
+
+.spotlight-sector {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.spotlight-hero-body {
+  display: grid;
+  grid-template-columns: 1.2fr 1.4fr;
+  gap: 14px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 14px 16px;
+  margin-bottom: 12px;
+}
+
+.spotlight-price-block {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  justify-content: center;
+}
+
+.spotlight-price-caption {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--muted);
+  letter-spacing: 0.5px;
+}
+
+.spotlight-price-value {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: -0.5px;
+  line-height: 1.1;
+}
+
+.spotlight-price-sub {
+  font-size: 11px;
+  color: var(--muted);
+}
+
+.spotlight-metrics-block {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+}
+
+.spotlight-metric-tile {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 8px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.spotlight-tile-label {
+  font-size: 9.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--muted);
+  letter-spacing: 0.5px;
+}
+
+.spotlight-tile-val {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 14px;
   font-weight: 700;
   color: var(--text);
 }
 
-.stock-summary-sub {
-  font-size: 11px;
+.spotlight-tile-sub {
+  font-size: 10px;
+  font-weight: 600;
+}
+
+.spotlight-tile-sub.positive {
+  color: var(--green);
+}
+
+.spotlight-hero-footer {
+  border-top: 1px solid var(--border-light);
+  padding-top: 10px;
+}
+
+.spotlight-rationale-text {
+  font-size: 11.5px;
+  line-height: 1.5;
+  color: var(--muted);
+  margin: 0;
+  font-style: italic;
+}
+
+.stock-section-divider {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 28px 0 16px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--border);
+}
+
+.stock-section-heading {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
   color: var(--muted);
 }
 
-/* Stocks Toolbar & Controls */
+.stock-section-count {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+/* --------------------------------------------------
+   4. TOOLBAR: FILTERS, SEARCH, VIEW MODE
+   -------------------------------------------------- */
+
 .stock-toolbar-row {
   display: flex;
   align-items: center;
@@ -51,11 +325,54 @@
   margin-bottom: 24px;
 }
 
+.category-tabs {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.cat-tab {
+  display: inline-flex;
+  align-items: center;
+  padding: 8px 14px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--muted);
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.15s ease;
+}
+
+.cat-tab:hover {
+  color: var(--text);
+  border-color: var(--muted);
+}
+
+.cat-tab.active {
+  background: var(--green);
+  color: #ffffff;
+  border-color: var(--green);
+}
+
+.stock-toolbar-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  flex: 1;
+  justify-content: flex-end;
+}
+
 .stock-search-wrap {
   position: relative;
-  flex: 1;
   min-width: 260px;
-  max-width: 440px;
+  max-width: 380px;
+  flex: 1;
 }
 
 .stock-search-icon {
@@ -71,7 +388,7 @@
 
 .stock-search-input {
   width: 100%;
-  height: 42px;
+  height: 40px;
   padding: 0 38px 0 40px;
   background: var(--surface);
   border: 1px solid var(--border);
@@ -85,7 +402,7 @@
 .stock-search-input:focus {
   outline: none;
   border-color: var(--green);
-  box-shadow: 0 0 0 3px rgba(39, 102, 83, 0.12);
+  box-shadow: 0 0 0 3px rgba(36, 94, 79, 0.12);
 }
 
 .stock-search-clear {
@@ -106,14 +423,13 @@
   color: var(--text);
 }
 
-/* View Mode Switcher */
 .stock-view-switcher {
   display: flex;
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: 8px;
   padding: 3px;
-  gap: 4px;
+  gap: 3px;
 }
 
 .btn-view-toggle {
@@ -139,44 +455,43 @@
 .btn-view-toggle.active {
   background: var(--surface-2);
   color: var(--text);
-  box-shadow: var(--shadow-sm);
 }
 
-/* ==========================================================================
-   REDESIGNED STOCK RATINGS CARDS — IMMEDIATE PRICE VISIBILITY
-   ========================================================================== */
+/* --------------------------------------------------
+   5. STOCK RATINGS CARDS (VIEW A: GRID)
+   -------------------------------------------------- */
 
 .ratings-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-  gap: 20px;
+  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  gap: 22px;
   margin-top: 24px;
 }
 
 .rating-card {
   background: var(--surface);
   border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 22px;
+  border-radius: 14px;
+  padding: 24px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   box-shadow: var(--shadow-sm);
-  transition: transform 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+  transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 .rating-card:hover {
   transform: translateY(-2px);
-  border-color: var(--green);
+  border-color: var(--accent-text);
   box-shadow: var(--shadow-md);
 }
 
-/* 1. Card Header */
+/* Card Header */
 .rating-card-header {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  margin-bottom: 14px;
+  margin-bottom: 16px;
   gap: 12px;
 }
 
@@ -197,10 +512,14 @@
 
 .stock-ticker-pill {
   font-family: 'Space Grotesk', monospace;
-  font-size: 15px;
+  font-size: 14px;
   font-weight: 700;
   color: var(--text);
-  letter-spacing: 0.02em;
+  letter-spacing: 0.04em;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  padding: 2px 7px;
+  border-radius: 4px;
 }
 
 .stock-sector-byline {
@@ -210,10 +529,12 @@
 }
 
 .stock-company-title {
-  font-size: 14px;
-  font-weight: 600;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: -0.3px;
   color: var(--text);
-  margin: 0;
+  margin: 2px 0 0;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -225,13 +546,42 @@
   flex-shrink: 0;
 }
 
-/* 2. Main Price Hero Section — Primary Focus */
+/* Rating Badges */
+.rating-badge {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  border-radius: 4px;
+  white-space: nowrap;
+}
+
+.rating-badge.rating-strong-buy {
+  background: var(--green);
+  color: #ffffff;
+}
+
+.rating-badge.rating-buy {
+  background: var(--green-light);
+  color: var(--green-dark);
+  border: 1px solid rgba(36, 94, 79, 0.2);
+}
+
+.rating-badge.rating-hold {
+  background: var(--gold-light);
+  color: #7d5722;
+  border: 1px solid rgba(184, 135, 70, 0.25);
+}
+
+/* Price Hero Box */
 .stock-hero-price-card {
   background: var(--bg);
-  border: 1px solid var(--border-light);
+  border: 1px solid var(--border);
   border-radius: 10px;
   padding: 16px 18px;
-  margin-bottom: 14px;
+  margin-bottom: 16px;
   display: flex;
   flex-direction: column;
   gap: 6px;
@@ -244,12 +594,12 @@
 }
 
 .stock-hero-price {
-  font-family: 'Space Grotesk', var(--font-heading, sans-serif);
+  font-family: 'Space Grotesk', sans-serif;
   font-size: 28px;
   font-weight: 700;
-  line-height: 1.15;
+  line-height: 1.1;
   color: var(--text);
-  letter-spacing: -0.02em;
+  letter-spacing: -0.5px;
 }
 
 .stock-hero-movement-line {
@@ -261,7 +611,7 @@
 }
 
 .stock-daily-movement {
-  font-size: 13px;
+  font-size: 12.5px;
   font-weight: 600;
   display: inline-flex;
   align-items: center;
@@ -277,21 +627,13 @@
 }
 
 .stock-daily-movement.negative {
-  color: #ef5350;
+  color: var(--error);
 }
 
-[data-theme="light"] .stock-daily-movement.negative {
-  color: #c93b2b;
-}
-
-.stock-daily-movement.neutral {
-  color: var(--muted);
-  font-weight: 500;
-}
-
+.stock-daily-movement.neutral,
 .stock-daily-movement.sample {
   color: var(--muted);
-  font-size: 12px;
+  font-size: 11.5px;
   font-weight: 500;
 }
 
@@ -302,17 +644,17 @@
   white-space: nowrap;
 }
 
-/* 3. Supporting Metrics Grid — 3 Columns */
+/* Supporting Metrics (3 Columns) */
 .stock-supporting-metrics {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 8px;
-  margin-bottom: 14px;
+  margin-bottom: 16px;
 }
 
 .stock-metric-cell {
   background: var(--bg);
-  border: 1px solid var(--border-light);
+  border: 1px solid var(--border);
   border-radius: 8px;
   padding: 10px 12px;
   display: flex;
@@ -325,11 +667,11 @@
   font-weight: 700;
   text-transform: uppercase;
   color: var(--muted);
-  letter-spacing: 0.04em;
+  letter-spacing: 0.5px;
 }
 
 .stock-metric-primary {
-  font-family: 'Space Grotesk', var(--font-heading, sans-serif);
+  font-family: 'Space Grotesk', sans-serif;
   font-size: 15px;
   font-weight: 700;
   color: var(--text);
@@ -338,10 +680,6 @@
 
 .stock-metric-primary.risk-low {
   color: var(--green);
-}
-
-[data-theme="light"] .stock-metric-primary.risk-low {
-  color: var(--green-dark);
 }
 
 .stock-metric-primary.risk-med {
@@ -358,16 +696,8 @@
   color: var(--green);
 }
 
-[data-theme="light"] .stock-metric-sub.positive {
-  color: var(--green-dark);
-}
-
 .stock-metric-sub.negative {
-  color: #ef5350;
-}
-
-[data-theme="light"] .stock-metric-sub.negative {
-  color: #c93b2b;
+  color: var(--error);
 }
 
 .stock-metric-sub.muted {
@@ -375,13 +705,16 @@
   font-weight: 500;
 }
 
-/* 4. Structured Research Outlook */
+/* Research Outlook Box */
 .stock-research-outlook {
-  background: var(--surface-2);
-  border-left: 3px solid var(--green);
+  background: var(--bg);
+  border-left: 3px solid var(--accent-text);
   border-radius: 0 8px 8px 0;
   padding: 12px 14px;
-  margin-bottom: 12px;
+  margin-bottom: 14px;
+  border-top: 1px solid var(--border);
+  border-right: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
 }
 
 .stock-outlook-header-row {
@@ -400,12 +733,8 @@
   font-size: 10px;
   font-weight: 700;
   text-transform: uppercase;
-  color: var(--green);
-  letter-spacing: 0.04em;
-}
-
-[data-theme="light"] .stock-outlook-caption {
-  color: var(--green-dark);
+  color: var(--accent-text);
+  letter-spacing: 0.5px;
 }
 
 .stock-sentiment-pill {
@@ -429,27 +758,26 @@
   overflow: hidden;
 }
 
-/* 5. Minimal Disclaimer Footnote */
+/* Disclaimer Footnote */
 .stock-card-disclaimer {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-size: 10px;
+  font-size: 10.5px;
   color: var(--muted);
-  opacity: 0.75;
-  padding-top: 10px;
+  padding-top: 12px;
   border-top: 1px solid var(--border-light);
   margin-top: auto;
 }
 
-/* ==========================================================================
-   INSTITUTIONAL TABLE VIEW (High-Density Scanning)
-   ========================================================================== */
+/* --------------------------------------------------
+   6. INSTITUTIONAL TABLE VIEW (VIEW B: HIGH DENSITY)
+   -------------------------------------------------- */
 
 .stocks-table-container {
   background: var(--surface);
   border: 1px solid var(--border);
-  border-radius: 12px;
+  border-radius: 14px;
   overflow: hidden;
   box-shadow: var(--shadow-sm);
   margin-bottom: 24px;
@@ -464,23 +792,23 @@
   width: 100%;
   border-collapse: collapse;
   text-align: left;
-  font-size: 12px;
+  font-size: 12.5px;
 }
 
 .stocks-table th {
   background: var(--surface-2);
   color: var(--muted);
-  font-size: 10px;
+  font-size: 10.5px;
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
-  padding: 12px 14px;
+  letter-spacing: 0.6px;
+  padding: 14px 16px;
   border-bottom: 1px solid var(--border);
   white-space: nowrap;
 }
 
 .stocks-table td {
-  padding: 14px;
+  padding: 14px 16px;
   border-bottom: 1px solid var(--border-light);
   vertical-align: middle;
   color: var(--text);
@@ -491,13 +819,14 @@
 }
 
 .stocks-table tr:hover td {
-  background: var(--surface-2);
+  background: var(--surface-hover);
 }
 
 .stocks-table-symbol {
   font-family: 'Space Grotesk', monospace;
-  font-size: 13px;
+  font-size: 13.5px;
   font-weight: 700;
+  color: var(--text);
 }
 
 .stocks-table-company {
@@ -505,57 +834,132 @@
   color: var(--muted);
 }
 
-.stocks-table-price {
-  font-family: 'Space Grotesk', var(--font-heading, sans-serif);
-  font-size: 14px;
-  font-weight: 700;
+.stocks-table-sector {
+  color: var(--muted);
   white-space: nowrap;
 }
 
+.stocks-table-price {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 14.5px;
+  font-weight: 700;
+  white-space: nowrap;
+  color: var(--text);
+}
+
+.stocks-table-sub {
+  font-size: 10px;
+  color: var(--muted);
+  display: block;
+}
+
 .stocks-table-target {
-  font-family: 'Space Grotesk', var(--font-heading, sans-serif);
-  font-size: 13px;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 13.5px;
   font-weight: 700;
   color: var(--green);
   white-space: nowrap;
 }
 
-/* ==========================================================================
-   RESPONSIVE DESIGN BREAKPOINTS
-   ========================================================================== */
+.stock-risk-text.low-risk {
+  color: var(--green);
+}
 
-@media (max-width: 992px) {
-  .ratings-grid {
-    grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
-    gap: 16px;
+.stock-risk-text.med-risk {
+  color: var(--gold);
+}
+
+.stocks-table-sentiment {
+  white-space: nowrap;
+  font-size: 12px;
+}
+
+.stocks-table-rationale {
+  max-width: 280px;
+  color: var(--muted);
+  font-size: 11.5px;
+  line-height: 1.45;
+}
+
+/* --------------------------------------------------
+   7. EMPTY STATE
+   -------------------------------------------------- */
+
+.ratings-empty-state {
+  text-align: center;
+  padding: 52px 24px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  color: var(--muted);
+  box-shadow: var(--shadow-sm);
+}
+
+.ratings-empty-title {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 19px;
+  font-weight: 700;
+  color: var(--text);
+  margin: 0 0 8px;
+}
+
+.ratings-empty-desc {
+  font-size: 13.5px;
+  margin: 0 auto 18px;
+  max-width: 440px;
+  line-height: 1.55;
+  color: var(--muted);
+}
+
+/* --------------------------------------------------
+   8. RESPONSIVE MEDIA QUERIES
+   -------------------------------------------------- */
+
+@media (max-width: 1024px) {
+  .terminal-overview-hub {
+    grid-template-columns: 1fr;
+    gap: 20px;
   }
 }
 
-@media (max-width: 640px) {
+@media (max-width: 768px) {
+  .ratings-page-container {
+    padding: 32px 0 64px;
+  }
+
+  .terminal-overview-hub {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .spotlight-hero-body {
+    grid-template-columns: 1fr;
+  }
+
+  .stock-summary-strip {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .stock-toolbar-row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .stock-toolbar-right {
+    justify-content: space-between;
+  }
+
+  .stock-search-wrap {
+    max-width: none;
+  }
+
   .ratings-grid {
     grid-template-columns: 1fr;
-    gap: 14px;
+    gap: 16px;
   }
 
-  .stock-hero-price {
-    font-size: 25px;
-  }
-
-  .stock-hero-movement-line {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 4px;
-  }
-
-  .stock-supporting-metrics {
-    gap: 6px;
-  }
-
-  .stock-metric-cell {
-    padding: 8px 10px;
-  }
-
-  .stock-metric-primary {
-    font-size: 13.5px;
+  .rating-card {
+    padding: 20px 18px;
   }
 }
