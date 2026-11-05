@@ -1,6 +1,7 @@
 // Portfolio Value History & Projection Utilities for FinSight
 
 export const STORAGE_KEY_VALUE_HISTORY = 'finsight_value_history';
+export const STORAGE_KEY_ACCOUNTS = 'finsight_accounts';
 
 function getStorage() {
   try {
@@ -10,6 +11,74 @@ function getStorage() {
     return null;
   }
   return null;
+}
+
+/**
+ * Generate user-isolated storage key for value history
+ * @param {Object|null} user - Active authenticated user
+ * @returns {string} User-specific storage key
+ */
+export function getUserValueHistoryKey(user) {
+  if (!user) return STORAGE_KEY_VALUE_HISTORY;
+  if (user.isDemo) return `finsight_value_history_demo_${user.userType || 'student'}`;
+  if (user.id) return `${STORAGE_KEY_VALUE_HISTORY}_${user.id}`;
+  if (user.email) return `${STORAGE_KEY_VALUE_HISTORY}_${user.email.toLowerCase().trim()}`;
+  return STORAGE_KEY_VALUE_HISTORY;
+}
+
+/**
+ * Safely migrate legacy un-isolated global history to authenticated user's isolated storage.
+ * - Does not overwrite existing user history.
+ * - Does not assign legacy data to multiple users.
+ * - If multiple accounts exist without reliable association, avoids silent assignment.
+ * 
+ * @param {Object|null} user - Active authenticated user
+ * @returns {boolean} Whether migration occurred
+ */
+export function migrateGlobalValueHistory(user) {
+  if (!user || user.isDemo) return false;
+  const storage = getStorage();
+  if (!storage) return false;
+
+  const userKey = getUserValueHistoryKey(user);
+  if (userKey === STORAGE_KEY_VALUE_HISTORY) return false;
+
+  // If user already has their own history, never overwrite it
+  const existingUserHistory = getStoredValueHistory(userKey);
+  if (existingUserHistory.length > 0) return false;
+
+  // Check if legacy migration has already been evaluated or completed
+  const migrationStatus = storage.getItem('finsight_global_history_migrated');
+  if (migrationStatus) return false;
+
+  // Check registered accounts to avoid arbitrary attribution when ambiguous
+  let accountCount = 0;
+  try {
+    const rawAccounts = storage.getItem(STORAGE_KEY_ACCOUNTS);
+    if (rawAccounts) {
+      const accounts = JSON.parse(rawAccounts);
+      accountCount = Object.keys(accounts).length;
+    }
+  } catch (e) {
+    accountCount = 0;
+  }
+
+  // If multiple accounts are stored, historical global data lacks reliable user association
+  if (accountCount > 1) {
+    storage.setItem('finsight_global_history_migrated', 'ambiguous_multiple_accounts');
+    return false;
+  }
+
+  // Retrieve legacy global history
+  const globalHistory = getStoredValueHistory(STORAGE_KEY_VALUE_HISTORY);
+  if (globalHistory.length > 0) {
+    storage.setItem(userKey, JSON.stringify(globalHistory));
+    storage.setItem('finsight_global_history_migrated', user.id || user.email || 'migrated');
+    storage.removeItem(STORAGE_KEY_VALUE_HISTORY);
+    return true;
+  }
+
+  return false;
 }
 
 /**

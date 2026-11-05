@@ -1,4 +1,5 @@
 import React, { useState, useMemo } from 'react';
+import { Link } from 'react-router-dom';
 import PortfolioCard from '../../components/PortfolioCard';
 import PortfolioChart from '../../components/PortfolioChart';
 import AllocationCard from '../../components/AllocationCard';
@@ -20,11 +21,19 @@ export default function BusinessDashboard({
   onAddGoal,
   onUpdateGoal,
   onDeleteGoal,
-  onUpdateMonthlySavings
+  onUpdateMonthlySavings,
+  onUpdateTargetAllocations
 }) {
   const {
     portfolioValue,
     portfolioRawValue,
+    totalTreasuryAssets,
+    cashReserves,
+    monthlyOperatingExpenses,
+    cashRunway,
+    netFinancialPosition,
+    totalLiabilities,
+    missingFields = [],
     marketExposure,
     performance,
     isPositive,
@@ -45,22 +54,27 @@ export default function BusinessDashboard({
     if (financialData?.investments && financialData.investments.length > 0) {
       return financialData.investments;
     }
-    return [
-      { id: 'biz-1', name: 'Infosys Ltd', type: 'Stocks', investedAmount: 380000, currentValue: 420000, targetAllocation: 25 },
-      { id: 'biz-2', name: 'HDFC Bank', type: 'Stocks', investedAmount: 360000, currentValue: 385000, targetAllocation: 20 },
-      { id: 'biz-3', name: 'Reliance Industries', type: 'Stocks', investedAmount: 330000, currentValue: 340000, targetAllocation: 15 },
-      { id: 'biz-4', name: 'Tata Consultancy Services', type: 'Stocks', investedAmount: 300000, currentValue: 290000, targetAllocation: 10 },
-      { id: 'biz-5', name: 'ICICI Corp Bond Fund', type: 'Bonds', investedAmount: 225000, currentValue: 230000, targetAllocation: 15 },
-      { id: 'biz-6', name: 'Embassy Office Parks REIT', type: 'Real Estate', investedAmount: 165000, currentValue: 177000, targetAllocation: 15 }
-    ];
-  }, [financialData?.investments]);
+    if (user?.isDemo) {
+      return [
+        { id: 'biz-1', name: 'Infosys Ltd', type: 'Stocks', investedAmount: 380000, currentValue: 420000, targetAllocation: 25 },
+        { id: 'biz-2', name: 'HDFC Bank', type: 'Stocks', investedAmount: 360000, currentValue: 385000, targetAllocation: 20 },
+        { id: 'biz-3', name: 'Reliance Industries', type: 'Stocks', investedAmount: 330000, currentValue: 340000, targetAllocation: 15 },
+        { id: 'biz-4', name: 'Tata Consultancy Services', type: 'Stocks', investedAmount: 300000, currentValue: 290000, targetAllocation: 10 },
+        { id: 'biz-5', name: 'ICICI Corp Bond Fund', type: 'Bonds', investedAmount: 225000, currentValue: 230000, targetAllocation: 15 },
+        { id: 'biz-6', name: 'Embassy Office Parks REIT', type: 'Real Estate', investedAmount: 165000, currentValue: 177000, targetAllocation: 15 }
+      ];
+    }
+    return [];
+  }, [financialData?.investments, user?.isDemo]);
 
   const openManageModal = (tab = 'investments') => {
     setModalInitialTab(tab);
     setIsModalOpen(true);
   };
 
-  const businessTitle = user?.name ? `${user.name} Portfolio` : 'Corporate Treasury Portfolio';
+  const businessTitle = data?.businessName
+    ? `${data.businessName} Portfolio`
+    : (user?.name ? `${user.name} Portfolio` : 'Corporate Treasury Portfolio');
 
   return (
     <div className="dashboard-wrapper">
@@ -90,21 +104,55 @@ export default function BusinessDashboard({
         </div>
       </div>
 
+      {/* Actionable Missing Profile Banner */}
+      {missingFields && missingFields.length > 0 && (
+        <div style={{
+          background: 'var(--surface-hover)',
+          border: '1px solid var(--border)',
+          borderRadius: '10px',
+          padding: '14px 18px',
+          marginBottom: '20px',
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          flexWrap: 'wrap',
+          gap: '12px'
+        }}>
+          <div>
+            <strong style={{ color: 'var(--text)', fontSize: '13px' }}>Treasury Metrics Incomplete: </strong>
+            <span style={{ fontSize: '13px', color: 'var(--muted)' }}>
+              {missingFields.map(m => m.label).join(', ')} not configured. Configure them in Settings to compute operational Cash Runway and Net Financial Position.
+            </span>
+          </div>
+          <Link to="/settings?tab=financial" className="btn btn-outline btn-small" style={{ fontSize: '12px' }}>
+            Configure in Settings →
+          </Link>
+        </div>
+      )}
+
       <div className="dash-metrics-grid">
         <PortfolioCard
           title="Total Treasury Assets"
-          value={portfolioValue}
+          value={totalTreasuryAssets || portfolioValue}
           change={performance !== 'No data yet' ? performance : null}
           isPositive={isPositive}
-          subtitle="Consolidated commercial valuation"
+          subtitle={`Holdings: ${portfolioValue} | Cash: ${cashReserves || '₹0'}`}
         />
 
         <PortfolioCard
-          title="Active Market Exposure"
-          value={marketExposure || '0%'}
-          change={marketExposure && marketExposure !== '0%' ? 'Active Allocation' : 'No Assets'}
-          isPositive={marketExposure && marketExposure !== '0%'}
-          subtitle="Capital deployed in active equities & debt"
+          title="Cash Runway"
+          value={cashRunway?.formatted || 'Not configured'}
+          change={cashRunway?.isCalculated ? (cashRunway.status === 'healthy' ? 'Healthy Runway' : cashRunway.status === 'caution' ? 'Caution Runway' : 'Critical Runway') : 'Burn Rate Missing'}
+          isPositive={cashRunway?.status === 'healthy'}
+          subtitle={`Monthly Burn: ${monthlyOperatingExpenses || 'Not specified'}`}
+        />
+
+        <PortfolioCard
+          title="Net Financial Position"
+          value={netFinancialPosition?.formatted || 'N/A'}
+          change={netFinancialPosition?.isVerified ? (netFinancialPosition?.isPositive ? 'Net Positive Assets' : 'Liability Deficit') : (netFinancialPosition?.badgeText || 'Unverified Position')}
+          isPositive={Boolean(netFinancialPosition?.isVerified && netFinancialPosition?.isPositive)}
+          subtitle={netFinancialPosition?.isVerified ? `Total Debt: ${totalLiabilities || '₹0'}` : 'Liabilities unconfigured in Settings'}
         />
 
         <PortfolioCard
@@ -113,14 +161,6 @@ export default function BusinessDashboard({
           change={driftConfigured ? 'Calculated' : 'Unconfigured'}
           isPositive={driftConfigured}
           subtitle="Quarterly target threshold: 5.0%"
-        />
-
-        <PortfolioCard
-          title="Portfolio Sharpe Ratio"
-          value={riskMetrics?.sharpeRatio || 'N/A'}
-          change={riskMetrics?.sharpeRatio && riskMetrics.sharpeRatio !== 'N/A' ? 'Risk-Adjusted Yield' : 'No Data'}
-          isPositive={riskMetrics?.sharpeRatio !== 'N/A'}
-          subtitle="Risk-adjusted yield metric"
         />
       </div>
 
@@ -135,7 +175,7 @@ export default function BusinessDashboard({
               {performance !== 'No data yet' ? `${performance} Overall` : 'No data yet'}
             </span>
           </div>
-          <PortfolioChart height={240} portfolioValue={portfolioRawValue || 1842000} />
+          <PortfolioChart height={240} portfolioValue={portfolioRawValue} user={user} />
         </div>
 
         <AllocationDonut
@@ -156,8 +196,8 @@ export default function BusinessDashboard({
         />
 
         <FutureSimulation
-          initialPrincipal={portfolioRawValue || 1842000}
-          defaultMonthly={financialData?.monthlySavings ? Number(financialData.monthlySavings) : 25000}
+          initialPrincipal={portfolioRawValue ?? 0}
+          defaultMonthly={financialData?.monthlySavings !== null && financialData?.monthlySavings !== undefined ? Number(financialData.monthlySavings) : (user?.isDemo ? 25000 : 0)}
           defaultRate={12}
         />
       </div>
@@ -165,7 +205,7 @@ export default function BusinessDashboard({
       {/* Target Rebalancing Engine */}
       <RebalanceEngine
         investments={activeInvestments}
-        monthlySavings={financialData?.monthlySavings ? formatCurrency(financialData.monthlySavings) : '₹25,000'}
+        monthlySavings={financialData?.monthlySavings !== null && financialData?.monthlySavings !== undefined ? formatCurrency(financialData.monthlySavings) : (user?.isDemo ? '₹25,000' : 'Not provided')}
         onOpenManageModal={openManageModal}
       />
 

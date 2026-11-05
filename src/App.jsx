@@ -37,6 +37,7 @@ export default function App() {
     updateGoal,
     deleteGoal,
     updateMonthlySavings,
+    updateTargetAllocations,
     login,
     signup,
     demoLogin,
@@ -146,6 +147,7 @@ export default function App() {
                     onUpdateGoal={updateGoal}
                     onDeleteGoal={deleteGoal}
                     onUpdateMonthlySavings={updateMonthlySavings}
+                    onUpdateTargetAllocations={updateTargetAllocations}
                   />
                 </ProtectedRoute>
               }
@@ -165,6 +167,7 @@ export default function App() {
                     onUpdateGoal={updateGoal}
                     onDeleteGoal={deleteGoal}
                     onUpdateMonthlySavings={updateMonthlySavings}
+                    onUpdateTargetAllocations={updateTargetAllocations}
                   />
                 </ProtectedRoute>
               }
@@ -184,6 +187,7 @@ export default function App() {
                     onUpdateGoal={updateGoal}
                     onDeleteGoal={deleteGoal}
                     onUpdateMonthlySavings={updateMonthlySavings}
+                    onUpdateTargetAllocations={updateTargetAllocations}
                   />
                 </ProtectedRoute>
               }

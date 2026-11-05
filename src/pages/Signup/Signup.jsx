@@ -1,3 +1,14 @@
+/**
+ * AUTHENTICATION LIMITATION & PROTOTYPE NOTICE:
+ * Client-side authentication in FinSight is strictly prototype-only.
+ * User accounts and credentials are stored in browser localStorage for offline prototyping,
+ * local demos, and pair programming evaluation.
+ * Passwords are NOT hashed, salted, or securely verified against a cryptographic backend.
+ * This implementation is NOT production-ready and must be replaced with an OAuth 2.0 / OIDC
+ * server-side authentication service (e.g. Firebase Auth, Supabase, Auth0, or secure JWT backend)
+ * before any real production deployment.
+ */
+
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import Toast from '../../components/Toast';

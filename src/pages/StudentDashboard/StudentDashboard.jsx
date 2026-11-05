@@ -1,4 +1,5 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { formatHumanName } from '../../hooks/useFinanceData';
 import PortfolioCard from '../../components/PortfolioCard';
 import PortfolioChart from '../../components/PortfolioChart';
@@ -6,10 +7,8 @@ import AllocationCard from '../../components/AllocationCard';
 import AllocationDonut from '../../components/AllocationDonut';
 import RebalanceEngine from '../../components/RebalanceEngine';
 import AssistantCard from '../../components/AssistantCard';
-import EducationCard from '../../components/EducationCard';
+import EducationCard, { getStudiedResourcesKey } from '../../components/EducationCard';
 import ManagePortfolioModal from '../../components/ManagePortfolioModal';
-
-const STORAGE_KEY_STUDIED_RESOURCES = 'finsight_studied_resources';
 
 export default function StudentDashboard({
   data,
@@ -21,7 +20,8 @@ export default function StudentDashboard({
   onAddGoal,
   onUpdateGoal,
   onDeleteGoal,
-  onUpdateMonthlySavings
+  onUpdateMonthlySavings,
+  onUpdateTargetAllocations
 }) {
   const {
     portfolioValue,
@@ -29,6 +29,10 @@ export default function StudentDashboard({
     performance,
     isPositive,
     monthlySavings,
+    monthlyIncome,
+    monthlyExpenses,
+    savingsRate,
+    missingFields = [],
     allocationDrift,
     driftConfigured,
     insightMessage,
@@ -59,14 +63,38 @@ export default function StudentDashboard({
     return [];
   }, [financialData?.investments, user?.isDemo]);
 
+  const studiedStorageKey = useMemo(() => getStudiedResourcesKey(user), [
+    user?.id,
+    user?.email,
+    user?.isDemo,
+    user?.userType
+  ]);
+
   const [studiedResources, setStudiedResources] = useState(() => {
     try {
-      const saved = localStorage.getItem(STORAGE_KEY_STUDIED_RESOURCES);
-      return saved ? JSON.parse(saved) : ['res-1'];
+      if (typeof localStorage === 'undefined') return user?.isDemo ? ['res-1'] : [];
+      const saved = localStorage.getItem(studiedStorageKey);
+      if (saved) return JSON.parse(saved);
+      return user?.isDemo ? ['res-1'] : [];
     } catch (e) {
-      return ['res-1'];
+      return user?.isDemo ? ['res-1'] : [];
     }
   });
+
+  // Sync studiedResources when active user changes
+  useEffect(() => {
+    try {
+      if (typeof localStorage === 'undefined') return;
+      const saved = localStorage.getItem(studiedStorageKey);
+      if (saved) {
+        setStudiedResources(JSON.parse(saved));
+      } else {
+        setStudiedResources(user?.isDemo ? ['res-1'] : []);
+      }
+    } catch (e) {
+      setStudiedResources(user?.isDemo ? ['res-1'] : []);
+    }
+  }, [studiedStorageKey, user?.isDemo]);
 
   const handleToggleResourceStudied = (resId) => {
     setStudiedResources((prev) => {
@@ -74,7 +102,7 @@ export default function StudentDashboard({
         ? prev.filter((id) => id !== resId)
         : [...prev, resId];
       try {
-        localStorage.setItem(STORAGE_KEY_STUDIED_RESOURCES, JSON.stringify(next));
+        localStorage.setItem(studiedStorageKey, JSON.stringify(next));
       } catch (e) {}
       return next;
     });
@@ -118,6 +146,32 @@ export default function StudentDashboard({
         </div>
       </div>
 
+      {/* Actionable Missing Profile Banner */}
+      {missingFields && missingFields.length > 0 && (
+        <div style={{
+          background: 'var(--surface-hover)',
+          border: '1px solid var(--border)',
+          borderRadius: '10px',
+          padding: '14px 18px',
+          marginBottom: '20px',
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          flexWrap: 'wrap',
+          gap: '12px'
+        }}>
+          <div>
+            <strong style={{ color: 'var(--text)', fontSize: '13px' }}>Profile Information Missing: </strong>
+            <span style={{ fontSize: '13px', color: 'var(--muted)' }}>
+              {missingFields.map(m => m.label).join(', ')}. Set these in Settings to calculate your personal Savings Rate and automated rebalancing alerts.
+            </span>
+          </div>
+          <Link to="/settings?tab=financial" className="btn btn-outline btn-small" style={{ fontSize: '12px' }}>
+            Configure in Settings →
+          </Link>
+        </div>
+      )}
+
       <div className="dash-metrics-grid">
         <PortfolioCard
           title="Total Portfolio Value"
@@ -130,9 +184,9 @@ export default function StudentDashboard({
         <PortfolioCard
           title="Monthly Investment Pace"
           value={monthlySavings}
-          change={monthlySavings !== 'Not provided' ? 'Active Pace' : 'Not Set'}
+          change={savingsRate?.isCalculated ? `${savingsRate.formatted} Savings Rate` : (monthlySavings !== 'Not provided' ? 'Active Pace' : 'Not Set')}
           isPositive={monthlySavings !== 'Not provided'}
-          subtitle="Systematic monthly capital addition"
+          subtitle={savingsRate?.isCalculated ? `Savings Rate of Monthly Income` : 'Systematic monthly capital addition'}
         />
 
         <PortfolioCard
@@ -163,7 +217,7 @@ export default function StudentDashboard({
               {performance !== 'No data yet' ? `${performance} Overall` : 'No data yet'}
             </span>
           </div>
-          <PortfolioChart height={240} portfolioValue={portfolioRawValue} />
+          <PortfolioChart height={240} portfolioValue={portfolioRawValue} user={user} />
         </div>
 
         <AllocationDonut
@@ -250,6 +304,7 @@ export default function StudentDashboard({
         resources={financialKnowledgeResources}
         studiedResources={studiedResources}
         onToggleResourceStudied={handleToggleResourceStudied}
+        user={user}
       />
 
       {/* AI Assistant (Rendered once at the bottom) */}

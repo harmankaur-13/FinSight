@@ -367,3 +367,133 @@
   padding-top: 22px;
   margin-top: 8px;
 }
+
+/* --------------------------------------------------
+   6. PHASE 2 FORM GRIDS & PRECISION CONTROLS
+   -------------------------------------------------- */
+
+.form-grid-2col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+@media (max-width: 680px) {
+  .form-grid-2col {
+    grid-template-columns: 1fr;
+  }
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.form-label {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: var(--text);
+}
+
+.form-input,
+.form-select {
+  padding: 10px 14px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text);
+  font-size: 13.5px;
+  font-family: inherit;
+  transition: border-color 0.15s ease;
+}
+
+.form-input:focus,
+.form-select:focus {
+  outline: none;
+  border-color: var(--green);
+}
+
+.form-help {
+  font-size: 11px;
+  color: var(--muted);
+  margin-top: 2px;
+}
+
+.form-error-msg {
+  font-size: 12px;
+  color: var(--error);
+  margin-top: 4px;
+  font-weight: 500;
+}
+
+.tag-chips-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 6px;
+}
+
+.tag-chip {
+  padding: 6px 14px;
+  border-radius: 999px;
+  font-size: 12px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  user-select: none;
+}
+
+.tag-chip:hover {
+  background: var(--surface-hover);
+  color: var(--text);
+}
+
+.tag-chip.selected {
+  background: var(--green);
+  border-color: var(--green);
+  color: #ffffff;
+  font-weight: 600;
+}
+
+.method-toggle {
+  display: inline-flex;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+  margin-bottom: 14px;
+}
+
+.method-toggle-btn {
+  padding: 7px 16px;
+  font-size: 12px;
+  font-weight: 600;
+  background: var(--surface);
+  color: var(--text-secondary);
+  border: none;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.method-toggle-btn.active {
+  background: var(--green);
+  color: #ffffff;
+}
+
+.live-calc-box {
+  background: var(--surface-hover);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 10px 14px;
+  margin-top: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 12px;
+  color: var(--text-secondary);
+}

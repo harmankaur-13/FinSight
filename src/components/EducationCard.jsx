@@ -1,7 +1,72 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import Toast from './Toast';
 
-const STORAGE_KEY_STUDIED_RESOURCES = 'finsight_studied_resources';
+export const STORAGE_KEY_STUDIED_RESOURCES = 'finsight_studied_resources';
+const STORAGE_KEY_ACCOUNTS = 'finsight_accounts';
+
+/**
+ * Generate user-isolated storage key for studied educational resources
+ * @param {Object|null} user - Active authenticated user
+ * @returns {string} User-specific storage key
+ */
+export function getStudiedResourcesKey(user) {
+  if (!user) return `${STORAGE_KEY_STUDIED_RESOURCES}_guest`;
+  if (user.isDemo) return `${STORAGE_KEY_STUDIED_RESOURCES}_demo_${user.userType || 'student'}`;
+  if (user.id) return `${STORAGE_KEY_STUDIED_RESOURCES}_${user.id}`;
+  if (user.email) return `${STORAGE_KEY_STUDIED_RESOURCES}_${user.email.toLowerCase().trim()}`;
+  return STORAGE_KEY_STUDIED_RESOURCES;
+}
+
+/**
+ * Safely migrate legacy global studied resources to user's isolated storage
+ * - Never overwrites existing user progress.
+ * - Does not assign legacy data to multiple users.
+ * - If multiple accounts exist without reliable association, avoids silent assignment.
+ * 
+ * @param {Object|null} user - Active authenticated user
+ * @returns {boolean} Whether migration occurred
+ */
+export function migrateGlobalStudiedResources(user) {
+  if (!user || user.isDemo || typeof localStorage === 'undefined') return false;
+
+  const userKey = getStudiedResourcesKey(user);
+  if (userKey === STORAGE_KEY_STUDIED_RESOURCES) return false;
+
+  try {
+    const existingUserSaved = localStorage.getItem(userKey);
+    if (existingUserSaved) return false; // Already has isolated data
+
+    const migrationStatus = localStorage.getItem('finsight_global_studied_migrated');
+    if (migrationStatus) return false;
+
+    // Check account count
+    let accountCount = 0;
+    const rawAccounts = localStorage.getItem(STORAGE_KEY_ACCOUNTS);
+    if (rawAccounts) {
+      accountCount = Object.keys(JSON.parse(rawAccounts)).length;
+    }
+
+    if (accountCount > 1) {
+      localStorage.setItem('finsight_global_studied_migrated', 'ambiguous_multiple_accounts');
+      return false;
+    }
+
+    const legacyRaw = localStorage.getItem(STORAGE_KEY_STUDIED_RESOURCES);
+    if (!legacyRaw) return false;
+
+    const legacyParsed = JSON.parse(legacyRaw);
+    // Ignore legacy dummy default ['res-1'] unless it contains actual learning records
+    if (Array.isArray(legacyParsed) && legacyParsed.length > 0) {
+      localStorage.setItem(userKey, JSON.stringify(legacyParsed));
+      localStorage.setItem('finsight_global_studied_migrated', user.id || user.email || 'migrated');
+      localStorage.removeItem(STORAGE_KEY_STUDIED_RESOURCES);
+      return true;
+    }
+  } catch (e) {
+    return false;
+  }
+  return false;
+}
 
 const TOPIC_DISCIPLINES = [
   {
@@ -44,17 +109,42 @@ const TOPIC_DISCIPLINES = [
 export default function EducationCard({
   resources = [],
   studiedResources = null,
-  onToggleResourceStudied = null
+  onToggleResourceStudied = null,
+  user = null
 }) {
+  const storageKey = useMemo(() => getStudiedResourcesKey(user), [
+    user?.id,
+    user?.email,
+    user?.isDemo,
+    user?.userType
+  ]);
+
   // Local state fallbacks if not controlled by parent
   const [localStudiedResources, setLocalStudiedResources] = useState(() => {
     try {
-      const saved = localStorage.getItem(STORAGE_KEY_STUDIED_RESOURCES);
-      return saved ? JSON.parse(saved) : ['res-1'];
+      if (typeof localStorage === 'undefined') return user?.isDemo ? ['res-1'] : [];
+      const saved = localStorage.getItem(storageKey);
+      if (saved) return JSON.parse(saved);
+      return user?.isDemo ? ['res-1'] : [];
     } catch (e) {
-      return ['res-1'];
+      return user?.isDemo ? ['res-1'] : [];
     }
   });
+
+  // Keep local state in sync when user or storageKey changes
+  useEffect(() => {
+    try {
+      if (typeof localStorage === 'undefined') return;
+      const saved = localStorage.getItem(storageKey);
+      if (saved) {
+        setLocalStudiedResources(JSON.parse(saved));
+      } else {
+        setLocalStudiedResources(user?.isDemo ? ['res-1'] : []);
+      }
+    } catch (e) {
+      setLocalStudiedResources(user?.isDemo ? ['res-1'] : []);
+    }
+  }, [storageKey, user?.isDemo]);
 
   const activeStudied = studiedResources || localStudiedResources;
 
@@ -97,7 +187,7 @@ export default function EducationCard({
           ? prev.filter((id) => id !== resId)
           : [...prev, resId];
         try {
-          localStorage.setItem(STORAGE_KEY_STUDIED_RESOURCES, JSON.stringify(next));
+          localStorage.setItem(storageKey, JSON.stringify(next));
         } catch (e) {}
         return next;
       });

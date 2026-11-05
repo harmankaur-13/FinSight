@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { ASSET_TYPES } from '../utils/financialCalculations';
+import { ASSET_TYPES, calculateInvestmentValuation } from '../utils/financialCalculations';
 import './ManagePortfolioModal.css';
 
 // Quick suggestions for rapid user entry
@@ -46,6 +46,11 @@ export default function ManagePortfolioModal({
   const [invEditingId, setInvEditingId] = useState(null);
   const [invName, setInvName] = useState('');
   const [invType, setInvType] = useState('Stocks');
+  const [invSector, setInvSector] = useState('Technology');
+  const [invValuationMethod, setInvValuationMethod] = useState('manual');
+  const [invQuantity, setInvQuantity] = useState('');
+  const [invPurchasePrice, setInvPurchasePrice] = useState('');
+  const [invCurrentPrice, setInvCurrentPrice] = useState('');
   const [invInvested, setInvInvested] = useState('');
   const [invCurrent, setInvCurrent] = useState('');
   const [invTargetAlloc, setInvTargetAlloc] = useState('');
@@ -90,12 +95,12 @@ export default function ManagePortfolioModal({
     let targetSum = 0;
 
     investments.forEach((inv) => {
-      const invAmt = parseFloat(inv.investedAmount) || 0;
-      const curAmt = parseFloat(inv.currentValue !== undefined ? inv.currentValue : inv.investedAmount) || 0;
+      if (!inv || typeof inv !== 'object') return;
+      const valuation = calculateInvestmentValuation(inv);
       const target = parseFloat(inv.targetAllocation) || 0;
 
-      investedSum += invAmt;
-      currentSum += curAmt;
+      investedSum += valuation.investedAmount;
+      currentSum += valuation.currentValue;
       targetSum += target;
     });
 
@@ -128,6 +133,12 @@ export default function ManagePortfolioModal({
     setInvEditingId(inv.id);
     setInvName(inv.name || '');
     setInvType(inv.type || 'Stocks');
+    setInvSector(inv.sector || 'Technology');
+    const isQty = inv.valuationMethod === 'quantity_price' || (inv.quantity && inv.purchasePrice);
+    setInvValuationMethod(isQty ? 'quantity_price' : 'manual');
+    setInvQuantity(inv.quantity !== undefined && inv.quantity !== null ? String(inv.quantity) : '');
+    setInvPurchasePrice(inv.purchasePrice !== undefined && inv.purchasePrice !== null ? String(inv.purchasePrice) : '');
+    setInvCurrentPrice(inv.currentPrice !== undefined && inv.currentPrice !== null ? String(inv.currentPrice) : '');
     setInvInvested(inv.investedAmount !== undefined ? String(inv.investedAmount) : '');
     setInvCurrent(inv.currentValue !== undefined ? String(inv.currentValue) : '');
     setInvTargetAlloc(inv.targetAllocation !== undefined && inv.targetAllocation !== null ? String(inv.targetAllocation) : '');
@@ -143,6 +154,11 @@ export default function ManagePortfolioModal({
     setInvEditingId(null);
     setInvName('');
     setInvType('Stocks');
+    setInvSector('Technology');
+    setInvValuationMethod('manual');
+    setInvQuantity('');
+    setInvPurchasePrice('');
+    setInvCurrentPrice('');
     setInvInvested('');
     setInvCurrent('');
     setInvTargetAlloc('');
@@ -159,21 +175,6 @@ export default function ManagePortfolioModal({
       return;
     }
 
-    const investedNum = parseFloat(invInvested);
-    if (isNaN(investedNum) || investedNum < 0) {
-      setInvError('Invested amount must be a non-negative number.');
-      return;
-    }
-
-    let currentNum = investedNum;
-    if (invCurrent.trim() !== '') {
-      currentNum = parseFloat(invCurrent);
-      if (isNaN(currentNum) || currentNum < 0) {
-        setInvError('Current value must be a non-negative number.');
-        return;
-      }
-    }
-
     let targetAllocNum = null;
     if (invTargetAlloc.trim() !== '') {
       targetAllocNum = parseFloat(invTargetAlloc);
@@ -183,22 +184,64 @@ export default function ManagePortfolioModal({
       }
     }
 
-    if (invEditingId) {
-      onUpdateInvestment(invEditingId, {
-        name: trimmedName,
-        type: invType,
-        investedAmount: investedNum,
-        currentValue: currentNum,
-        targetAllocation: targetAllocNum
-      });
+    let investedNum = 0;
+    let currentNum = 0;
+    let qNum = null;
+    let pNum = null;
+    let cpNum = null;
+
+    if (invValuationMethod === 'quantity_price') {
+      qNum = parseFloat(invQuantity);
+      pNum = parseFloat(invPurchasePrice);
+      if (isNaN(qNum) || qNum <= 0) {
+        setInvError('Quantity must be greater than 0.');
+        return;
+      }
+      if (isNaN(pNum) || pNum < 0) {
+        setInvError('Purchase price per unit must be a non-negative number.');
+        return;
+      }
+      cpNum = invCurrentPrice.trim() !== '' ? parseFloat(invCurrentPrice) : pNum;
+      if (isNaN(cpNum) || cpNum < 0) {
+        setInvError('Current market price per unit must be a non-negative number.');
+        return;
+      }
+      investedNum = qNum * pNum;
+      currentNum = qNum * cpNum;
     } else {
-      onAddInvestment({
-        name: trimmedName,
-        type: invType,
-        investedAmount: investedNum,
-        currentValue: currentNum,
-        targetAllocation: targetAllocNum
-      });
+      investedNum = parseFloat(invInvested);
+      if (isNaN(investedNum) || investedNum < 0) {
+        setInvError('Invested amount must be a non-negative number.');
+        return;
+      }
+
+      currentNum = investedNum;
+      if (invCurrent.trim() !== '') {
+        currentNum = parseFloat(invCurrent);
+        if (isNaN(currentNum) || currentNum < 0) {
+          setInvError('Current value must be a non-negative number.');
+          return;
+        }
+      }
+    }
+
+    const holdingData = {
+      name: trimmedName,
+      type: invType,
+      sector: invSector,
+      valuationMethod: invValuationMethod,
+      quantity: qNum,
+      purchasePrice: pNum,
+      currentPrice: cpNum,
+      investedAmount: investedNum,
+      currentValue: currentNum,
+      targetAllocation: targetAllocNum
+    };
+
+    if (invEditingId) {
+      onUpdateInvestment(invEditingId, holdingData);
+    } else {
+      onAddInvestment(holdingData);
     }
 
     handleCancelEditInvestment();
@@ -415,6 +458,25 @@ export default function ManagePortfolioModal({
                 </span>
               </div>
 
+              <div style={{ display: 'flex', gap: '8px', padding: '10px 18px 0', borderBottom: '1px solid var(--border)' }}>
+                <button
+                  type="button"
+                  className={`btn btn-small ${invValuationMethod === 'manual' ? 'btn-primary' : 'btn-outline'}`}
+                  onClick={() => setInvValuationMethod('manual')}
+                  style={{ fontSize: '11.5px', padding: '4px 10px' }}
+                >
+                  Method B: Total Valuation
+                </button>
+                <button
+                  type="button"
+                  className={`btn btn-small ${invValuationMethod === 'quantity_price' ? 'btn-primary' : 'btn-outline'}`}
+                  onClick={() => setInvValuationMethod('quantity_price')}
+                  style={{ fontSize: '11.5px', padding: '4px 10px' }}
+                >
+                  Method A: Shares / Units & Price
+                </button>
+              </div>
+
               <form onSubmit={handleSaveInvestment} className="horizontal-entry-form">
                 <div className="horizontal-inputs-deck">
                   {/* Col 1: Asset / Security Name */}
@@ -464,52 +526,129 @@ export default function ManagePortfolioModal({
                     </select>
                   </div>
 
-                  {/* Col 3: Invested Amount */}
+                  {/* Col 2b: Sector Dropdown */}
                   <div className="console-input-col">
-                    <label htmlFor="invInvested">Invested (₹) *</label>
-                    <div className="input-adorned-group">
-                      <span className="input-affix">₹</span>
-                      <input
-                        id="invInvested"
-                        type="number"
-                        min="0"
-                        step="any"
-                        placeholder="25000"
-                        value={invInvested}
-                        onChange={(e) => setInvInvested(e.target.value)}
-                        required
-                      />
-                    </div>
-                    {invInvested && (
-                      <span className="console-preview-text">
-                        {formatINRPreview(invInvested)}
-                      </span>
-                    )}
+                    <label htmlFor="invSector">Sector</label>
+                    <select
+                      id="invSector"
+                      value={invSector}
+                      onChange={(e) => setInvSector(e.target.value)}
+                      className="fin-select"
+                    >
+                      <option value="Technology">Technology</option>
+                      <option value="Financial Services">Financial Services</option>
+                      <option value="Healthcare">Healthcare</option>
+                      <option value="Energy">Energy</option>
+                      <option value="Consumer Goods">Consumer Goods</option>
+                      <option value="Fixed Income">Fixed Income</option>
+                      <option value="Real Estate">Real Estate</option>
+                      <option value="Cryptocurrency">Cryptocurrency</option>
+                      <option value="Other">Other</option>
+                    </select>
                   </div>
 
-                  {/* Col 4: Current Valuation */}
-                  <div className="console-input-col">
-                    <label htmlFor="invCurrent">Current Value (₹)</label>
-                    <div className="input-adorned-group">
-                      <span className="input-affix">₹</span>
-                      <input
-                        id="invCurrent"
-                        type="number"
-                        min="0"
-                        step="any"
-                        placeholder="28500"
-                        value={invCurrent}
-                        onChange={(e) => setInvCurrent(e.target.value)}
-                      />
-                    </div>
-                    {invCurrent && (
-                      <span className="console-preview-text">
-                        {formatINRPreview(invCurrent)}
-                      </span>
-                    )}
-                  </div>
+                  {invValuationMethod === 'quantity_price' ? (
+                    <>
+                      {/* Col 3: Quantity */}
+                      <div className="console-input-col">
+                        <label htmlFor="invQty">Units / Shares *</label>
+                        <input
+                          id="invQty"
+                          type="number"
+                          min="0.0001"
+                          step="any"
+                          placeholder="50"
+                          value={invQuantity}
+                          onChange={(e) => setInvQuantity(e.target.value)}
+                          required
+                        />
+                      </div>
 
-                  {/* Col 5: Target Allocation */}
+                      {/* Col 4: Purchase Price */}
+                      <div className="console-input-col">
+                        <label htmlFor="invBuyPrice">Purchase (₹) *</label>
+                        <div className="input-adorned-group">
+                          <span className="input-affix">₹</span>
+                          <input
+                            id="invBuyPrice"
+                            type="number"
+                            min="0"
+                            step="any"
+                            placeholder="2400"
+                            value={invPurchasePrice}
+                            onChange={(e) => setInvPurchasePrice(e.target.value)}
+                            required
+                          />
+                        </div>
+                      </div>
+
+                      {/* Col 5: Current Price */}
+                      <div className="console-input-col">
+                        <label htmlFor="invCurrPrice">Current (₹)</label>
+                        <div className="input-adorned-group">
+                          <span className="input-affix">₹</span>
+                          <input
+                            id="invCurrPrice"
+                            type="number"
+                            min="0"
+                            step="any"
+                            placeholder="2650"
+                            value={invCurrentPrice}
+                            onChange={(e) => setInvCurrentPrice(e.target.value)}
+                          />
+                        </div>
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      {/* Col 3: Invested Amount */}
+                      <div className="console-input-col">
+                        <label htmlFor="invInvested">Invested (₹) *</label>
+                        <div className="input-adorned-group">
+                          <span className="input-affix">₹</span>
+                          <input
+                            id="invInvested"
+                            type="number"
+                            min="0"
+                            step="any"
+                            placeholder="25000"
+                            value={invInvested}
+                            onChange={(e) => setInvInvested(e.target.value)}
+                            required
+                          />
+                        </div>
+                        {invInvested && (
+                          <span className="console-preview-text">
+                            {formatINRPreview(invInvested)}
+                          </span>
+                        )}
+                      </div>
+
+                      {/* Col 4: Current Valuation */}
+                      <div className="console-input-col">
+                        <label htmlFor="invCurrent">Current Value (₹)</label>
+                        <div className="input-adorned-group">
+                          <span className="input-affix">₹</span>
+                          <input
+                            id="invCurrent"
+                            type="number"
+                            min="0"
+                            step="any"
+                            placeholder="28500"
+                            value={invCurrent}
+                            onChange={(e) => setInvCurrent(e.target.value)}
+                          />
+                        </div>
+                        {invCurrent && (
+                          <span className="console-preview-text">
+                            {formatINRPreview(invCurrent)}
+                          </span>
+                        )}
+                      </div>
+                    </>
+                  )}
+
+                  {/* Col Target Allocation */}
                   <div className="console-input-col">
                     <label htmlFor="invTargetAlloc">Target Weight %</label>
                     <div className="input-adorned-group has-suffix">

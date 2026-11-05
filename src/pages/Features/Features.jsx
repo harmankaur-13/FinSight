@@ -83,10 +83,6 @@ export default function Features() {
     }
   };
 
-  // Safe navigation for viewing market ratings
-  const handleViewRatings = () => {
-    navigate('/ratings');
-  };
 
   // Safe navigation for the three persona workspace buttons
   const handleWorkspaceNavigation = (role) => {
@@ -164,13 +160,6 @@ export default function Features() {
               onClick={handleGetStarted}
             >
               Explore FinSight <ArrowRightIcon />
-            </button>
-            <button
-              type="button"
-              className="btn btn-outline btn-large"
-              onClick={handleViewRatings}
-            >
-              View Market Ratings
             </button>
           </div>
         </div>
@@ -900,13 +889,6 @@ export default function Features() {
               onClick={handleGetStarted}
             >
               Explore FinSight <ArrowRightIcon />
-            </button>
-            <button
-              type="button"
-              className="btn btn-outline btn-large"
-              onClick={handleViewRatings}
-            >
-              View Market Ratings
             </button>
           </div>
         </div>

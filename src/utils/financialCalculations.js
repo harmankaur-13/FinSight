@@ -4,8 +4,12 @@ export const ASSET_COLORS = {
   'Stocks': '#236754',          // Deep Forest Pine
   'Mutual Funds': '#0284c7',    // Classic Blue
   'Crypto': '#d97706',          // Warm Amber Brass
+  'Cryptocurrency': '#d97706',  // Warm Amber Brass
   'Bonds': '#6366f1',           // Indigo Slate
   'ETFs': '#2563eb',            // Royal Blue
+  'Fixed Deposits': '#0d9488',  // Teal
+  'Gold': '#eab308',            // Gold
+  'Cash': '#10b981',            // Emerald
   'Real Estate': '#b45309',     // Warm Terracotta
   'Other': '#64748b'            // Slate Gray
 };
@@ -15,18 +19,93 @@ export const ASSET_TYPES = [
   'Mutual Funds',
   'ETFs',
   'Bonds',
+  'Fixed Deposits',
+  'Gold',
+  'Cryptocurrency',
   'Crypto',
+  'Cash',
   'Real Estate',
   'Other'
 ];
 
+const CURRENCY_SYMBOLS = {
+  INR: '₹',
+  USD: '$',
+  EUR: '€',
+  GBP: '£',
+  SGD: 'S$',
+  AED: 'AED '
+};
+
+export function getCurrencySymbol(currency = 'INR') {
+  return CURRENCY_SYMBOLS[currency] || '₹';
+}
+
 /**
- * Format currency in Indian notation
+ * Format currency with custom symbol and locale
  */
-export function formatCurrency(amount) {
-  if (amount === undefined || amount === null || isNaN(amount)) return '₹0';
+export function formatCurrency(amount, currency = 'INR') {
+  if (amount === undefined || amount === null || isNaN(amount)) {
+    const sym = getCurrencySymbol(currency);
+    return `${sym}0`;
+  }
   const num = Number(amount);
-  return '₹' + num.toLocaleString('en-IN');
+  const sym = getCurrencySymbol(currency);
+  const locale = currency === 'INR' ? 'en-IN' : 'en-US';
+  return sym + Math.round(num).toLocaleString(locale);
+}
+
+/**
+ * Calculate valuation and performance for an individual investment holding
+ * Supports Method A (quantity * purchasePrice / currentPrice) and Method B (manual valuation)
+ */
+export function calculateInvestmentValuation(inv) {
+  if (!inv || typeof inv !== 'object') {
+    return {
+      investedAmount: 0,
+      currentValue: 0,
+      profitLoss: 0,
+      returnPercentage: 0,
+      isManual: true,
+      method: 'manual'
+    };
+  }
+
+  const isQuantityPrice = inv.valuationMethod === 'quantity_price' || (
+    inv.quantity !== undefined && inv.quantity !== null && inv.quantity !== '' &&
+    inv.purchasePrice !== undefined && inv.purchasePrice !== null && inv.purchasePrice !== ''
+  );
+
+  let investedAmount = 0;
+  let currentValue = 0;
+
+  if (isQuantityPrice) {
+    const qty = Math.max(0, Number(inv.quantity) || 0);
+    const purchase = Math.max(0, Number(inv.purchasePrice) || 0);
+    const currPrice = inv.currentPrice !== undefined && inv.currentPrice !== null && inv.currentPrice !== ''
+      ? Math.max(0, Number(inv.currentPrice) || 0)
+      : purchase;
+
+    investedAmount = qty * purchase;
+    currentValue = qty * currPrice;
+  } else {
+    investedAmount = Math.max(0, Number(inv.investedAmount) || 0);
+    currentValue = inv.currentValue !== undefined && inv.currentValue !== null && inv.currentValue !== ''
+      ? Math.max(0, Number(inv.currentValue) || 0)
+      : investedAmount;
+  }
+
+  const profitLoss = currentValue - investedAmount;
+  const returnPercentage = investedAmount > 0 ? (profitLoss / investedAmount) * 100 : 0;
+
+  return {
+    investedAmount,
+    currentValue,
+    profitLoss,
+    returnPercentage,
+    isManual: !isQuantityPrice,
+    method: isQuantityPrice ? 'quantity_price' : 'manual'
+  };
 }
 
 /**
@@ -35,22 +114,21 @@ export function formatCurrency(amount) {
 export function calculateTotalInvested(investments = []) {
   if (!Array.isArray(investments) || investments.length === 0) return 0;
   return investments.reduce((sum, inv) => {
-    const amt = Number(inv.investedAmount);
-    return sum + (isNaN(amt) ? 0 : amt);
+    if (!inv || typeof inv !== 'object') return sum;
+    const valuation = calculateInvestmentValuation(inv);
+    return sum + valuation.investedAmount;
   }, 0);
 }
 
 /**
  * Calculate total current portfolio value
- * Fallback to investedAmount if currentValue is missing
  */
 export function calculatePortfolioValue(investments = []) {
   if (!Array.isArray(investments) || investments.length === 0) return 0;
   return investments.reduce((sum, inv) => {
-    const val = inv.currentValue !== undefined && inv.currentValue !== null && inv.currentValue !== ''
-      ? Number(inv.currentValue)
-      : Number(inv.investedAmount);
-    return sum + (isNaN(val) ? 0 : val);
+    if (!inv || typeof inv !== 'object') return sum;
+    const valuation = calculateInvestmentValuation(inv);
+    return sum + valuation.currentValue;
   }, 0);
 }
 
@@ -93,36 +171,98 @@ export function calculatePerformance(investments = []) {
 }
 
 /**
- * Calculate asset allocations by asset type
+ * Resolve target allocations across categories without duplicating holding targets
+ * @param {Array} investments
+ * @param {Object|null} targetAllocations - Optional explicit targets object { [type]: percentage }
+ * @returns {Object} { [category]: targetPercentage }
  */
-export function calculateAssetAllocations(investments = []) {
+export function resolveTargetAllocations(investments = [], targetAllocations = null) {
+  if (targetAllocations && typeof targetAllocations === 'object' && !Array.isArray(targetAllocations)) {
+    const cleaned = {};
+    for (const [k, v] of Object.entries(targetAllocations)) {
+      const num = Number(v);
+      if (!isNaN(num) && num >= 0) {
+        cleaned[k] = num;
+      }
+    }
+    if (Object.keys(cleaned).length > 0) {
+      return cleaned;
+    }
+  }
+
+  if (!Array.isArray(investments) || investments.length === 0) {
+    return {};
+  }
+
+  // Group targets by category to prevent duplicate summing across multiple holdings
+  const categoryHoldings = {};
+  investments.forEach((inv) => {
+    if (!inv) return;
+    const type = inv.type || 'Other';
+    if (!categoryHoldings[type]) categoryHoldings[type] = [];
+    if (inv.targetAllocation !== undefined && inv.targetAllocation !== null && inv.targetAllocation !== '') {
+      const num = Number(inv.targetAllocation);
+      if (!isNaN(num) && num > 0) {
+        categoryHoldings[type].push(num);
+      }
+    }
+  });
+
+  const resolved = {};
+  for (const [cat, targetsList] of Object.entries(categoryHoldings)) {
+    if (targetsList.length === 0) continue;
+    // If all holdings in category have identical target weight (e.g. user set 60% on both stocks),
+    // do not sum duplicated percentages to 120% - treat as category target 60%.
+    const allSame = targetsList.every((val) => val === targetsList[0]);
+    if (allSame) {
+      resolved[cat] = targetsList[0];
+    } else {
+      // If individual distinct targets are set per holding, sum them
+      const sum = targetsList.reduce((s, v) => s + v, 0);
+      resolved[cat] = sum;
+    }
+  }
+
+  return resolved;
+}
+
+/**
+ * Calculate asset allocations by asset type
+ * @param {Array} investments
+ * @param {Object|null} targetAllocations - Optional separately configured target allocations
+ */
+export function calculateAssetAllocations(investments = [], targetAllocations = null) {
   if (!Array.isArray(investments) || investments.length === 0) return [];
 
   const totalValue = calculatePortfolioValue(investments);
   if (totalValue === 0) return [];
 
   const typeTotals = {};
-  const typeTargets = {};
-
   investments.forEach((inv) => {
+    if (!inv || typeof inv !== 'object') return;
     const type = inv.type || 'Other';
-    const val = inv.currentValue !== undefined && inv.currentValue !== null && inv.currentValue !== ''
-      ? Number(inv.currentValue)
-      : Number(inv.investedAmount);
-    const validVal = isNaN(val) ? 0 : val;
-
+    const valuation = calculateInvestmentValuation(inv);
+    const validVal = valuation.currentValue;
     typeTotals[type] = (typeTotals[type] || 0) + validVal;
-    if (inv.targetAllocation !== undefined && inv.targetAllocation !== null && inv.targetAllocation !== '') {
-      typeTargets[type] = (typeTargets[type] || 0) + Number(inv.targetAllocation);
-    }
   });
 
-  const categories = Object.keys(typeTotals);
+  const resolvedTargets = resolveTargetAllocations(investments, targetAllocations);
+  const targetSum = Object.values(resolvedTargets).reduce((s, v) => s + v, 0);
+  const hasValidTargets = Object.keys(resolvedTargets).length > 0 && Math.abs(targetSum - 100) < 0.5;
+
+  // Include both categories with actual holdings and target-only categories (with 0 actual value)
+  const categories = Array.from(new Set([
+    ...Object.keys(typeTotals),
+    ...(hasValidTargets ? Object.keys(resolvedTargets) : [])
+  ]));
+
   return categories.map((cat) => {
-    const val = typeTotals[cat];
+    const val = typeTotals[cat] || 0;
     const pct = totalValue > 0 ? (val / totalValue) * 100 : 0;
-    const roundedPct = Math.round(pct * 10) / 10;
-    const target = typeTargets[cat] !== undefined ? Math.round(typeTargets[cat] * 10) / 10 : null;
+    const roundedPct = Math.round(pct * 100) / 100;
+    const target = hasValidTargets && resolvedTargets[cat] !== undefined
+      ? Math.round(resolvedTargets[cat] * 100) / 100
+      : null;
 
     return {
       name: cat,
@@ -131,52 +271,97 @@ export function calculateAssetAllocations(investments = []) {
       value: val,
       color: ASSET_COLORS[cat] || ASSET_COLORS['Other']
     };
-  }).sort((a, b) => b.percentage - a.percentage);
+  }).sort((a, b) => b.percentage - a.percentage || (b.target || 0) - (a.target || 0));
 }
 
 /**
  * Calculate allocation drift against target allocations
+ * Formula: Allocation Drift = 0.5 * sum of absolute differences between actual and target allocation percentages.
+ * 
+ * @param {Array} investments - Array of investment objects
+ * @param {Array|Object} allocationsOrTargets - Either computed allocations array or targets object
+ * @param {Object|null} explicitTargets - Optional explicit target allocation mapping { [type]: percentage }
+ * @returns {{ driftText: string, hasTarget: boolean, isConfigured: boolean, value: string, raw: number }}
  */
-export function calculateAllocationDrift(investments = [], allocations = []) {
+export function calculateAllocationDrift(investments = [], allocationsOrTargets = [], explicitTargets = null) {
   if (!Array.isArray(investments) || investments.length === 0) {
     return {
       driftText: 'Target allocation not configured',
       hasTarget: false,
       isConfigured: false,
-      value: null
+      value: 'Not configured',
+      raw: 0
     };
   }
 
-  // Check if any investment has target allocation configured
-  const hasAnyTarget = investments.some(
-    (inv) => inv.targetAllocation !== undefined && inv.targetAllocation !== null && inv.targetAllocation !== '' && Number(inv.targetAllocation) > 0
-  );
-
-  if (!hasAnyTarget) {
+  const totalValue = calculatePortfolioValue(investments);
+  if (totalValue === 0) {
     return {
       driftText: 'Target allocation not configured',
       hasTarget: false,
       isConfigured: false,
-      value: 'Not configured'
+      value: 'Not configured',
+      raw: 0
     };
   }
 
-  const allocs = allocations.length > 0 ? allocations : calculateAssetAllocations(investments);
-  let maxDrift = 0;
+  // Determine targets and allocations
+  let targetsObj = explicitTargets;
+  let allocs = [];
 
+  if (allocationsOrTargets && typeof allocationsOrTargets === 'object' && !Array.isArray(allocationsOrTargets)) {
+    targetsObj = allocationsOrTargets;
+    allocs = calculateAssetAllocations(investments, targetsObj);
+  } else if (Array.isArray(allocationsOrTargets) && allocationsOrTargets.length > 0) {
+    allocs = allocationsOrTargets;
+  } else {
+    allocs = calculateAssetAllocations(investments, targetsObj);
+  }
+
+  const resolvedTargets = resolveTargetAllocations(investments, targetsObj);
+  const targetSum = Object.values(resolvedTargets).reduce((s, v) => s + v, 0);
+
+  // Validate that configured target allocations total 100% (with 0.5% tolerance)
+  if (Object.keys(resolvedTargets).length === 0 || Math.abs(targetSum - 100) >= 0.5) {
+    return {
+      driftText: 'Target allocation not configured',
+      hasTarget: false,
+      isConfigured: false,
+      value: 'Not configured',
+      raw: 0
+    };
+  }
+
+  // Map actual percentages by category
+  const actualPcts = {};
   allocs.forEach((a) => {
-    if (a.target !== null && a.target !== undefined) {
-      const diff = Math.abs(a.percentage - a.target);
-      if (diff > maxDrift) maxDrift = diff;
-    }
+    actualPcts[a.name] = a.percentage;
   });
 
-  const roundedDrift = Math.round(maxDrift * 10) / 10;
+  // Collect all unique categories from actual allocations and targets
+  const allCategories = new Set([...Object.keys(actualPcts), ...Object.keys(resolvedTargets)]);
+
+  // Formula: 0.5 * sum of |actual% - target%|
+  let sumAbsDiff = 0;
+  for (const cat of allCategories) {
+    const actual = actualPcts[cat] || 0;
+    const target = resolvedTargets[cat] || 0;
+    sumAbsDiff += Math.abs(actual - target);
+  }
+
+  const driftVal = 0.5 * sumAbsDiff;
+  const roundedDrift = Math.round(driftVal * 100) / 100;
+  const formattedDrift = (roundedDrift % 1 === 0 || Math.round(roundedDrift * 10) === roundedDrift * 10)
+    ? `${roundedDrift.toFixed(1)}%`
+    : `${roundedDrift}%`;
+
   return {
-    driftText: `${roundedDrift.toFixed(1)}% Drift`,
+    driftText: `${formattedDrift} Drift`,
     hasTarget: true,
     isConfigured: true,
-    value: `${roundedDrift.toFixed(1)}%`
+    value: formattedDrift,
+    percentagePoints: roundedDrift,
+    raw: driftVal
   };
 }
 
@@ -189,12 +374,11 @@ export function calculateHoldings(investments = []) {
   const totalValue = calculatePortfolioValue(investments);
 
   return investments.map((inv) => {
-    const invested = Number(inv.investedAmount) || 0;
-    const current = inv.currentValue !== undefined && inv.currentValue !== null && inv.currentValue !== ''
-      ? Number(inv.currentValue)
-      : invested;
-    const diff = current - invested;
-    const changePct = invested > 0 ? (diff / invested) * 100 : 0;
+    const valuation = calculateInvestmentValuation(inv);
+    const invested = valuation.investedAmount;
+    const current = valuation.currentValue;
+    const diff = valuation.profitLoss;
+    const changePct = valuation.returnPercentage;
     const isPositive = diff >= 0;
     const allocationPct = totalValue > 0 ? ((current / totalValue) * 100).toFixed(1) + '%' : '0.0%';
 
@@ -202,16 +386,305 @@ export function calculateHoldings(investments = []) {
       id: inv.id,
       company: inv.name || 'Unnamed Asset',
       symbol: inv.type || 'Asset',
-      sector: inv.type || 'General',
-      value: '₹' + current.toLocaleString('en-IN'),
+      sector: inv.sector || (inv.type === 'Stocks' ? 'Equities' : inv.type || 'General'),
+      value: formatCurrency(current),
       rawValue: current,
       investedAmount: invested,
       change: (isPositive ? '+' : '') + changePct.toFixed(1) + '%',
       isPositive,
       allocation: allocationPct,
-      targetAllocation: inv.targetAllocation
+      targetAllocation: inv.targetAllocation,
+      liquidityClassification: inv.liquidityClassification || null,
+      valuationMethod: valuation.method,
+      quantity: inv.quantity || null,
+      purchasePrice: inv.purchasePrice || null,
+      currentPrice: inv.currentPrice || null
     };
   });
+}
+
+/**
+ * Calculate Cash Runway in months
+ * Formula: Available Cash Reserves / Monthly Operating Expenses
+ */
+export function calculateCashRunway(cashReserves, monthlyExpenses) {
+  if (
+    monthlyExpenses === null ||
+    monthlyExpenses === undefined ||
+    monthlyExpenses === '' ||
+    isNaN(Number(monthlyExpenses))
+  ) {
+    return {
+      runwayMonths: null,
+      formatted: 'Not configured',
+      status: 'unknown',
+      isCalculated: false
+    };
+  }
+
+  const expenses = Number(monthlyExpenses);
+  if (expenses <= 0) {
+    return {
+      runwayMonths: null,
+      formatted: 'N/A (Missing or zero expenses)',
+      status: 'unknown',
+      isCalculated: false
+    };
+  }
+
+  if (
+    cashReserves === null ||
+    cashReserves === undefined ||
+    cashReserves === '' ||
+    isNaN(Number(cashReserves))
+  ) {
+    return {
+      runwayMonths: null,
+      formatted: 'Not configured',
+      status: 'unknown',
+      isCalculated: false
+    };
+  }
+
+  const reserves = Number(cashReserves);
+  if (reserves < 0) {
+    return {
+      runwayMonths: null,
+      formatted: 'Not configured',
+      status: 'unknown',
+      isCalculated: false
+    };
+  }
+
+  const runway = reserves / expenses;
+  const rounded = Math.round(runway * 10) / 10;
+
+  let status = 'healthy';
+  if (rounded < 3) {
+    status = 'critical';
+  } else if (rounded < 6) {
+    status = 'caution';
+  }
+
+  return {
+    runwayMonths: rounded,
+    formatted: `${rounded.toFixed(1)} months`,
+    status,
+    isCalculated: true
+  };
+}
+
+/**
+ * Calculate Technology / Enterprise Budget Utilization Rate
+ * Formula: (Actual Spending / Approved Budget) * 100
+ */
+export function calculateBudgetUtilization(actualSpending, approvedBudget) {
+  if (
+    approvedBudget === null ||
+    approvedBudget === undefined ||
+    approvedBudget === '' ||
+    isNaN(Number(approvedBudget))
+  ) {
+    return {
+      percentage: null,
+      formatted: 'Not configured',
+      status: 'unknown',
+      isCalculated: false
+    };
+  }
+
+  const budget = Number(approvedBudget);
+  if (budget <= 0) {
+    return {
+      percentage: null,
+      formatted: 'N/A (Budget not configured)',
+      status: 'unknown',
+      isCalculated: false
+    };
+  }
+
+  if (
+    actualSpending === null ||
+    actualSpending === undefined ||
+    actualSpending === '' ||
+    isNaN(Number(actualSpending))
+  ) {
+    return {
+      percentage: null,
+      formatted: 'Not configured',
+      status: 'unknown',
+      isCalculated: false
+    };
+  }
+
+  const spending = Number(actualSpending);
+  if (spending < 0) {
+    return {
+      percentage: null,
+      formatted: 'Not configured',
+      status: 'unknown',
+      isCalculated: false
+    };
+  }
+
+  const pct = (spending / budget) * 100;
+  const rounded = Math.round(pct * 100) / 100;
+  const formatted = (rounded % 1 === 0 || Math.round(rounded * 10) === rounded * 10)
+    ? `${rounded.toFixed(1)}%`
+    : `${rounded}%`;
+
+  let status = 'on_track';
+  if (rounded > 100) {
+    status = 'over_budget';
+  } else if (rounded >= 85) {
+    status = 'warning';
+  }
+
+  return {
+    percentage: rounded,
+    formatted,
+    status,
+    isCalculated: true
+  };
+}
+
+/**
+ * Calculate Student / Personal Savings Rate
+ * Formula: (Monthly Savings / Monthly Income) * 100
+ */
+export function calculateSavingsRate(monthlySavings, monthlyIncome) {
+  if (
+    monthlyIncome === null ||
+    monthlyIncome === undefined ||
+    monthlyIncome === '' ||
+    isNaN(Number(monthlyIncome))
+  ) {
+    return {
+      rate: null,
+      formatted: 'Not configured',
+      isCalculated: false
+    };
+  }
+
+  const income = Number(monthlyIncome);
+  if (income <= 0) {
+    return {
+      rate: null,
+      formatted: 'Not calculable',
+      isCalculated: false
+    };
+  }
+
+  if (
+    monthlySavings === null ||
+    monthlySavings === undefined ||
+    monthlySavings === '' ||
+    isNaN(Number(monthlySavings))
+  ) {
+    return {
+      rate: null,
+      formatted: 'Not configured',
+      isCalculated: false
+    };
+  }
+
+  const savings = Number(monthlySavings);
+  if (savings < 0) {
+    return {
+      rate: null,
+      formatted: 'Not configured',
+      isCalculated: false
+    };
+  }
+
+  const rate = (savings / income) * 100;
+  const rounded = Math.round(rate * 100) / 100;
+  const formatted = (rounded % 1 === 0 || Math.round(rounded * 10) === rounded * 10)
+    ? `${rounded.toFixed(1)}%`
+    : `${rounded}%`;
+
+  return {
+    rate: rounded,
+    formatted,
+    isCalculated: true
+  };
+}
+
+/**
+ * Calculate Net Financial Position (Assets vs Liabilities)
+ * Formula: (Investments + Cash Reserves) - (Short-Term Liabilities + Long-Term Liabilities)
+ */
+export function calculateNetFinancialPosition(
+  portfolioValue = 0,
+  cashReserves = 0,
+  shortTermLiabilities = null,
+  longTermLiabilities = null,
+  currency = 'INR'
+) {
+  const pVal = Math.max(0, Number(portfolioValue) || 0);
+  const cRes = Math.max(0, Number(cashReserves) || 0);
+  const totalAssets = pVal + cRes;
+
+  const isShortTermNull = shortTermLiabilities === null || shortTermLiabilities === undefined || shortTermLiabilities === '';
+  const isLongTermNull = longTermLiabilities === null || longTermLiabilities === undefined || longTermLiabilities === '';
+
+  const sLiab = isShortTermNull ? 0 : Math.max(0, Number(shortTermLiabilities) || 0);
+  const lLiab = isLongTermNull ? 0 : Math.max(0, Number(longTermLiabilities) || 0);
+  const totalLiabilities = sLiab + lLiab;
+  const netPosition = totalAssets - totalLiabilities;
+  const isPositive = netPosition >= 0;
+
+  let status = 'verified';
+  let badgeText = 'Verified';
+  let isVerified = true;
+
+  if (isShortTermNull && isLongTermNull) {
+    status = 'unverified';
+    badgeText = 'Liabilities Not Configured';
+    isVerified = false;
+  } else if (isShortTermNull || isLongTermNull) {
+    status = 'incomplete';
+    badgeText = 'Liabilities Incomplete';
+    isVerified = false;
+  }
+
+  return {
+    totalAssets,
+    totalLiabilities,
+    netPosition,
+    formatted: formatCurrency(netPosition, currency),
+    isPositive,
+    isVerified,
+    status,
+    badgeText
+  };
+}
+
+/**
+ * Calculate Financial Goal Completion Metrics
+ */
+export function calculateGoalCompletion(current = 0, target = 0) {
+  const cur = Math.max(0, Number(current) || 0);
+  const tgt = Math.max(0, Number(target) || 0);
+
+  if (tgt === 0) {
+    return {
+      percentage: 0,
+      formatted: '0%',
+      remaining: 0,
+      isCompleted: false
+    };
+  }
+
+  const pct = Math.round((cur / tgt) * 100);
+  const remaining = Math.max(0, tgt - cur);
+
+  return {
+    percentage: pct,
+    formatted: `${pct}%`,
+    remaining,
+    isCompleted: cur >= tgt
+  };
 }
 
 /**
@@ -223,19 +696,74 @@ export function calculateMarketExposure(investments = []) {
   const totalValue = calculatePortfolioValue(investments);
   if (totalValue === 0) return '0%';
 
-  const equityTypes = ['Stocks', 'Mutual Funds', 'ETFs', 'Crypto'];
+  const equityTypes = ['Stocks', 'Mutual Funds', 'ETFs', 'Crypto', 'Cryptocurrency'];
   const equityValue = investments.reduce((sum, inv) => {
+    if (!inv || typeof inv !== 'object') return sum;
     if (equityTypes.includes(inv.type)) {
-      const val = inv.currentValue !== undefined && inv.currentValue !== null && inv.currentValue !== ''
-        ? Number(inv.currentValue)
-        : Number(inv.investedAmount);
-      return sum + (isNaN(val) ? 0 : val);
+      const val = calculateInvestmentValuation(inv).currentValue;
+      return sum + val;
     }
     return sum;
   }, 0);
 
   const pct = Math.round((equityValue / totalValue) * 100);
   return `${pct}%`;
+}
+
+/**
+ * Calculate Technology Sector Exposure Percentage
+ * Formula: (Technology Investment Market Value / Total Portfolio Market Value) * 100
+ */
+export function calculateTechSectorExposure(investments = []) {
+  if (!Array.isArray(investments) || investments.length === 0) {
+    return {
+      percentage: 0,
+      formatted: '0%',
+      techValue: 0,
+      totalValue: 0
+    };
+  }
+
+  const totalValue = calculatePortfolioValue(investments);
+  if (totalValue === 0) {
+    return {
+      percentage: 0,
+      formatted: '0%',
+      techValue: 0,
+      totalValue: 0
+    };
+  }
+
+  const techValue = investments.reduce((sum, inv) => {
+    if (!inv || typeof inv !== 'object') return sum;
+    const sector = (inv.sector || '').trim().toLowerCase();
+    const type = (inv.type || '').trim().toLowerCase();
+
+    const isTech = sector.includes('tech') ||
+      sector.includes('software') ||
+      sector.includes('saas') ||
+      sector.includes('cloud') ||
+      sector.includes('it') ||
+      type === 'technology' ||
+      inv.isTech === true;
+
+    if (isTech) {
+      const val = calculateInvestmentValuation(inv).currentValue;
+      return sum + val;
+    }
+    return sum;
+  }, 0);
+
+  const pct = (techValue / totalValue) * 100;
+  const rounded = Math.round(pct * 10) / 10;
+  const formatted = rounded === 0 ? '0%' : (rounded % 1 === 0 ? `${rounded.toFixed(0)}%` : `${rounded.toFixed(1)}%`);
+
+  return {
+    percentage: rounded,
+    formatted,
+    techValue,
+    totalValue
+  };
 }
 
 /**
@@ -345,13 +873,11 @@ export function calculateRebalanceTrades(investments = [], targets = {}, options
 
   if (Array.isArray(investments) && investments.length > 0) {
     investments.forEach((inv) => {
+      if (!inv || typeof inv !== 'object') return;
       const type = inv.type || 'Other';
-      const val = inv.currentValue !== undefined && inv.currentValue !== null && inv.currentValue !== ''
-        ? Number(inv.currentValue)
-        : Number(inv.investedAmount);
-      const validVal = isNaN(val) || val < 0 ? 0 : val;
-      currentByType[type] = (currentByType[type] || 0) + validVal;
-      totalCurrentValue += validVal;
+      const val = calculateInvestmentValuation(inv).currentValue;
+      currentByType[type] = (currentByType[type] || 0) + val;
+      totalCurrentValue += val;
     });
   }
 

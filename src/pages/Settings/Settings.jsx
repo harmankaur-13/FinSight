@@ -18,16 +18,35 @@ export const DEFAULT_SETTINGS = {
   student: {
     financialGoals: ['Emergency Fund', 'Portfolio Growth', 'Education Fund'],
     monthlyBudget: 15000,
-    savingsGoal: 3500
+    savingsGoal: 3500,
+    monthlyIncome: '',
+    monthlyExpenses: '',
+    existingSavings: '',
+    educationLevel: 'Undergraduate',
+    incomeSource: 'Allowance'
   },
   business: {
     businessGoals: ['Corporate Treasury Liquidity', 'Working Capital Optimization'],
-    reportingCurrency: 'INR'
+    reportingCurrency: 'INR',
+    businessName: '',
+    industry: 'Technology / Software',
+    businessSize: 'Growth (11-50)',
+    cashReserves: '',
+    monthlyOperatingExpenses: '',
+    shortTermLiabilities: '',
+    longTermLiabilities: '',
+    annualRevenue: ''
   },
   tech: {
     investmentFocus: 'Semiconductors & AI',
     sectorInterests: ['Cloud Compute', 'Semiconductors & AI', 'Hardware Infrastructure'],
-    riskPreference: 'Balanced / Moderate'
+    riskPreference: 'Balanced / Moderate',
+    organizationName: '',
+    techIndustry: 'Enterprise Software / SaaS',
+    annualTechBudget: '',
+    monthlyTechExpenditure: '',
+    cloudSpend: '',
+    saasSpend: ''
   }
 };
 
@@ -126,9 +145,11 @@ export default function Settings({
     const stored = getStoredSettings(email);
 
     // Prefer student monthly savings from active financialData if present
-    const studentSavings = financialData?.monthlySavings !== null && financialData?.monthlySavings !== undefined
-      ? Number(financialData.monthlySavings)
-      : stored.student.savingsGoal;
+    const studentSavings = financialData?.studentProfile?.monthlySavings !== null && financialData?.studentProfile?.monthlySavings !== undefined
+      ? Number(financialData.studentProfile.monthlySavings)
+      : (financialData?.monthlySavings !== null && financialData?.monthlySavings !== undefined
+        ? Number(financialData.monthlySavings)
+        : stored.student.savingsGoal);
 
     return {
       name: user?.name || '',
@@ -136,17 +157,42 @@ export default function Settings({
       userType: user?.userType || 'student',
       avatar: user?.avatar || '',
       theme: theme || 'light',
-      currency: stored.currency || 'INR',
+      currency: financialData?.commonProfile?.currency || stored.currency || 'INR',
       dateFormat: stored.dateFormat || 'DD/MM/YYYY',
       notifications: { ...stored.notifications },
       student: {
         ...stored.student,
-        savingsGoal: studentSavings
+        savingsGoal: studentSavings,
+        monthlyIncome: financialData?.studentProfile?.monthlyIncome ?? stored.student.monthlyIncome ?? '',
+        monthlyExpenses: financialData?.studentProfile?.monthlyExpenses ?? stored.student.monthlyExpenses ?? '',
+        existingSavings: financialData?.studentProfile?.existingSavings ?? stored.student.existingSavings ?? '',
+        educationLevel: financialData?.studentProfile?.educationLevel ?? stored.student.educationLevel ?? 'Undergraduate',
+        incomeSource: financialData?.studentProfile?.incomeSource ?? stored.student.incomeSource ?? 'Allowance'
       },
-      business: { ...stored.business },
-      tech: { ...stored.tech }
+      business: {
+        ...stored.business,
+        businessName: financialData?.businessProfile?.businessName ?? stored.business.businessName ?? '',
+        industry: financialData?.businessProfile?.industry ?? stored.business.industry ?? 'Technology / Software',
+        businessSize: financialData?.businessProfile?.businessSize ?? stored.business.businessSize ?? 'Growth (11-50)',
+        cashReserves: financialData?.businessProfile?.cashReserves ?? stored.business.cashReserves ?? '',
+        monthlyOperatingExpenses: financialData?.businessProfile?.monthlyOperatingExpenses ?? stored.business.monthlyOperatingExpenses ?? '',
+        shortTermLiabilities: financialData?.businessProfile?.shortTermLiabilities ?? stored.business.shortTermLiabilities ?? '',
+        longTermLiabilities: financialData?.businessProfile?.longTermLiabilities ?? stored.business.longTermLiabilities ?? '',
+        annualRevenue: financialData?.businessProfile?.annualRevenue ?? stored.business.annualRevenue ?? '',
+        reportingCurrency: financialData?.commonProfile?.currency ?? stored.business.reportingCurrency ?? 'INR'
+      },
+      tech: {
+        ...stored.tech,
+        organizationName: financialData?.techProfile?.organizationName ?? stored.tech.organizationName ?? '',
+        techIndustry: financialData?.techProfile?.techIndustry ?? stored.tech.techIndustry ?? 'Enterprise Software / SaaS',
+        annualTechBudget: financialData?.techProfile?.annualTechBudget ?? stored.tech.annualTechBudget ?? '',
+        monthlyTechExpenditure: financialData?.techProfile?.monthlyTechExpenditure ?? stored.tech.monthlyTechExpenditure ?? '',
+        cloudSpend: financialData?.techProfile?.spendingBreakdown?.cloudInfrastructure ?? financialData?.techProfile?.spendingBreakdown?.cloudCompute ?? stored.tech.cloudSpend ?? '',
+        saasSpend: financialData?.techProfile?.spendingBreakdown?.softwareLicensing ?? financialData?.techProfile?.spendingBreakdown?.saasTools ?? stored.tech.saasSpend ?? '',
+        riskPreference: financialData?.commonProfile?.riskTolerance || stored.tech.riskPreference || 'Balanced / Moderate'
+      }
     };
-  }, [user?.name, user?.email, user?.userType, user?.avatar, financialData?.monthlySavings, theme]);
+  }, [user?.name, user?.email, user?.userType, user?.avatar, financialData, theme]);
 
   const [savedSettings, setSavedSettings] = useState(initialSaved);
   const [formData, setFormData] = useState(initialSaved);
@@ -314,11 +360,41 @@ export default function Settings({
     }
 
     if (formData.userType === 'student') {
-      if (formData.student.monthlyBudget < 0) {
+      if (formData.student.monthlyBudget !== '' && Number(formData.student.monthlyBudget) < 0) {
         newErrors.monthlyBudget = 'Monthly budget must be 0 or positive.';
       }
-      if (formData.student.savingsGoal < 0) {
+      if (formData.student.savingsGoal !== '' && Number(formData.student.savingsGoal) < 0) {
         newErrors.savingsGoal = 'Monthly savings goal must be 0 or positive.';
+      }
+      if (formData.student.monthlyIncome !== '' && Number(formData.student.monthlyIncome) < 0) {
+        newErrors.monthlyIncome = 'Monthly income cannot be negative.';
+      }
+      if (formData.student.monthlyExpenses !== '' && Number(formData.student.monthlyExpenses) < 0) {
+        newErrors.monthlyExpenses = 'Monthly expenses cannot be negative.';
+      }
+    }
+
+    if (formData.userType === 'business') {
+      if (formData.business.cashReserves !== '' && Number(formData.business.cashReserves) < 0) {
+        newErrors.cashReserves = 'Cash reserves cannot be negative.';
+      }
+      if (formData.business.monthlyOperatingExpenses !== '' && Number(formData.business.monthlyOperatingExpenses) < 0) {
+        newErrors.monthlyOperatingExpenses = 'Operating burn cannot be negative.';
+      }
+      if (formData.business.shortTermLiabilities !== '' && Number(formData.business.shortTermLiabilities) < 0) {
+        newErrors.shortTermLiabilities = 'Liabilities cannot be negative.';
+      }
+      if (formData.business.longTermLiabilities !== '' && Number(formData.business.longTermLiabilities) < 0) {
+        newErrors.longTermLiabilities = 'Liabilities cannot be negative.';
+      }
+    }
+
+    if (formData.userType === 'tech') {
+      if (formData.tech.annualTechBudget !== '' && Number(formData.tech.annualTechBudget) < 0) {
+        newErrors.annualTechBudget = 'Annual tech budget cannot be negative.';
+      }
+      if (formData.tech.monthlyTechExpenditure !== '' && Number(formData.tech.monthlyTechExpenditure) < 0) {
+        newErrors.monthlyTechExpenditure = 'Monthly tech spend cannot be negative.';
       }
     }
 
@@ -353,20 +429,67 @@ export default function Settings({
       };
       saveStoredSettings(formData.email, settingsPayload);
 
-      // 3. Update profile via callback
+      // 3. Prepare normalized financial data update
+      const existingFin = financialData ? { ...financialData } : {};
+      const updatedFinancialData = {
+        ...existingFin,
+        monthlySavings: formData.userType === 'student' && formData.student.savingsGoal !== '' ? Number(formData.student.savingsGoal) : (existingFin.monthlySavings ?? null),
+        commonProfile: {
+          ...(existingFin.commonProfile || {}),
+          currency: formData.currency || existingFin.commonProfile?.currency || 'INR'
+        },
+        studentProfile: {
+          ...(existingFin.studentProfile || {}),
+          educationLevel: formData.student.educationLevel || existingFin.studentProfile?.educationLevel || 'Undergraduate',
+          incomeSource: formData.student.incomeSource || existingFin.studentProfile?.incomeSource || 'Allowance',
+          monthlyIncome: formData.student.monthlyIncome !== '' && formData.student.monthlyIncome !== null && formData.student.monthlyIncome !== undefined ? Number(formData.student.monthlyIncome) : (existingFin.studentProfile?.monthlyIncome ?? null),
+          monthlyExpenses: formData.student.monthlyExpenses !== '' && formData.student.monthlyExpenses !== null && formData.student.monthlyExpenses !== undefined ? Number(formData.student.monthlyExpenses) : (existingFin.studentProfile?.monthlyExpenses ?? null),
+          monthlySavings: formData.student.savingsGoal !== '' && formData.student.savingsGoal !== null && formData.student.savingsGoal !== undefined ? Number(formData.student.savingsGoal) : (existingFin.studentProfile?.monthlySavings ?? null),
+          existingSavings: formData.student.existingSavings !== '' && formData.student.existingSavings !== null && formData.student.existingSavings !== undefined ? Number(formData.student.existingSavings) : (existingFin.studentProfile?.existingSavings ?? null)
+        },
+        businessProfile: {
+          ...(existingFin.businessProfile || {}),
+          businessName: formData.business.businessName || existingFin.businessProfile?.businessName || '',
+          industry: formData.business.industry || existingFin.businessProfile?.industry || '',
+          businessSize: formData.business.businessSize || existingFin.businessProfile?.businessSize || '',
+          cashReserves: formData.business.cashReserves !== '' && formData.business.cashReserves !== null && formData.business.cashReserves !== undefined ? Number(formData.business.cashReserves) : (existingFin.businessProfile?.cashReserves ?? null),
+          monthlyOperatingExpenses: formData.business.monthlyOperatingExpenses !== '' && formData.business.monthlyOperatingExpenses !== null && formData.business.monthlyOperatingExpenses !== undefined ? Number(formData.business.monthlyOperatingExpenses) : (existingFin.businessProfile?.monthlyOperatingExpenses ?? null),
+          shortTermLiabilities: formData.business.shortTermLiabilities !== '' && formData.business.shortTermLiabilities !== null && formData.business.shortTermLiabilities !== undefined ? Number(formData.business.shortTermLiabilities) : (existingFin.businessProfile?.shortTermLiabilities ?? null),
+          longTermLiabilities: formData.business.longTermLiabilities !== '' && formData.business.longTermLiabilities !== null && formData.business.longTermLiabilities !== undefined ? Number(formData.business.longTermLiabilities) : (existingFin.businessProfile?.longTermLiabilities ?? null),
+          annualRevenue: formData.business.annualRevenue !== '' && formData.business.annualRevenue !== null && formData.business.annualRevenue !== undefined ? Number(formData.business.annualRevenue) : (existingFin.businessProfile?.annualRevenue ?? null)
+        },
+        techProfile: {
+          ...(existingFin.techProfile || {}),
+          organizationName: formData.tech.organizationName || existingFin.techProfile?.organizationName || '',
+          techIndustry: formData.tech.techIndustry || existingFin.techProfile?.techIndustry || '',
+          annualTechBudget: formData.tech.annualTechBudget !== '' && formData.tech.annualTechBudget !== null && formData.tech.annualTechBudget !== undefined ? Number(formData.tech.annualTechBudget) : (existingFin.techProfile?.annualTechBudget ?? null),
+          monthlyTechExpenditure: formData.tech.monthlyTechExpenditure !== '' && formData.tech.monthlyTechExpenditure !== null && formData.tech.monthlyTechExpenditure !== undefined ? Number(formData.tech.monthlyTechExpenditure) : (existingFin.techProfile?.monthlyTechExpenditure ?? null),
+          spendingBreakdown: {
+            ...(existingFin.techProfile?.spendingBreakdown || {}),
+            cloudInfrastructure: formData.tech.cloudSpend !== '' && formData.tech.cloudSpend !== null && formData.tech.cloudSpend !== undefined ? Number(formData.tech.cloudSpend) : (existingFin.techProfile?.spendingBreakdown?.cloudInfrastructure ?? existingFin.techProfile?.spendingBreakdown?.cloudCompute ?? null),
+            cloudCompute: formData.tech.cloudSpend !== '' && formData.tech.cloudSpend !== null && formData.tech.cloudSpend !== undefined ? Number(formData.tech.cloudSpend) : (existingFin.techProfile?.spendingBreakdown?.cloudCompute ?? null),
+            softwareLicensing: formData.tech.saasSpend !== '' && formData.tech.saasSpend !== null && formData.tech.saasSpend !== undefined ? Number(formData.tech.saasSpend) : (existingFin.techProfile?.spendingBreakdown?.softwareLicensing ?? existingFin.techProfile?.spendingBreakdown?.saasTools ?? null),
+            saasTools: formData.tech.saasSpend !== '' && formData.tech.saasSpend !== null && formData.tech.saasSpend !== undefined ? Number(formData.tech.saasSpend) : (existingFin.techProfile?.spendingBreakdown?.saasTools ?? null)
+          }
+        }
+      };
+
+      // 4. Update profile via callback
       if (onUpdateProfile) {
         onUpdateProfile({
           name: formData.name.trim(),
           email: formData.email.trim(),
           userType: formData.userType,
           avatar: formData.avatar,
-          settings: settingsPayload
+          settings: settingsPayload,
+          financialData: updatedFinancialData,
+          customFinancialData: updatedFinancialData
         });
       }
 
-      // 4. Update monthly savings if Student
+      // 5. Update monthly savings if Student
       if (formData.userType === 'student' && onUpdateMonthlySavings) {
-        onUpdateMonthlySavings(formData.student.savingsGoal);
+        onUpdateMonthlySavings(formData.student.savingsGoal !== '' ? Number(formData.student.savingsGoal) : null);
       }
 
       setSavedSettings(formData);
@@ -990,6 +1113,44 @@ export default function Settings({
 
                 <div className="settings-form-grid" style={{ marginTop: '24px' }}>
                   <div className="field">
+                    <label htmlFor="settings-monthly-income">
+                      Monthly Income (₹)
+                    </label>
+                    <input
+                      id="settings-monthly-income"
+                      type="number"
+                      min="0"
+                      step="500"
+                      value={formData.student.monthlyIncome}
+                      onChange={(e) => handleStudentFieldChange('monthlyIncome', e.target.value === '' ? '' : Number(e.target.value))}
+                      placeholder="e.g. 20000"
+                    />
+                    {errors.monthlyIncome && (
+                      <p className="field-error-msg">{errors.monthlyIncome}</p>
+                    )}
+                    <p className="settings-hint">Allowance, stipend, part-time earnings, or family support.</p>
+                  </div>
+
+                  <div className="field">
+                    <label htmlFor="settings-monthly-expenses">
+                      Monthly Living Expenses (₹)
+                    </label>
+                    <input
+                      id="settings-monthly-expenses"
+                      type="number"
+                      min="0"
+                      step="500"
+                      value={formData.student.monthlyExpenses}
+                      onChange={(e) => handleStudentFieldChange('monthlyExpenses', e.target.value === '' ? '' : Number(e.target.value))}
+                      placeholder="e.g. 12000"
+                    />
+                    {errors.monthlyExpenses && (
+                      <p className="field-error-msg">{errors.monthlyExpenses}</p>
+                    )}
+                    <p className="settings-hint">Total rent, food, commute, utilities, and daily living costs.</p>
+                  </div>
+
+                  <div className="field">
                     <label htmlFor="settings-monthly-budget">
                       Monthly Budget (₹)
                     </label>
@@ -999,7 +1160,7 @@ export default function Settings({
                       min="0"
                       step="500"
                       value={formData.student.monthlyBudget}
-                      onChange={(e) => handleStudentFieldChange('monthlyBudget', Number(e.target.value) || 0)}
+                      onChange={(e) => handleStudentFieldChange('monthlyBudget', e.target.value === '' ? '' : Number(e.target.value))}
                       placeholder="e.g. 15000"
                     />
                     {errors.monthlyBudget && (
@@ -1018,13 +1179,29 @@ export default function Settings({
                       min="0"
                       step="500"
                       value={formData.student.savingsGoal}
-                      onChange={(e) => handleStudentFieldChange('savingsGoal', Number(e.target.value) || 0)}
+                      onChange={(e) => handleStudentFieldChange('savingsGoal', e.target.value === '' ? '' : Number(e.target.value))}
                       placeholder="e.g. 3500"
                     />
                     {errors.savingsGoal && (
                       <p className="field-error-msg">{errors.savingsGoal}</p>
                     )}
-                    <p className="settings-hint">Directly feeds the Student Dashboard monthly savings target.</p>
+                    <p className="settings-hint">Directly feeds the Student Dashboard savings rate calculation.</p>
+                  </div>
+
+                  <div className="field">
+                    <label htmlFor="settings-existing-savings">
+                      Existing Savings (₹)
+                    </label>
+                    <input
+                      id="settings-existing-savings"
+                      type="number"
+                      min="0"
+                      step="1000"
+                      value={formData.student.existingSavings}
+                      onChange={(e) => handleStudentFieldChange('existingSavings', e.target.value === '' ? '' : Number(e.target.value))}
+                      placeholder="e.g. 10000"
+                    />
+                    <p className="settings-hint">Cash, bank balance, or liquid reserves already set aside.</p>
                   </div>
                 </div>
               </div>
@@ -1058,22 +1235,130 @@ export default function Settings({
                   </div>
                 </div>
 
-                <div className="field" style={{ marginTop: '24px', maxWidth: '480px' }}>
-                  <label htmlFor="settings-reporting-currency">
-                    Preferred Reporting Currency
-                  </label>
-                  <select
-                    id="settings-reporting-currency"
-                    className="settings-select"
-                    value={formData.business.reportingCurrency}
-                    onChange={(e) => handleBusinessFieldChange('reportingCurrency', e.target.value)}
-                  >
-                    <option value="INR">INR (₹) - Domestic Indian Corporate Entity</option>
-                    <option value="USD">USD ($) - International Treasury Reporting</option>
-                    <option value="EUR">EUR (€) - European Subsidiary</option>
-                    <option value="GBP">GBP (£) - UK Operations</option>
-                  </select>
-                  <p className="settings-hint">Standardized currency for corporate cash-flow statements.</p>
+                <div className="settings-form-grid" style={{ marginTop: '24px' }}>
+                  <div className="field">
+                    <label htmlFor="settings-business-name">
+                      Legal Business / Entity Name
+                    </label>
+                    <input
+                      id="settings-business-name"
+                      type="text"
+                      value={formData.business.businessName || ''}
+                      onChange={(e) => handleBusinessFieldChange('businessName', e.target.value)}
+                      placeholder="e.g. Nexus Innovations Pvt Ltd"
+                    />
+                    <p className="settings-hint">Official corporate name on treasury statements.</p>
+                  </div>
+
+                  <div className="field">
+                    <label htmlFor="settings-reporting-currency">
+                      Preferred Reporting Currency
+                    </label>
+                    <select
+                      id="settings-reporting-currency"
+                      className="settings-select"
+                      value={formData.business.reportingCurrency || 'INR'}
+                      onChange={(e) => handleBusinessFieldChange('reportingCurrency', e.target.value)}
+                    >
+                      <option value="INR">INR (₹) - Domestic Indian Corporate Entity</option>
+                      <option value="USD">USD ($) - International Treasury Reporting</option>
+                      <option value="EUR">EUR (€) - European Subsidiary</option>
+                      <option value="GBP">GBP (£) - UK Operations</option>
+                    </select>
+                    <p className="settings-hint">Standardized currency for corporate cash-flow statements.</p>
+                  </div>
+
+                  <div className="field">
+                    <label htmlFor="settings-cash-reserves">
+                      Cash Reserves &amp; Liquid Capital (₹)
+                    </label>
+                    <input
+                      id="settings-cash-reserves"
+                      type="number"
+                      min="0"
+                      step="10000"
+                      value={formData.business.cashReserves}
+                      onChange={(e) => handleBusinessFieldChange('cashReserves', e.target.value === '' ? '' : Number(e.target.value))}
+                      placeholder="e.g. 5000000"
+                    />
+                    {errors.cashReserves && (
+                      <p className="field-error-msg">{errors.cashReserves}</p>
+                    )}
+                    <p className="settings-hint">Checking accounts, overnight deposits, and liquid sweep balances.</p>
+                  </div>
+
+                  <div className="field">
+                    <label htmlFor="settings-monthly-operating-expenses">
+                      Monthly Operating Expenses / Cash Burn (₹)
+                    </label>
+                    <input
+                      id="settings-monthly-operating-expenses"
+                      type="number"
+                      min="0"
+                      step="10000"
+                      value={formData.business.monthlyOperatingExpenses}
+                      onChange={(e) => handleBusinessFieldChange('monthlyOperatingExpenses', e.target.value === '' ? '' : Number(e.target.value))}
+                      placeholder="e.g. 850000"
+                    />
+                    {errors.monthlyOperatingExpenses && (
+                      <p className="field-error-msg">{errors.monthlyOperatingExpenses}</p>
+                    )}
+                    <p className="settings-hint">Crucial for calculating Corporate Cash Runway (months of liquidity).</p>
+                  </div>
+
+                  <div className="field">
+                    <label htmlFor="settings-short-term-liabilities">
+                      Short-Term Liabilities (₹)
+                    </label>
+                    <input
+                      id="settings-short-term-liabilities"
+                      type="number"
+                      min="0"
+                      step="10000"
+                      value={formData.business.shortTermLiabilities}
+                      onChange={(e) => handleBusinessFieldChange('shortTermLiabilities', e.target.value === '' ? '' : Number(e.target.value))}
+                      placeholder="e.g. 350000"
+                    />
+                    {errors.shortTermLiabilities && (
+                      <p className="field-error-msg">{errors.shortTermLiabilities}</p>
+                    )}
+                    <p className="settings-hint">Accounts payable, working capital credit lines, and current tax due.</p>
+                  </div>
+
+                  <div className="field">
+                    <label htmlFor="settings-long-term-liabilities">
+                      Long-Term Liabilities &amp; Debt (₹)
+                    </label>
+                    <input
+                      id="settings-long-term-liabilities"
+                      type="number"
+                      min="0"
+                      step="10000"
+                      value={formData.business.longTermLiabilities}
+                      onChange={(e) => handleBusinessFieldChange('longTermLiabilities', e.target.value === '' ? '' : Number(e.target.value))}
+                      placeholder="e.g. 1200000"
+                    />
+                    {errors.longTermLiabilities && (
+                      <p className="field-error-msg">{errors.longTermLiabilities}</p>
+                    )}
+                    <p className="settings-hint">Term loans, equipment financing, and debentures.</p>
+                  </div>
+
+                  <div className="field">
+                    <label htmlFor="settings-annual-revenue">
+                      Annual Gross Revenue (₹)
+                    </label>
+                    <input
+                      id="settings-annual-revenue"
+                      type="number"
+                      min="0"
+                      step="50000"
+                      value={formData.business.annualRevenue}
+                      onChange={(e) => handleBusinessFieldChange('annualRevenue', e.target.value === '' ? '' : Number(e.target.value))}
+                      placeholder="e.g. 25000000"
+                    />
+                    <p className="settings-hint">Annual top-line turnover for financial health ratios.</p>
+                  </div>
                 </div>
               </div>
             )}
@@ -1082,6 +1367,90 @@ export default function Settings({
             {formData.userType === 'tech' && (
               <div className="settings-financial-subgroup">
                 <div className="settings-form-grid">
+                  <div className="field">
+                    <label htmlFor="settings-org-name">
+                      Organization / Tech Entity Name
+                    </label>
+                    <input
+                      id="settings-org-name"
+                      type="text"
+                      value={formData.tech.organizationName || ''}
+                      onChange={(e) => handleTechFieldChange('organizationName', e.target.value)}
+                      placeholder="e.g. HyperScale Systems Inc"
+                    />
+                    <p className="settings-hint">Enterprise name for technology infrastructure governance.</p>
+                  </div>
+
+                  <div className="field">
+                    <label htmlFor="settings-annual-tech-budget">
+                      Annual Technology Budget (₹)
+                    </label>
+                    <input
+                      id="settings-annual-tech-budget"
+                      type="number"
+                      min="0"
+                      step="50000"
+                      value={formData.tech.annualTechBudget}
+                      onChange={(e) => handleTechFieldChange('annualTechBudget', e.target.value === '' ? '' : Number(e.target.value))}
+                      placeholder="e.g. 24000000"
+                    />
+                    {errors.annualTechBudget && (
+                      <p className="field-error-msg">{errors.annualTechBudget}</p>
+                    )}
+                    <p className="settings-hint">Total approved IT, infrastructure, and engineering spend cap.</p>
+                  </div>
+
+                  <div className="field">
+                    <label htmlFor="settings-monthly-tech-spend">
+                      Monthly Tech Expenditure (₹)
+                    </label>
+                    <input
+                      id="settings-monthly-tech-spend"
+                      type="number"
+                      min="0"
+                      step="25000"
+                      value={formData.tech.monthlyTechExpenditure}
+                      onChange={(e) => handleTechFieldChange('monthlyTechExpenditure', e.target.value === '' ? '' : Number(e.target.value))}
+                      placeholder="e.g. 1800000"
+                    />
+                    {errors.monthlyTechExpenditure && (
+                      <p className="field-error-msg">{errors.monthlyTechExpenditure}</p>
+                    )}
+                    <p className="settings-hint">Used to calculate Annual Tech Budget Utilization Rate.</p>
+                  </div>
+
+                  <div className="field">
+                    <label htmlFor="settings-cloud-spend">
+                      Monthly Cloud Infrastructure Spend (₹)
+                    </label>
+                    <input
+                      id="settings-cloud-spend"
+                      type="number"
+                      min="0"
+                      step="10000"
+                      value={formData.tech.cloudSpend}
+                      onChange={(e) => handleTechFieldChange('cloudSpend', e.target.value === '' ? '' : Number(e.target.value))}
+                      placeholder="e.g. 950000"
+                    />
+                    <p className="settings-hint">AWS, GCP, Azure, and private cloud hosting compute.</p>
+                  </div>
+
+                  <div className="field">
+                    <label htmlFor="settings-saas-spend">
+                      Monthly Enterprise SaaS Spend (₹)
+                    </label>
+                    <input
+                      id="settings-saas-spend"
+                      type="number"
+                      min="0"
+                      step="10000"
+                      value={formData.tech.saasSpend}
+                      onChange={(e) => handleTechFieldChange('saasSpend', e.target.value === '' ? '' : Number(e.target.value))}
+                      placeholder="e.g. 450000"
+                    />
+                    <p className="settings-hint">Developer tooling, observability, security, and CRM licenses.</p>
+                  </div>
+
                   <div className="field">
                     <label htmlFor="settings-tech-focus">
                       Primary Investment Focus

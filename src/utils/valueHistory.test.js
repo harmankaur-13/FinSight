@@ -4,6 +4,8 @@ import {
   saveValueSnapshot,
   filterHistoryByTimeframe,
   generateProjectedGrowth,
+  getUserValueHistoryKey,
+  migrateGlobalValueHistory,
   STORAGE_KEY_VALUE_HISTORY
 } from './valueHistory.js';
 
@@ -162,6 +164,67 @@ describe('valueHistory helper', () => {
       const points = generateProjectedGrowth(0, 10, 6, new Date('2026-01-01'));
       expect(points).toHaveLength(7);
       expect(points.every(p => p.totalValue === 0)).toBe(true);
+    });
+  });
+
+  describe('User-Specific Storage Key & Migration', () => {
+    it('generates distinct storage keys per user ID', () => {
+      const userA = { id: 'usr_123', email: 'a@example.com' };
+      const userB = { id: 'usr_456', email: 'b@example.com' };
+      const demoUser = { isDemo: true, userType: 'student' };
+
+      expect(getUserValueHistoryKey(userA)).toBe('finsight_value_history_usr_123');
+      expect(getUserValueHistoryKey(userB)).toBe('finsight_value_history_usr_456');
+      expect(getUserValueHistoryKey(demoUser)).toBe('finsight_value_history_demo_student');
+      expect(getUserValueHistoryKey(null)).toBe(STORAGE_KEY_VALUE_HISTORY);
+    });
+
+    it('migrates legacy global history to single authenticated user', () => {
+      const legacyData = [{ date: '2026-01-01', totalValue: 50000 }];
+      localStorage.setItem(STORAGE_KEY_VALUE_HISTORY, JSON.stringify(legacyData));
+      localStorage.setItem('finsight_accounts', JSON.stringify({
+        'user@example.com': { id: 'usr_single', email: 'user@example.com' }
+      }));
+
+      const user = { id: 'usr_single', email: 'user@example.com' };
+      const migrated = migrateGlobalValueHistory(user);
+
+      expect(migrated).toBe(true);
+      expect(localStorage.getItem('finsight_value_history_usr_single')).toEqual(JSON.stringify(legacyData));
+      expect(localStorage.getItem(STORAGE_KEY_VALUE_HISTORY)).toBeNull();
+    });
+
+    it('does NOT assign legacy data to multiple users', () => {
+      const legacyData = [{ date: '2026-01-01', totalValue: 50000 }];
+      localStorage.setItem(STORAGE_KEY_VALUE_HISTORY, JSON.stringify(legacyData));
+      localStorage.setItem('finsight_accounts', JSON.stringify({
+        'user1@example.com': { id: 'usr_1', email: 'user1@example.com' }
+      }));
+
+      const user1 = { id: 'usr_1', email: 'user1@example.com' };
+      migrateGlobalValueHistory(user1);
+
+      // Subsequent user should NOT get this data
+      const user2 = { id: 'usr_2', email: 'user2@example.com' };
+      const secondMigration = migrateGlobalValueHistory(user2);
+
+      expect(secondMigration).toBe(false);
+      expect(localStorage.getItem('finsight_value_history_usr_2')).toBeNull();
+    });
+
+    it('avoids arbitrary assignment when multiple accounts exist without reliable association', () => {
+      const legacyData = [{ date: '2026-01-01', totalValue: 50000 }];
+      localStorage.setItem(STORAGE_KEY_VALUE_HISTORY, JSON.stringify(legacyData));
+      localStorage.setItem('finsight_accounts', JSON.stringify({
+        'a@example.com': { id: 'usr_a', email: 'a@example.com' },
+        'b@example.com': { id: 'usr_b', email: 'b@example.com' }
+      }));
+
+      const userA = { id: 'usr_a', email: 'a@example.com' };
+      const migrated = migrateGlobalValueHistory(userA);
+
+      expect(migrated).toBe(false);
+      expect(localStorage.getItem('finsight_value_history_usr_a')).toBeNull();
     });
   });
 });
