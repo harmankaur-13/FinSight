@@ -1,21 +1,3 @@
-<p align="center">
-  <picture>
-    <source
-      media="(prefers-color-scheme: dark)"
-      srcset="./public/images/finsight-logo-dark.png"
-    />
-    <source
-      media="(prefers-color-scheme: light)"
-      srcset="./public/images/finsight-logo.png"
-    />
-    <img
-      src="./public/images/finsight-logo.png"
-      alt="FinSight Logo"
-      width="400"
-    />
-  </picture>
-</p>
-
 # FinSight
 
 > Personal & Business Financial Intelligence Platform
